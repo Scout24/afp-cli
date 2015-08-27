@@ -1,0 +1,103 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+Usage:
+    aws-federation-client-cmd [--user=<username>] [--api-url=<api url>]
+                              [(--account=<accountname> --role=<rolename>)]
+
+Options:
+  -h --help    Show this
+  --user=<username>        The user you want to use.
+  --account=<accountname>  The aws account id you want to login to.
+  --role=<rolename>        The aws role you want to use for login.
+  --api-url=<api url>      The URL of the AFP server
+"""
+
+import getpass
+import os
+import subprocess
+import sys
+import tempfile
+import yamlreader
+
+from docopt import docopt
+from afp_cli import AWSFederationClientCmd
+
+CFGDIR = '/etc/aws-federation-client'
+
+
+def get_user(username):
+    """Check if we have a given user, else take the current one"""
+    return username or getpass.getuser()
+
+
+def get_password(username):
+    """Return password for the given user"""
+    return getpass.getpass("Password for {0}: ".format(username))
+
+def load_config(global_config_dir=CFGDIR):
+    global_config = {}
+    if os.path.isdir(global_config_dir):
+        global_config = yamlreader.yaml_load(global_config_dir, {})
+
+    user_config = {}
+    user_config_dir = os.path.expanduser("~/.aws-federation-client")
+    if os.path.isdir(user_config_dir):
+        global_config = yamlreader.yaml_load(user_config_dir, {})
+
+    yamlreader.data_merge(global_config, user_config)
+    return global_config
+
+RC_SCRIPT_TEMPLATE = """
+# Pretend to be an interactive, non-login shell
+for file in /etc/bash.bashrc ~/.bashrc; do
+    [ -f "$file" ] && . "$file"
+done
+
+PS1="(AWS) $PS1"
+export AWS_ACCESS_KEY_ID={AWS_ACCESS_KEY_ID}
+export AWS_SECRET_ACCESS_KEY={AWS_SECRET_ACCESS_KEY}
+export AWS_SESSION_TOKEN={AWS_SESSION_TOKEN}
+export AWS_SECURITY_TOKEN={AWS_SECURITY_TOKEN}
+"""
+def start_subshell(aws_credentials):
+    rc_script = tempfile.NamedTemporaryFile()
+    rc_script.write(RC_SCRIPT_TEMPLATE.format(**aws_credentials))
+    rc_script.flush()
+    subprocess.call(
+        ["bash", "--rcfile", rc_script.name],
+        stdout=sys.stdout, stderr=sys.stderr, stdin=sys.stdin)
+
+
+def main():
+    """Main function for script execution"""
+    arguments = docopt(__doc__)
+    try:
+        config = load_config()
+    except Exception, exc:
+        print >>sys.stderr, "Failed to load configuration:", exc
+        sys.exit(1)
+
+    api_url = arguments['--api-url'] or config['api_url']
+    username = get_user(arguments['--user'])
+    password = get_password(username)
+    federation_client = AWSFederationClientCmd(api_url=api_url,
+                                               username=username,
+                                               password=password)
+    if arguments['--account'] and arguments['--role']:
+        account = arguments['--account']
+        role = arguments['--role']
+        aws_credentials = federation_client.get_aws_credentials(account, role)
+        print "Entering AFP subshell for accout {0}, role {1}.".format(
+            account, role)
+        print "Press CTRL+D to exit."
+        start_subshell(aws_credentials)
+        print "Leaving AFP subshell."
+
+    else:
+        federation_client.print_account_and_role_list()
+
+
+if __name__ == '__main__':
+    main()

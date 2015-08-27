@@ -1,0 +1,51 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+from __future__ import print_function
+
+import requests
+import json
+from requests.auth import HTTPBasicAuth
+
+
+class AWSFederationClientCmd(object):
+    """Class for a command line client which uses the afp api"""
+
+    def __init__(self, *args, **kwargs):
+        self.username = kwargs.get('username', None)
+        self._password = kwargs.get('password', None)
+        self.api_url = kwargs.get('api_url', None)
+        self.ssl_verify = kwargs.get('ssl_verify', True)
+
+    def call_api(self, url_suffix):
+        """Send a request to the aws federation proxy"""
+        api_result = requests.get('{0}{1}'.format(self.api_url, url_suffix),
+                                  verify=self.ssl_verify,
+                                  auth=HTTPBasicAuth(self.username,
+                                                     self._password))
+        return api_result.text
+
+    def get_account_and_role_list(self):
+        """Create an aws federation proxy request and return the result"""
+        accounts_and_roles = self.call_api("/account")
+        return json.loads(accounts_and_roles)
+
+    def get_aws_credentials(self, account, role):
+        """Return AWS credentials for a specified user and account"""
+        aws_credentials = self.call_api("/account/{0}/{1}".format(account,
+                                                                  role))
+        aws_credentials = json.loads(aws_credentials)
+        return {'AWS_ACCESS_KEY_ID': aws_credentials['AccessKeyId'],
+                'AWS_SECRET_ACCESS_KEY': aws_credentials['SecretAccessKey'],
+                'AWS_SESSION_TOKEN': aws_credentials['Token'],
+                'AWS_SECURITY_TOKEN': aws_credentials['Token']}
+
+    def print_account_and_role_list(self):
+        """Print account and role list to stdout"""
+        for key, values in self.get_account_and_role_list().iteritems():
+            print("{0:<20} {1}".format(key, ",".join(values)))
+
+    def print_aws_credentials_with_export_style(self, account, role):
+        """Print aws credentials for account and role as bash export command"""
+        for key, value in self.get_aws_credentials(account, role).iteritems():
+            print("export {0}={1}".format(key, value))

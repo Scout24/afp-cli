@@ -1,0 +1,7 @@
+venv
+target
+.coverage
+*.pyc
+*.pyo
+.idea
+.pybuild
