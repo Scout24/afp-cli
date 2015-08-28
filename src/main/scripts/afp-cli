@@ -16,6 +16,8 @@ Options:
 
 import getpass
 import os
+import random
+import socket
 import subprocess
 import sys
 import tempfile
@@ -49,6 +51,22 @@ def load_config(global_config_dir=CFGDIR):
     yamlreader.data_merge(global_config, user_config)
     return global_config
 
+def get_default_afp_server():
+    """Return the FQDN of the host that is called "afp-server"
+
+    This is done by resolving "afp-server" into (potentially multiple) IPs.
+    One of those IPs is randomly chosen, then a reverse-lookup is performed
+    on that IP to get its FQDN.
+    """
+    try:
+        addrinfos = socket.getaddrinfo("afp-server", 443,
+                                       socket.AF_INET, socket.SOCK_STREAM)
+    except Exception, exc:
+        raise Exception("Could not resolve hostname 'afp-server': %s" % exc)
+    addrinfo = random.choice(addrinfos)
+    afp_server_ip = addrinfo[4][0]
+    return socket.getfqdn(afp_server_ip)
+
 RC_SCRIPT_TEMPLATE = """
 # Pretend to be an interactive, non-login shell
 for file in /etc/bash.bashrc ~/.bashrc; do
@@ -79,7 +97,9 @@ def main():
         print >>sys.stderr, "Failed to load configuration:", exc
         sys.exit(1)
 
-    api_url = arguments['--api-url'] or config['api_url']
+    api_url = arguments['--api-url'] or config.get('api_url')
+    if api_url is None:
+        api_url = 'https://{fqdn}/afp-api/latest'.format(fqdn=get_default_afp_server())
     username = get_user(arguments['--user'])
     password = get_password(username)
     federation_client = AWSFederationClientCmd(api_url=api_url,
