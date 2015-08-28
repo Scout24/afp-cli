@@ -28,7 +28,7 @@ default_task = ["clean", "analyze", "publish"]
 def set_properties(project):
     project.build_depends_on("unittest2")
     project.build_depends_on("mock")
-    project.depends_on("yamlreader")
+    project.depends_on("yamlreader>=3.0.1")
     project.depends_on("requests")
     project.depends_on("docopt")
     project.set_property('flake8_include_test_sources', True)
