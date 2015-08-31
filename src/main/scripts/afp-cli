@@ -7,7 +7,7 @@ Usage:
                               [(<accountname> <rolename>)]
 
 Options:
-  -h --help    Show this
+  -h --help                Show this
   --user=<username>        The user you want to use.
   --api-url=<api url>      The URL of the AFP server
   <accountname>            The aws account id you want to login to.
