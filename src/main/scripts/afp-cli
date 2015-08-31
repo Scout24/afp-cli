@@ -52,17 +52,17 @@ def load_config(global_config_dir=CFGDIR):
     return global_config
 
 def get_default_afp_server():
-    """Return the FQDN of the host that is called "afp-server"
+    """Return the FQDN of the host that is called "afp"
 
-    This is done by resolving "afp-server" into (potentially multiple) IPs.
+    This is done by resolving "afp" into (potentially multiple) IPs.
     One of those IPs is randomly chosen, then a reverse-lookup is performed
     on that IP to get its FQDN.
     """
     try:
-        addrinfos = socket.getaddrinfo("afp-server", 443,
+        addrinfos = socket.getaddrinfo("afp", 443,
                                        socket.AF_INET, socket.SOCK_STREAM)
     except Exception, exc:
-        raise Exception("Could not resolve hostname 'afp-server': %s" % exc)
+        raise Exception("Could not resolve hostname 'afp': %s" % exc)
     addrinfo = random.choice(addrinfos)
     afp_server_ip = addrinfo[4][0]
     return socket.getfqdn(afp_server_ip)
