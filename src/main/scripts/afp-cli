@@ -4,12 +4,13 @@
 """
 Usage:
     aws-federation-client-cmd [--user=<username>] [--api-url=<api url>]
-                              [(<accountname> <rolename>)]
+                              [--show] [(<accountname> <rolename>)]
 
 Options:
   -h --help                Show this
   --user=<username>        The user you want to use.
   --api-url=<api url>      The URL of the AFP server
+  --show                   Show credentials instead of opening subshell
   <accountname>            The aws account id you want to login to.
   <rolename>               The aws role you want to use for login.
 """
@@ -87,12 +88,16 @@ export AWS_SESSION_TOKEN={AWS_SESSION_TOKEN}
 export AWS_SECURITY_TOKEN={AWS_SECURITY_TOKEN}
 """
 def start_subshell(aws_credentials):
+    print "Entering AFP subshell for accout {0}, role {1}.".format(
+        account, role)
+    print "Press CTRL+D to exit."
     rc_script = tempfile.NamedTemporaryFile()
     rc_script.write(RC_SCRIPT_TEMPLATE.format(**aws_credentials))
     rc_script.flush()
     subprocess.call(
         ["bash", "--rcfile", rc_script.name],
         stdout=sys.stdout, stderr=sys.stderr, stdin=sys.stdin)
+    print "Leaving AFP subshell."
 
 
 def main():
@@ -121,16 +126,16 @@ def main():
             except Exception, exc:
                 print >>sys.stderr, "Failed to get credentials from AWS:", exc
                 sys.exit(1)
-            print "Entering AFP subshell for accout {0}, role {1}.".format(
-                account, role)
-            print "Press CTRL+D to exit."
-            try:
-                start_subshell(aws_credentials)
-            except Exception, exc:
-                print >>sys.stderr, "Failed to start subshell:", exc
-                sys.exit(1)
-            print "Leaving AFP subshell."
 
+            if arguments['--show']:
+                for key, value in aws_credentials.items():
+                    print "{key}='{value}'".format(key=key, value=value)
+            else:
+                try:
+                    start_subshell(aws_credentials)
+                except Exception, exc:
+                    print >>sys.stderr, "Failed to start subshell:", exc
+                    sys.exit(1)
         else:
             try:
                 federation_client.print_account_and_role_list()
