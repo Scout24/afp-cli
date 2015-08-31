@@ -88,8 +88,6 @@ export AWS_SESSION_TOKEN={AWS_SESSION_TOKEN}
 export AWS_SECURITY_TOKEN={AWS_SECURITY_TOKEN}
 """
 def start_subshell(aws_credentials):
-    print "Entering AFP subshell for accout {0}, role {1}.".format(
-        account, role)
     print "Press CTRL+D to exit."
     rc_script = tempfile.NamedTemporaryFile()
     rc_script.write(RC_SCRIPT_TEMPLATE.format(**aws_credentials))
@@ -131,6 +129,8 @@ def main():
                 for key, value in aws_credentials.items():
                     print "{key}='{value}'".format(key=key, value=value)
             else:
+                print "Entering AFP subshell for account {0}, role {1}.".format(
+                    account, role)
                 try:
                     start_subshell(aws_credentials)
                 except Exception, exc:
