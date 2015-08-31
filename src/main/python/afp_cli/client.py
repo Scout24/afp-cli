@@ -23,6 +23,13 @@ class AWSFederationClientCmd(object):
                                   verify=self.ssl_verify,
                                   auth=HTTPBasicAuth(self.username,
                                                      self._password))
+        if api_result.status_code != 200:
+            if api_result.status_code == 401:
+                raise Exception("API call to AWS (%s/%s) failed: %s %s" % (
+                    self.api_url, url_suffix, api_result.status_code, api_result.reason))
+            else:
+                raise Exception("API call to AWS (%s/%s) failed: %s" % (
+                    self.api_url, url_suffix, api_result.json()['message']))
         return api_result.text
 
     def get_account_and_role_list(self):

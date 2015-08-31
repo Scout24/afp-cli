@@ -62,10 +62,17 @@ def get_default_afp_server():
         addrinfos = socket.getaddrinfo("afp", 443,
                                        socket.AF_INET, socket.SOCK_STREAM)
     except Exception, exc:
-        raise Exception("Could not resolve hostname 'afp': %s" % exc)
+        print >>sys.stderr, "Could not resolve hostname 'afp': %s" % exc
+        sys.exit(1)
     addrinfo = random.choice(addrinfos)
     afp_server_ip = addrinfo[4][0]
-    return socket.getfqdn(afp_server_ip)
+
+    try:
+        return socket.gethostbyaddr(afp_server_ip)[0]
+    except Exception, exc:
+        print >>sys.stderr, "DNS reverse lookup failed for IP %s: %s" % (
+            afp_server_ip, exc)
+        sys.exit(1)
 
 RC_SCRIPT_TEMPLATE = """
 # Pretend to be an interactive, non-login shell
@@ -109,15 +116,27 @@ def main():
         if arguments['--account'] and arguments['--role']:
             account = arguments['--account']
             role = arguments['--role']
-            aws_credentials = federation_client.get_aws_credentials(account, role)
+            try:
+                aws_credentials = federation_client.get_aws_credentials(account, role)
+            except Exception, exc:
+                print >>sys.stderr, "Failed to get credentials from AWS:", exc
+                sys.exit(1)
             print "Entering AFP subshell for accout {0}, role {1}.".format(
                 account, role)
             print "Press CTRL+D to exit."
-            start_subshell(aws_credentials)
+            try:
+                start_subshell(aws_credentials)
+            except Exception, exc:
+                print >>sys.stderr, "Failed to start subshell:", exc
+                sys.exit(1)
             print "Leaving AFP subshell."
 
         else:
-            federation_client.print_account_and_role_list()
+            try:
+                federation_client.print_account_and_role_list()
+            except Exception, exc:
+                print >>sys.stderr, "Failed to get account list from AWS:", exc
+                sys.exit(1)
     except KeyboardInterrupt:
         sys.exit(0)
 
