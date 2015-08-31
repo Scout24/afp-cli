@@ -51,10 +51,10 @@ This starts a subshell in which the credentials have been exported into the envi
 the "exit" command or press CTRL+D to terminate the subshell.
 
 Export credentials for currently logged in user and specified account and role
-    ``afp-cli --account=accountname --role=rolename``
+    ``afp-cli accountname rolename``
 
 As above, but specifying a different user:
-    ``afp-cli --user=username --account=accountname --role=rolename``
+    ``afp-cli --user=username accountname rolename``
 
 Specify the URL of the AFP server, overriding any config file
     ``afp-cli --api-url=https://yourhost/some/path .....``

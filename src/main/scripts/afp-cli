@@ -4,14 +4,14 @@
 """
 Usage:
     aws-federation-client-cmd [--user=<username>] [--api-url=<api url>]
-                              [(--account=<accountname> --role=<rolename>)]
+                              [(<accountname> <rolename>)]
 
 Options:
   -h --help    Show this
   --user=<username>        The user you want to use.
-  --account=<accountname>  The aws account id you want to login to.
-  --role=<rolename>        The aws role you want to use for login.
   --api-url=<api url>      The URL of the AFP server
+  <accountname>            The aws account id you want to login to.
+  <rolename>               The aws role you want to use for login.
 """
 
 import getpass
@@ -113,9 +113,9 @@ def main():
         federation_client = AWSFederationClientCmd(api_url=api_url,
                                                    username=username,
                                                    password=password)
-        if arguments['--account'] and arguments['--role']:
-            account = arguments['--account']
-            role = arguments['--role']
+        if arguments['<accountname>'] and arguments['<rolename>']:
+            account = arguments['<accountname>']
+            role = arguments['<rolename>']
             try:
                 aws_credentials = federation_client.get_aws_credentials(account, role)
             except Exception, exc:
