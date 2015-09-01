@@ -111,7 +111,7 @@ def main():
         api_url = arguments['--api-url'] or config.get('api_url')
         if api_url is None:
             api_url = 'https://{fqdn}/afp-api/latest'.format(fqdn=get_default_afp_server())
-        username = get_user(arguments['--user'])
+        username = get_user(arguments['--user'] or config.get("user"))
         password = get_password(username)
         federation_client = AWSFederationClientCmd(api_url=api_url,
                                                    username=username,

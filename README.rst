@@ -12,14 +12,21 @@ credentials have been exported into the environment.
 Configuration
 ~~~~~~~~~~~~~
 
-The **afp-cli** command can be globally configured with a yaml file:
-    ``/etc/aws-federation-client/api.yaml``
+The **afp-cli** command can be configured through yaml files in the following direcories:
+ - ``/etc/aws-federation-client/*.yaml`` (global configuration)
+ - ``$HOME/.aws-federation-client/*.yaml`` (per-user configuration)
 
-Syntax:
+The yaml files are read in lexical order and merged via `yamlreader <https://github.com/ImmobilienScout24/yamlreader>`_. The following configuration options are supported:
+
     ``api_url: <api-url>``
+        Defaults to lookup a FQDN of a host named ``afp`` via DNS and construct the server url from it: ``https://{FQDN}/afp-api/latest``
+    ``user: <username>``
+        Defaults to the currently logged in username
 
-Each user's home directory can override this setting in the same way, using
-    ``$HOME/.aws-federation-client/api.yaml``
+Example::
+
+    api_url: https://afp-server.my.domain/afp-api/latest
+    user: myuser
 
 
 CLI Tool
@@ -58,4 +65,3 @@ As above, but specifying a different user:
 
 Specify the URL of the AFP server, overriding any config file
     ``afp-cli --api-url=https://yourhost/some/path .....``
-
