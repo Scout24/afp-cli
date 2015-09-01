@@ -12,14 +12,22 @@ credentials have been exported into the environment.
 Configuration
 ~~~~~~~~~~~~~
 
-The **afp** command can be globally configured with a yaml file:
-    ``/etc/afp-cli/api.yaml``
+The **afp** command can be configured through yaml files in the following direcories:
+ - ``/etc/afp-cli/*.yaml`` (global configuration)
+ - ``$HOME/.afp-cli/*.yaml`` (per-user configuration)
 
-Syntax:
+The yaml files are read in lexical order and merged via `yamlreader <https://github.com/ImmobilienScout24/yamlreader>`_.
+The following configuration options are supported:
+
     ``api_url: <api-url>``
+        Defaults to lookup a FQDN of a host named ``afp`` via DNS and construct the server url from it: ``https://{FQDN}/afp-api/latest``
+    ``user: <username>``
+        Defaults to the currently logged in username
 
-Each user's home directory can override this setting in the same way, using
-    ``$HOME/.afp-cli/api.yaml``
+Example::
+
+    api_url: https://afp-server.my.domain/afp-api/latest
+    user: myuser
 
 
 CLI Tool
@@ -45,17 +53,19 @@ Example output::
     abc_account     some_role_in_abc_account
     xyz_account     some_role_in_yxz_account,another_role_in_xyz
 
-Export credentials
-~~~~~~~~~~~~~~~~~~
+Use AWS credentials
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 This starts a subshell in which the credentials have been exported into the environment. Use
 the "exit" command or press CTRL+D to terminate the subshell.
 
-Export credentials for currently logged in user and specified account and role
+Use credentials for currently logged in user and specified account and role
     ``afp accountname rolename``
+
+Use credentials for the currently logged in user for the *first* role:
+    ``afp accountname``
 
 As above, but specifying a different user:
     ``afp --user=username accountname rolename``
 
 Specify the URL of the AFP server, overriding any config file
     ``afp --api-url=https://yourhost/some/path .....``
-

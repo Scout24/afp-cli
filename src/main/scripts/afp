@@ -6,7 +6,7 @@ Command line client for the AFP (AWS Federation Proxy)
 
 Usage:
     afp [--user=<username>] [--api-url=<api url>]
-                              [--show] [(<accountname> <rolename>)]
+                              [--show] [(<accountname> [<rolename>])]
 
 Options:
   -h --help                Show this
@@ -14,7 +14,7 @@ Options:
   --api-url=<api url>      The URL of the AFP server
   --show                   Show credentials instead of opening subshell
   <accountname>            The aws account id you want to login to.
-  <rolename>               The aws role you want to use for login.
+  <rolename>               The aws role you want to use for login. Defaults to the first role.
 """
 
 import getpass
@@ -113,14 +113,30 @@ def main():
         api_url = arguments['--api-url'] or config.get('api_url')
         if api_url is None:
             api_url = 'https://{fqdn}/afp-api/latest'.format(fqdn=get_default_afp_server())
-        username = get_user(arguments['--user'])
+        username = get_user(arguments['--user'] or config.get("user"))
         password = get_password(username)
         federation_client = AWSFederationClientCmd(api_url=api_url,
                                                    username=username,
                                                    password=password)
-        if arguments['<accountname>'] and arguments['<rolename>']:
+        if arguments['<accountname>']:
             account = arguments['<accountname>']
-            role = arguments['<rolename>']
+
+            if arguments['<rolename>']:
+                role = arguments['<rolename>']
+            else:
+                try:
+                    accounts_and_roles = federation_client.get_account_and_role_list()
+                except Exception, exc:
+                    print >>sys.stderr, "Failed to get account list from AWS:", exc
+                    sys.exit(1)
+                try:
+                    role = accounts_and_roles[account][0]
+                except KeyError:
+                    print >>sys.stderr, "%s is not a valid AWS account" % account
+                    sys.exit(1)
+                except IndexError:
+                    print >>sys.stderr, "Could not find any role for account %s" % account
+                    sys.exit(1)
             try:
                 aws_credentials = federation_client.get_aws_credentials(account, role)
             except Exception, exc:
