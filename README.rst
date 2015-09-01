@@ -12,11 +12,12 @@ credentials have been exported into the environment.
 Configuration
 ~~~~~~~~~~~~~
 
-The **afp-cli** command can be configured through yaml files in the following direcories:
- - ``/etc/aws-federation-client/*.yaml`` (global configuration)
- - ``$HOME/.aws-federation-client/*.yaml`` (per-user configuration)
+The **afp** command can be configured through yaml files in the following direcories:
+ - ``/etc/afp-cli/*.yaml`` (global configuration)
+ - ``$HOME/.afp-cli/*.yaml`` (per-user configuration)
 
-The yaml files are read in lexical order and merged via `yamlreader <https://github.com/ImmobilienScout24/yamlreader>`_. The following configuration options are supported:
+The yaml files are read in lexical order and merged via `yamlreader <https://github.com/ImmobilienScout24/yamlreader>`_.
+The following configuration options are supported:
 
     ``api_url: <api-url>``
         Defaults to lookup a FQDN of a host named ``afp`` via DNS and construct the server url from it: ``https://{FQDN}/afp-api/latest``
@@ -34,15 +35,15 @@ CLI Tool
 
 Get help text
 ~~~~~~~~~~~~~~~~~~~~~~
-    ``aws-cli [-h | --help]``
+    ``afp [-h | --help]``
 
 List available account names and roles
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 For the currently logged-in user:
-    ``aws-cli``
+    ``afp``
 
 The same for another user:
-    ``aws-cli --user=username``
+    ``afp --user=username``
 
 Output format:
     ``<accountname>    <role1>,<role2>,...,<roleN>``
@@ -52,16 +53,16 @@ Example output::
     abc_account     some_role_in_abc_account
     xyz_account     some_role_in_yxz_account,another_role_in_xyz
 
-Export credentials
-~~~~~~~~~~~~~~~~~~
+Use AWS credentials
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 This starts a subshell in which the credentials have been exported into the environment. Use
 the "exit" command or press CTRL+D to terminate the subshell.
 
-Export credentials for currently logged in user and specified account and role
-    ``afp-cli accountname rolename``
+Use credentials for currently logged in user and specified account and role
+    ``afp accountname rolename``
 
 As above, but specifying a different user:
-    ``afp-cli --user=username accountname rolename``
+    ``afp --user=username accountname rolename``
 
 Specify the URL of the AFP server, overriding any config file
-    ``afp-cli --api-url=https://yourhost/some/path .....``
+    ``afp --api-url=https://yourhost/some/path .....``

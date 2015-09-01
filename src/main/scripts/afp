@@ -2,8 +2,10 @@
 # -*- coding: utf-8 -*-
 
 """
+Command line client for the AFP (AWS Federation Proxy)
+
 Usage:
-    aws-federation-client-cmd [--user=<username>] [--api-url=<api url>]
+    afp [--user=<username>] [--api-url=<api url>]
                               [--show] [(<accountname> <rolename>)]
 
 Options:
@@ -27,7 +29,7 @@ import yamlreader
 from docopt import docopt
 from afp_cli import AWSFederationClientCmd
 
-CFGDIR = '/etc/aws-federation-client'
+CFGDIR = '/etc/afp-cli'
 
 
 def get_user(username):
@@ -45,7 +47,7 @@ def load_config(global_config_dir=CFGDIR):
         global_config = yamlreader.yaml_load(global_config_dir, {})
 
     user_config = {}
-    user_config_dir = os.path.expanduser("~/.aws-federation-client")
+    user_config_dir = os.path.expanduser("~/.afp-cli")
     if os.path.isdir(user_config_dir):
         global_config = yamlreader.yaml_load(user_config_dir, {})
 
