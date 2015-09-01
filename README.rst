@@ -61,6 +61,9 @@ the "exit" command or press CTRL+D to terminate the subshell.
 Use credentials for currently logged in user and specified account and role
     ``afp accountname rolename``
 
+Use credentials for the currently logged in user for the *first* role:
+    ``afp accountname``
+
 As above, but specifying a different user:
     ``afp --user=username accountname rolename``
 
