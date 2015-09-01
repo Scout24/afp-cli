@@ -12,14 +12,14 @@ credentials have been exported into the environment.
 Configuration
 ~~~~~~~~~~~~~
 
-The **afp-cli** command can be globally configured with a yaml file:
-    ``/etc/aws-federation-client/api.yaml``
+The **afp** command can be globally configured with a yaml file:
+    ``/etc/afp-cli/api.yaml``
 
 Syntax:
     ``api_url: <api-url>``
 
 Each user's home directory can override this setting in the same way, using
-    ``$HOME/.aws-federation-client/api.yaml``
+    ``$HOME/.afp-cli/api.yaml``
 
 
 CLI Tool
@@ -27,15 +27,15 @@ CLI Tool
 
 Get help text
 ~~~~~~~~~~~~~~~~~~~~~~
-    ``aws-cli [-h | --help]``
+    ``afp [-h | --help]``
 
 List available account names and roles
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 For the currently logged-in user:
-    ``aws-cli``
+    ``afp``
 
 The same for another user:
-    ``aws-cli --user=username``
+    ``afp --user=username``
 
 Output format:
     ``<accountname>    <role1>,<role2>,...,<roleN>``
@@ -51,11 +51,11 @@ This starts a subshell in which the credentials have been exported into the envi
 the "exit" command or press CTRL+D to terminate the subshell.
 
 Export credentials for currently logged in user and specified account and role
-    ``afp-cli accountname rolename``
+    ``afp accountname rolename``
 
 As above, but specifying a different user:
-    ``afp-cli --user=username accountname rolename``
+    ``afp --user=username accountname rolename``
 
 Specify the URL of the AFP server, overriding any config file
-    ``afp-cli --api-url=https://yourhost/some/path .....``
+    ``afp --api-url=https://yourhost/some/path .....``
 
