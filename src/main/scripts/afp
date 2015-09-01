@@ -83,21 +83,30 @@ for file in /etc/bash.bashrc ~/.bashrc; do
     [ -f "$file" ] && . "$file"
 done
 
-PS1="(AWS) $PS1"
+function afp_minutes_left {{
+    if ((SECONDS >= 3600)) ; then
+        echo EXPIRED
+    else
+        echo $((({credential_validity_in_seconds}-SECONDS)/60)) Min
+    fi
+}}
+
+PS1="(AWS {account}/{role} \\$(afp_minutes_left)) $PS1"
 export AWS_ACCESS_KEY_ID={AWS_ACCESS_KEY_ID}
 export AWS_SECRET_ACCESS_KEY={AWS_SECRET_ACCESS_KEY}
 export AWS_SESSION_TOKEN={AWS_SESSION_TOKEN}
 export AWS_SECURITY_TOKEN={AWS_SECURITY_TOKEN}
 """
-def start_subshell(aws_credentials):
+def start_subshell(aws_credentials, role, account):
+    # TODO Use actual expiration time instead of assuming 1h
     print "Press CTRL+D to exit."
     rc_script = tempfile.NamedTemporaryFile()
-    rc_script.write(RC_SCRIPT_TEMPLATE.format(**aws_credentials))
+    rc_script.write(RC_SCRIPT_TEMPLATE.format(role=role, account=account, credential_validity_in_seconds=3600, **aws_credentials))
     rc_script.flush()
     subprocess.call(
         ["bash", "--rcfile", rc_script.name],
         stdout=sys.stdout, stderr=sys.stderr, stdin=sys.stdin)
-    print "Leaving AFP subshell."
+    print "Left AFP subshell."
 
 
 def main():
@@ -150,7 +159,7 @@ def main():
                 print "Entering AFP subshell for account {0}, role {1}.".format(
                     account, role)
                 try:
-                    start_subshell(aws_credentials)
+                    start_subshell(aws_credentials=aws_credentials, role=role, account=account)
                 except Exception, exc:
                     print >>sys.stderr, "Failed to start subshell:", exc
                     sys.exit(1)
