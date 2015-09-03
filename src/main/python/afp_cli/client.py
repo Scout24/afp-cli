@@ -45,7 +45,8 @@ class AWSFederationClientCmd(object):
         return {'AWS_ACCESS_KEY_ID': aws_credentials['AccessKeyId'],
                 'AWS_SECRET_ACCESS_KEY': aws_credentials['SecretAccessKey'],
                 'AWS_SESSION_TOKEN': aws_credentials['Token'],
-                'AWS_SECURITY_TOKEN': aws_credentials['Token']}
+                'AWS_SECURITY_TOKEN': aws_credentials['Token'],
+                'AWS_EXPIRATION_DATE': aws_credentials['Expiration']}
 
     def print_account_and_role_list(self):
         """Print account and role list to stdout"""
