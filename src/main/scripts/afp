@@ -27,6 +27,7 @@ import tempfile
 import yamlreader
 
 from docopt import docopt
+from datetime import datetime, timedelta
 from afp_cli import AWSFederationClientCmd
 
 CFGDIR = '/etc/afp-cli'
@@ -84,10 +85,10 @@ for file in /etc/bash.bashrc ~/.bashrc; do
 done
 
 function afp_minutes_left {{
-    if ((SECONDS >= 3600)) ; then
+    if ((SECONDS >= {AWS_VALID_SECONDS})) ; then
         echo EXPIRED
     else
-        echo $((({credential_validity_in_seconds}-SECONDS)/60)) Min
+        echo $((({AWS_VALID_SECONDS}-SECONDS)/60)) Min
     fi
 }}
 
@@ -98,10 +99,9 @@ export AWS_SESSION_TOKEN={AWS_SESSION_TOKEN}
 export AWS_SECURITY_TOKEN={AWS_SECURITY_TOKEN}
 """
 def start_subshell(aws_credentials, role, account):
-    # TODO Use actual expiration time instead of assuming 1h
     print "Press CTRL+D to exit."
     rc_script = tempfile.NamedTemporaryFile()
-    rc_script.write(RC_SCRIPT_TEMPLATE.format(role=role, account=account, credential_validity_in_seconds=3600, **aws_credentials))
+    rc_script.write(RC_SCRIPT_TEMPLATE.format(role=role, account=account, **aws_credentials))
     rc_script.flush()
     subprocess.call(
         ["bash", "--rcfile", rc_script.name],
@@ -151,6 +151,21 @@ def main():
             except Exception, exc:
                 print >>sys.stderr, "Failed to get credentials from AWS:", exc
                 sys.exit(1)
+
+            try:
+                credentials_valid_until = datetime.strptime(
+                    aws_credentials['AWS_EXPIRATION_DATE'],
+                    "%Y-%m-%dT%H:%M:%SZ",)
+            except Exception:
+                default_seconds = 3600
+                msg = ("Failed to parse expiration date '{0}' for "
+                       "AWS credentials, assuming {1} seconds.")
+                print >>sys.stderr, msg.format(
+                    aws_credentials['AWS_EXPIRATION_DATE'], default_seconds)
+                credentials_valid_until = (datetime.utcnow() +
+                                           timedelta(seconds=default_seconds))
+            valid_seconds = (credentials_valid_until - datetime.utcnow()).seconds
+            aws_credentials['AWS_VALID_SECONDS'] = valid_seconds
 
             if arguments['--show']:
                 for key, value in aws_credentials.items():
