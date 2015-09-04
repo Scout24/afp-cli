@@ -154,44 +154,44 @@ def get_aws_credentials(federation_client, account, role):
 
 def main():
     """Main function for script execution"""
+    arguments = docopt(__doc__)
     try:
-        arguments = docopt(__doc__)
-        try:
-            config = load_config()
-        except Exception, exc:
-            error("Failed to load configuration: %s" % exc)
+        config = load_config()
+    except Exception, exc:
+        error("Failed to load configuration: %s" % exc)
 
-        api_url = arguments['--api-url'] or config.get('api_url')
-        if api_url is None:
-            api_url = 'https://{fqdn}/afp-api/latest'.format(fqdn=get_default_afp_server())
-        username = get_user(arguments['--user'] or config.get("user"))
-        password = get_password(username)
-        federation_client = AWSFederationClientCmd(api_url=api_url,
-                                                   username=username,
-                                                   password=password)
-        if arguments['<accountname>']:
-            account = arguments['<accountname>']
-            role = get_role(arguments, federation_client, account)
-            aws_credentials = get_aws_credentials(federation_client, account, role)
+    api_url = arguments['--api-url'] or config.get('api_url')
+    if api_url is None:
+        api_url = 'https://{fqdn}/afp-api/latest'.format(fqdn=get_default_afp_server())
+    username = get_user(arguments['--user'] or config.get("user"))
+    password = get_password(username)
+    federation_client = AWSFederationClientCmd(api_url=api_url,
+                                               username=username,
+                                               password=password)
+    if arguments['<accountname>']:
+        account = arguments['<accountname>']
+        role = get_role(arguments, federation_client, account)
+        aws_credentials = get_aws_credentials(federation_client, account, role)
 
-            if arguments['--show']:
-                for key, value in aws_credentials.items():
-                    print "{key}='{value}'".format(key=key, value=value)
-            else:
-                print "Entering AFP subshell for account {0}, role {1}.".format(
-                    account, role)
-                try:
-                    start_subshell(aws_credentials=aws_credentials, role=role, account=account)
-                except Exception, exc:
-                    error("Failed to start subshell: %s" % exc)
+        if arguments['--show']:
+            for key, value in aws_credentials.items():
+                print "{key}='{value}'".format(key=key, value=value)
         else:
+            print "Entering AFP subshell for account {0}, role {1}.".format(
+                account, role)
             try:
-                federation_client.print_account_and_role_list()
+                start_subshell(aws_credentials=aws_credentials, role=role, account=account)
             except Exception, exc:
-                error("Failed to get account list from AWS: %s" % exc)
-    except KeyboardInterrupt:
-        sys.exit(0)
+                error("Failed to start subshell: %s" % exc)
+    else:
+        try:
+            federation_client.print_account_and_role_list()
+        except Exception, exc:
+            error("Failed to get account list from AWS: %s" % exc)
 
 
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        sys.exit(0)
