@@ -113,7 +113,7 @@ def start_subshell(aws_credentials, role, account):
         stdout=sys.stdout, stderr=sys.stderr, stdin=sys.stdin)
     print "Left AFP subshell."
 
-def get_role(arguments, federation_client):
+def get_role(arguments, federation_client, account):
     if arguments['<rolename>']:
         return arguments['<rolename>']
     else:
@@ -159,7 +159,7 @@ def main():
         try:
             config = load_config()
         except Exception, exc:
-            error("Failed to load configuration: %s", % exc)
+            error("Failed to load configuration: %s" % exc)
 
         api_url = arguments['--api-url'] or config.get('api_url')
         if api_url is None:
@@ -171,7 +171,7 @@ def main():
                                                    password=password)
         if arguments['<accountname>']:
             account = arguments['<accountname>']
-            role = get_role(arguments, federation_client)
+            role = get_role(arguments, federation_client, account)
             aws_credentials = get_aws_credentials(federation_client, account, role)
 
             if arguments['--show']:
