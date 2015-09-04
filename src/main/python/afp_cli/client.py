@@ -50,8 +50,10 @@ class AWSFederationClientCmd(object):
 
     def print_account_and_role_list(self):
         """Print account and role list to stdout"""
-        for key, values in self.get_account_and_role_list().iteritems():
-            print("{0:<20} {1}".format(key, ",".join(values)))
+        accounts_and_roles = sorted(self.get_account_and_role_list().items())
+        for account, roles in accounts_and_roles:
+            role_string = ",".join(sorted(roles))
+            print("{0:<20} {1}".format(account, role_string))
 
     def print_aws_credentials_with_export_style(self, account, role):
         """Print aws credentials for account and role as bash export command"""

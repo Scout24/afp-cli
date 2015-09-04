@@ -122,7 +122,7 @@ def get_role(arguments, federation_client, account):
         except Exception, exc:
             error("Failed to get account list from AWS: %s" % exc)
         try:
-            return accounts_and_roles[account][0]
+            return sorted(accounts_and_roles[account])[0]
         except KeyError:
             error("%s is not a valid AWS account" % account)
         except IndexError:
