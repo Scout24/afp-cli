@@ -33,6 +33,11 @@ from afp_cli import AWSFederationClientCmd
 CFGDIR = '/etc/afp-cli'
 
 
+def error(message):
+    print >>sys.stderr, message
+    sys.exit(1)
+
+
 def get_user(username):
     """Check if we have a given user, else take the current one"""
     return username or getpass.getuser()
@@ -41,6 +46,7 @@ def get_user(username):
 def get_password(username):
     """Return password for the given user"""
     return getpass.getpass("Password for {0}: ".format(username))
+
 
 def load_config(global_config_dir=CFGDIR):
     global_config = {}
@@ -55,6 +61,7 @@ def load_config(global_config_dir=CFGDIR):
     yamlreader.data_merge(global_config, user_config)
     return global_config
 
+
 def get_default_afp_server():
     """Return the FQDN of the host that is called "afp"
 
@@ -66,17 +73,15 @@ def get_default_afp_server():
         addrinfos = socket.getaddrinfo("afp", 443,
                                        socket.AF_INET, socket.SOCK_STREAM)
     except Exception, exc:
-        print >>sys.stderr, "Could not resolve hostname 'afp': %s" % exc
-        sys.exit(1)
+        error("Could not resolve hostname 'afp': %s" % exc)
     addrinfo = random.choice(addrinfos)
     afp_server_ip = addrinfo[4][0]
 
     try:
         return socket.gethostbyaddr(afp_server_ip)[0]
     except Exception, exc:
-        print >>sys.stderr, "DNS reverse lookup failed for IP %s: %s" % (
-            afp_server_ip, exc)
-        sys.exit(1)
+        error("DNS reverse lookup failed for IP %s: %s" % (
+            afp_server_ip, exc))
 
 RC_SCRIPT_TEMPLATE = """
 # Pretend to be an interactive, non-login shell
@@ -108,7 +113,6 @@ def start_subshell(aws_credentials, role, account):
         stdout=sys.stdout, stderr=sys.stderr, stdin=sys.stdin)
     print "Left AFP subshell."
 
-
 def main():
     """Main function for script execution"""
     try:
@@ -116,8 +120,7 @@ def main():
         try:
             config = load_config()
         except Exception, exc:
-            print >>sys.stderr, "Failed to load configuration:", exc
-            sys.exit(1)
+            error("Failed to load configuration: %s", % exc)
 
         api_url = arguments['--api-url'] or config.get('api_url')
         if api_url is None:
@@ -136,21 +139,17 @@ def main():
                 try:
                     accounts_and_roles = federation_client.get_account_and_role_list()
                 except Exception, exc:
-                    print >>sys.stderr, "Failed to get account list from AWS:", exc
-                    sys.exit(1)
+                    error("Failed to get account list from AWS: %s" % exc)
                 try:
                     role = accounts_and_roles[account][0]
                 except KeyError:
-                    print >>sys.stderr, "%s is not a valid AWS account" % account
-                    sys.exit(1)
+                    error("%s is not a valid AWS account" % account)
                 except IndexError:
-                    print >>sys.stderr, "Could not find any role for account %s" % account
-                    sys.exit(1)
+                    error("Could not find any role for account %s" % account)
             try:
                 aws_credentials = federation_client.get_aws_credentials(account, role)
             except Exception, exc:
-                print >>sys.stderr, "Failed to get credentials from AWS:", exc
-                sys.exit(1)
+                error("Failed to get credentials from AWS: %s" % exc)
 
             try:
                 credentials_valid_until = datetime.strptime(
@@ -176,14 +175,12 @@ def main():
                 try:
                     start_subshell(aws_credentials=aws_credentials, role=role, account=account)
                 except Exception, exc:
-                    print >>sys.stderr, "Failed to start subshell:", exc
-                    sys.exit(1)
+                    error("Failed to start subshell: %s" % exc)
         else:
             try:
                 federation_client.print_account_and_role_list()
             except Exception, exc:
-                print >>sys.stderr, "Failed to get account list from AWS:", exc
-                sys.exit(1)
+                error("Failed to get account list from AWS: %s" % exc)
     except KeyboardInterrupt:
         sys.exit(0)
 
