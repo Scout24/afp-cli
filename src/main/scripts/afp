@@ -113,6 +113,45 @@ def start_subshell(aws_credentials, role, account):
         stdout=sys.stdout, stderr=sys.stderr, stdin=sys.stdin)
     print "Left AFP subshell."
 
+def get_role(arguments, federation_client):
+    if arguments['<rolename>']:
+        return arguments['<rolename>']
+    else:
+        try:
+            accounts_and_roles = federation_client.get_account_and_role_list()
+        except Exception, exc:
+            error("Failed to get account list from AWS: %s" % exc)
+        try:
+            return accounts_and_roles[account][0]
+        except KeyError:
+            error("%s is not a valid AWS account" % account)
+        except IndexError:
+            error("Could not find any role for account %s" % account)
+
+
+def get_aws_credentials(federation_client, account, role):
+    try:
+        aws_credentials = federation_client.get_aws_credentials(account, role)
+    except Exception, exc:
+        error("Failed to get credentials from AWS: %s" % exc)
+
+    try:
+        credentials_valid_until = datetime.strptime(
+            aws_credentials['AWS_EXPIRATION_DATE'],
+            "%Y-%m-%dT%H:%M:%SZ",)
+    except Exception:
+        default_seconds = 3600
+        msg = ("Failed to parse expiration date '{0}' for "
+               "AWS credentials, assuming {1} seconds.")
+        print >>sys.stderr, msg.format(
+            aws_credentials['AWS_EXPIRATION_DATE'], default_seconds)
+        credentials_valid_until = (datetime.utcnow() +
+                                   timedelta(seconds=default_seconds))
+    valid_seconds = (credentials_valid_until - datetime.utcnow()).seconds
+    aws_credentials['AWS_VALID_SECONDS'] = valid_seconds
+    return aws_credentials
+
+
 def main():
     """Main function for script execution"""
     try:
@@ -132,39 +171,8 @@ def main():
                                                    password=password)
         if arguments['<accountname>']:
             account = arguments['<accountname>']
-
-            if arguments['<rolename>']:
-                role = arguments['<rolename>']
-            else:
-                try:
-                    accounts_and_roles = federation_client.get_account_and_role_list()
-                except Exception, exc:
-                    error("Failed to get account list from AWS: %s" % exc)
-                try:
-                    role = accounts_and_roles[account][0]
-                except KeyError:
-                    error("%s is not a valid AWS account" % account)
-                except IndexError:
-                    error("Could not find any role for account %s" % account)
-            try:
-                aws_credentials = federation_client.get_aws_credentials(account, role)
-            except Exception, exc:
-                error("Failed to get credentials from AWS: %s" % exc)
-
-            try:
-                credentials_valid_until = datetime.strptime(
-                    aws_credentials['AWS_EXPIRATION_DATE'],
-                    "%Y-%m-%dT%H:%M:%SZ",)
-            except Exception:
-                default_seconds = 3600
-                msg = ("Failed to parse expiration date '{0}' for "
-                       "AWS credentials, assuming {1} seconds.")
-                print >>sys.stderr, msg.format(
-                    aws_credentials['AWS_EXPIRATION_DATE'], default_seconds)
-                credentials_valid_until = (datetime.utcnow() +
-                                           timedelta(seconds=default_seconds))
-            valid_seconds = (credentials_valid_until - datetime.utcnow()).seconds
-            aws_credentials['AWS_VALID_SECONDS'] = valid_seconds
+            role = get_role(arguments, federation_client)
+            aws_credentials = get_aws_credentials(federation_client, account, role)
 
             if arguments['--show']:
                 for key, value in aws_credentials.items():
