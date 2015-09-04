@@ -127,77 +127,85 @@ def start_subshell(aws_credentials, role, account):
         stdout=sys.stdout, stderr=sys.stderr, stdin=sys.stdin)
     print "Left AFP subshell."
 
+def get_role(arguments, federation_client, account):
+    if arguments['<rolename>']:
+        return arguments['<rolename>']
+    else:
+        try:
+            accounts_and_roles = federation_client.get_account_and_role_list()
+        except Exception, exc:
+            error("Failed to get account list from AWS: %s" % exc)
+        try:
+            return sorted(accounts_and_roles[account])[0]
+        except KeyError:
+            error("%s is not a valid AWS account" % account)
+        except IndexError:
+            error("Could not find any role for account %s" % account)
+
+
+def get_aws_credentials(federation_client, account, role):
+    try:
+        aws_credentials = federation_client.get_aws_credentials(account, role)
+    except Exception, exc:
+        error("Failed to get credentials from AWS: %s" % exc)
+
+    try:
+        credentials_valid_until = datetime.strptime(
+            aws_credentials['AWS_EXPIRATION_DATE'],
+            "%Y-%m-%dT%H:%M:%SZ",)
+    except Exception:
+        default_seconds = 3600
+        msg = ("Failed to parse expiration date '{0}' for "
+               "AWS credentials, assuming {1} seconds.")
+        print >>sys.stderr, msg.format(
+            aws_credentials['AWS_EXPIRATION_DATE'], default_seconds)
+        credentials_valid_until = (datetime.utcnow() +
+                                   timedelta(seconds=default_seconds))
+    valid_seconds = (credentials_valid_until - datetime.utcnow()).seconds
+    aws_credentials['AWS_VALID_SECONDS'] = valid_seconds
+    return aws_credentials
+
+
 def main():
     """Main function for script execution"""
+    arguments = docopt(__doc__)
     try:
-        arguments = docopt(__doc__)
-        try:
-            config = load_config()
-        except Exception, exc:
-            error("Failed to load configuration: %s", % exc)
+        config = load_config()
+    except Exception, exc:
+        error("Failed to load configuration: %s" % exc)
 
-        api_url = arguments['--api-url'] or config.get('api_url')
-        if api_url is None:
-            api_url = 'https://{fqdn}/afp-api/latest'.format(fqdn=get_default_afp_server())
-        username = get_user(arguments['--user'] or config.get("user"))
-        password = get_password(username)
-        federation_client = AWSFederationClientCmd(api_url=api_url,
-                                                   username=username,
-                                                   password=password)
-        if arguments['<accountname>']:
-            account = arguments['<accountname>']
+    api_url = arguments['--api-url'] or config.get('api_url')
+    if api_url is None:
+        api_url = 'https://{fqdn}/afp-api/latest'.format(fqdn=get_default_afp_server())
+    username = get_user(arguments['--user'] or config.get("user"))
+    password = get_password(username)
+    federation_client = AWSFederationClientCmd(api_url=api_url,
+                                               username=username,
+                                               password=password)
+    if arguments['<accountname>']:
+        account = arguments['<accountname>']
+        role = get_role(arguments, federation_client, account)
+        aws_credentials = get_aws_credentials(federation_client, account, role)
 
-            if arguments['<rolename>']:
-                role = arguments['<rolename>']
-            else:
-                try:
-                    accounts_and_roles = federation_client.get_account_and_role_list()
-                except Exception, exc:
-                    error("Failed to get account list from AWS: %s" % exc)
-                try:
-                    role = accounts_and_roles[account][0]
-                except KeyError:
-                    error("%s is not a valid AWS account" % account)
-                except IndexError:
-                    error("Could not find any role for account %s" % account)
-            try:
-                aws_credentials = federation_client.get_aws_credentials(account, role)
-            except Exception, exc:
-                error("Failed to get credentials from AWS: %s" % exc)
-
-            try:
-                credentials_valid_until = datetime.strptime(
-                    aws_credentials['AWS_EXPIRATION_DATE'],
-                    "%Y-%m-%dT%H:%M:%SZ",)
-            except Exception:
-                default_seconds = 3600
-                msg = ("Failed to parse expiration date '{0}' for "
-                       "AWS credentials, assuming {1} seconds.")
-                print >>sys.stderr, msg.format(
-                    aws_credentials['AWS_EXPIRATION_DATE'], default_seconds)
-                credentials_valid_until = (datetime.utcnow() +
-                                           timedelta(seconds=default_seconds))
-            valid_seconds = (credentials_valid_until - datetime.utcnow()).seconds
-            aws_credentials['AWS_VALID_SECONDS'] = valid_seconds
-
-            if arguments['--show']:
-                for key, value in aws_credentials.items():
-                    print "{key}='{value}'".format(key=key, value=value)
-            else:
-                print "Entering AFP subshell for account {0}, role {1}.".format(
-                    account, role)
-                try:
-                    start_subshell(aws_credentials=aws_credentials, role=role, account=account)
-                except Exception, exc:
-                    error("Failed to start subshell: %s" % exc)
+        if arguments['--show']:
+            for key, value in aws_credentials.items():
+                print "{key}='{value}'".format(key=key, value=value)
         else:
+            print "Entering AFP subshell for account {0}, role {1}.".format(
+                account, role)
             try:
-                federation_client.print_account_and_role_list()
+                start_subshell(aws_credentials=aws_credentials, role=role, account=account)
             except Exception, exc:
-                error("Failed to get account list from AWS: %s" % exc)
-    except KeyboardInterrupt:
-        sys.exit(0)
+                error("Failed to start subshell: %s" % exc)
+    else:
+        try:
+            federation_client.print_account_and_role_list()
+        except Exception, exc:
+            error("Failed to get account list from AWS: %s" % exc)
 
 
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        sys.exit(0)
