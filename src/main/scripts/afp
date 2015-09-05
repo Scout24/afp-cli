@@ -201,7 +201,10 @@ def main():
             print "Entering AFP subshell for account {0}, role {1}.".format(
                 account, role)
             try:
-                start_subshell(aws_credentials=aws_credentials, role=role, account=account)
+                if os.name is "nt":
+                    start_subcmd(aws_credentials=aws_credentials, role=role, account=account)
+                else:
+                    start_subshell(aws_credentials=aws_credentials, role=role, account=account)
             except Exception, exc:
                 error("Failed to start subshell: %s" % exc)
     else:
