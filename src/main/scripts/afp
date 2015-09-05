@@ -105,11 +105,8 @@ export AWS_SECURITY_TOKEN={AWS_SECURITY_TOKEN}
 """
 
 BATCH_FILE_TEMPLATE = """
-cmd
 @echo off
-set /a VALID_MIN={AWS_VALID_SECONDS}/60 > nul
-set PROMPT=$C AWS {account}/{role} \\ %VALID_MIN% Min $F
-@echo on
+set PROMPT=$C AWS {account}/{role} $F
 
 set AWS_ACCESS_KEY_ID={AWS_ACCESS_KEY_ID}
 set AWS_SECRET_ACCESS_KEY={AWS_SECRET_ACCESS_KEY}
