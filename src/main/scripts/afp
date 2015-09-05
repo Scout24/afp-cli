@@ -196,7 +196,10 @@ def main():
 
         if arguments['--show']:
             for key, value in aws_credentials.items():
-                print "{key}='{value}'".format(key=key, value=value)
+                if os.name is "nt":
+                    print "set {key}='{value}'".format(key=key, value=value)
+                else:
+                    print "{key}='{value}'".format(key=key, value=value)
         else:
             print "Entering AFP subshell for account {0}, role {1}.".format(
                 account, role)
