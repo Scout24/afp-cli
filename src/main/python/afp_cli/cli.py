@@ -131,7 +131,7 @@ def start_subcmd(aws_credentials, role, account):
     subprocess.call(
         ["cmd", "/K", batch_file.name])
     print "Left AFP subcmd."
-    batch_file.delete
+    os.unlink(batch_file.name)
 
 
 def get_role(arguments, federation_client, account):
@@ -204,7 +204,7 @@ def main():
             print "Entering AFP subshell for account {0}, role {1}.".format(
                 account, role)
             try:
-                if os.name is "nt":
+                if os.name == "nt":
                     start_subcmd(aws_credentials=aws_credentials, role=role, account=account)
                 else:
                     start_subshell(aws_credentials=aws_credentials, role=role, account=account)
