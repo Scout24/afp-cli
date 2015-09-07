@@ -42,7 +42,7 @@ def set_properties(project):
         "Programming Language :: Python :: 2.7",
          ])
 
-    project.set_property('distutils_console_scripts', ['afp=afp_cli'])
+    project.set_property('distutils_console_scripts', ['afp=afp_cli.cli:main'])
 
 
 @init(environments='teamcity')
