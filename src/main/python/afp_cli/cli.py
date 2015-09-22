@@ -14,6 +14,7 @@ Options:
   <rolename>               The aws role you want to use for login. Defaults to the first role.
 """
 
+from __future__ import print_function, absolute_import, unicode_literals, division
 import getpass
 import os
 import random
@@ -113,14 +114,14 @@ set AWS_SECURITY_TOKEN={AWS_SECURITY_TOKEN}
 
 
 def start_subshell(aws_credentials, role, account):
-    print "Press CTRL+D to exit."
+    print("Press CTRL+D to exit.")
     rc_script = tempfile.NamedTemporaryFile()
     rc_script.write(RC_SCRIPT_TEMPLATE.format(role=role, account=account, **aws_credentials))
     rc_script.flush()
     subprocess.call(
         ["bash", "--rcfile", rc_script.name],
         stdout=sys.stdout, stderr=sys.stderr, stdin=sys.stdin)
-    print "Left AFP subshell."
+    print("Left AFP subshell.")
 
 
 def start_subcmd(aws_credentials, role, account):
@@ -130,7 +131,7 @@ def start_subcmd(aws_credentials, role, account):
     batch_file.close()
     subprocess.call(
         ["cmd", "/K", batch_file.name])
-    print "Left AFP subcmd."
+    print("Left AFP subcmd.")
     os.unlink(batch_file.name)
 
 
@@ -163,9 +164,9 @@ def get_aws_credentials(federation_client, account, role):
     except Exception:
         default_seconds = 3600
         msg = ("Failed to parse expiration date '{0}' for "
-               "AWS credentials, assuming {1} seconds.")
-        print >>sys.stderr, msg.format(
+               "AWS credentials, assuming {1} seconds.").format(
             aws_credentials['AWS_EXPIRATION_DATE'], default_seconds)
+        print(msg, file=sys.stderr)
         credentials_valid_until = (datetime.utcnow() +
                                    timedelta(seconds=default_seconds))
     valid_seconds = (credentials_valid_until - datetime.utcnow()).seconds
@@ -197,12 +198,12 @@ def main():
         if arguments['--show']:
             for key, value in aws_credentials.items():
                 if os.name is "nt":
-                    print "set {key}='{value}'".format(key=key, value=value)
+                    print("set {key}='{value}'".format(key=key, value=value))
                 else:
-                    print "{key}='{value}'".format(key=key, value=value)
+                    print("{key}='{value}'".format(key=key, value=value))
         else:
-            print "Entering AFP subshell for account {0}, role {1}.".format(
-                account, role)
+            print("Entering AFP subshell for account {0}, role {1}.".format(
+                account, role))
             try:
                 if os.name == "nt":
                     start_subcmd(aws_credentials=aws_credentials, role=role, account=account)
