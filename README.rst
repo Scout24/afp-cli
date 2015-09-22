@@ -1,7 +1,7 @@
-.. image:: https://travis-ci.org/ImmobilienScout24/YOUR_PROJECT_NAME.png?branch=master
+.. image:: https://travis-ci.org/ImmobilienScout24/afp-cli.png?branch=master
    :alt: Travis build status image
    :align: left
-   :target: https://travis-ci.org/ImmobilienScout24/YOUR_PROJECT_NAME
+   :target: https://travis-ci.org/ImmobilienScout24/afp-cli
 
 AFP CLI
 **************************
