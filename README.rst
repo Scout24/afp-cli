@@ -1,3 +1,8 @@
+.. image:: https://travis-ci.org/ImmobilienScout24/YOUR_PROJECT_NAME.png?branch=master
+   :alt: Travis build status image
+   :align: left
+   :target: https://travis-ci.org/ImmobilienScout24/YOUR_PROJECT_NAME
+
 AFP CLI
 **************************
 
