@@ -56,5 +56,5 @@ class AWSFederationClientCmd(object):
 
     def print_aws_credentials_with_export_style(self, account, role):
         """Print aws credentials for account and role as bash export command"""
-        for key, value in self.get_aws_credentials(account, role).iteritems():
+        for key, value in self.get_aws_credentials(account, role).items():
             print("export {0}={1}".format(key, value))
