@@ -69,14 +69,14 @@ def get_default_afp_server():
     try:
         addrinfos = socket.getaddrinfo("afp", 443,
                                        socket.AF_INET, socket.SOCK_STREAM)
-    except Exception, exc:
+    except Exception as exc:
         error("Could not resolve hostname 'afp': %s" % exc)
     addrinfo = random.choice(addrinfos)
     afp_server_ip = addrinfo[4][0]
 
     try:
         return socket.gethostbyaddr(afp_server_ip)[0]
-    except Exception, exc:
+    except Exception as exc:
         error("DNS reverse lookup failed for IP %s: %s" % (
             afp_server_ip, exc))
 
@@ -140,7 +140,7 @@ def get_role(arguments, federation_client, account):
     else:
         try:
             accounts_and_roles = federation_client.get_account_and_role_list()
-        except Exception, exc:
+        except Exception as exc:
             error("Failed to get account list from AWS: %s" % exc)
         try:
             return sorted(accounts_and_roles[account])[0]
@@ -153,7 +153,7 @@ def get_role(arguments, federation_client, account):
 def get_aws_credentials(federation_client, account, role):
     try:
         aws_credentials = federation_client.get_aws_credentials(account, role)
-    except Exception, exc:
+    except Exception as exc:
         error("Failed to get credentials from AWS: %s" % exc)
 
     try:
@@ -178,7 +178,7 @@ def main():
     arguments = docopt(__doc__)
     try:
         config = load_config()
-    except Exception, exc:
+    except Exception as exc:
         error("Failed to load configuration: %s" % exc)
 
     api_url = arguments['--api-url'] or config.get('api_url')
@@ -208,10 +208,10 @@ def main():
                     start_subcmd(aws_credentials=aws_credentials, role=role, account=account)
                 else:
                     start_subshell(aws_credentials=aws_credentials, role=role, account=account)
-            except Exception, exc:
+            except Exception as exc:
                 error("Failed to start subshell: %s" % exc)
     else:
         try:
             federation_client.print_account_and_role_list()
-        except Exception, exc:
+        except Exception as exc:
             error("Failed to get account list from AWS: %s" % exc)
