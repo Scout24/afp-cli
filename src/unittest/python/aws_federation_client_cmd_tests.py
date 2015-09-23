@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function, absolute_import, unicode_literals, division
 
-import six
 from mock import patch, Mock
 from unittest2 import TestCase
 from afp_cli import AWSFederationClientCmd

@@ -33,6 +33,7 @@ def set_properties(project):
     project.depends_on("requests")
     project.depends_on("docopt")
     project.set_property('flake8_include_test_sources', True)
+    project.set_property('flake8_break_build', True)
     project.set_property('copy_resources_target', '$dir_dist')
 
     project.set_property("distutils_classifiers", [
