@@ -200,7 +200,7 @@ def main():
                 if os.name is "nt":
                     print("set {key}='{value}'".format(key=key, value=value))
                 else:
-                    print("{key}='{value}'".format(key=key, value=value))
+                    print("export {key}='{value}'".format(key=key, value=value))
         else:
             print("Entering AFP subshell for account {0}, role {1}.".format(
                 account, role))
