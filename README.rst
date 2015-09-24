@@ -7,6 +7,11 @@ AFP CLI
    :align: left
    :target: https://travis-ci.org/ImmobilienScout24/afp-cli
 
+.. image:: https://img.shields.io/pypi/v/afp-cli.svg
+   :alt: Version
+   :align: left
+   :target: https://pypi.python.org/pypi/afp-cli
+
 Overview
 ========
 
