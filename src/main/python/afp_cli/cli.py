@@ -32,7 +32,7 @@ CFGDIR = '/etc/afp-cli'
 
 
 def error(message):
-    print >>sys.stderr, message
+    print(message, file=sys.stderr)
     sys.exit(1)
 
 
@@ -43,7 +43,7 @@ def get_user(username):
 
 def get_password(username):
     """Return password for the given user"""
-    return getpass.getpass("Password for {0}: ".format(username))
+    return getpass.getpass(b"Password for {0}: ".format(username))
 
 
 def load_config(global_config_dir=CFGDIR):
