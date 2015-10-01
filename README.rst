@@ -112,3 +112,23 @@ Specify the URL of the AFP server, overriding any config file:
 .. code-block:: console
 
     $ afp --api-url=https://yourhost/some/path
+
+Show and Export
+---------------
+
+In case you don't want to start a subshell or are using something other than
+bash, you can use ``--show`` or ``--export`` to display the credentials. You
+can use the usual UNIX tools to add/remove them from your environment. The
+following examples work in zsh:
+
+Adding credentials:
+
+.. code-block:: console
+
+   $ eval $(afp --export <rolename>)
+
+Removing the again
+
+.. code-block:: console
+
+    $ env | grep AWS | cut -f 1 -d'=' | while read line ; do ; unset $line ; done ;
