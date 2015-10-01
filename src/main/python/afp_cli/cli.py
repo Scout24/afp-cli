@@ -11,8 +11,8 @@ Options:
   --api-url=<api url>      The URL of the AFP server.
   --show                   Show credentials instead of opening subshell.
   --export                 Show credentials in an export suitable format.
-  <accountname>            The aws account id you want to login to.
-  <rolename>               The aws role you want to use for login. Defaults to the first role.
+  <accountname>            The AWS account id you want to login to.
+  <rolename>               The AWS role you want to use for login. Defaults to the first role.
 """
 
 from __future__ import print_function, absolute_import, unicode_literals, division
