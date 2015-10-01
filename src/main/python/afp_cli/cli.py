@@ -3,13 +3,14 @@ Command line client for the AFP (AWS Federation Proxy)
 
 Usage:
     afp [--user=<username>] [--api-url=<api url>]
-                              [--show] [(<accountname> [<rolename>])]
+                              [--show | --export ] [(<accountname> [<rolename>])]
 
 Options:
   -h --help                Show this
   --user=<username>        The user you want to use.
   --api-url=<api url>      The URL of the AFP server
   --show                   Show credentials instead of opening subshell
+  --export                 Show credentials in an export suitable format
   <accountname>            The aws account id you want to login to.
   <rolename>               The aws role you want to use for login. Defaults to the first role.
 """
@@ -197,10 +198,15 @@ def main():
 
         if arguments['--show']:
             for key, value in aws_credentials.items():
+                print("{key}='{value}'".format(key=key, value=value))
+
+        elif arguments['--export']:
+            for key, value in aws_credentials.items():
                 if os.name is "nt":
                     print("set {key}='{value}'".format(key=key, value=value))
                 else:
                     print("export {key}='{value}'".format(key=key, value=value))
+
         else:
             print("Entering AFP subshell for account {0}, role {1}.".format(
                 account, role))
