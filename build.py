@@ -10,7 +10,7 @@ use_plugin('copy_resources')
 use_plugin("filter_resources")
 
 name = 'afp-cli'
-summary = 'Command line client for aws federation proxy api'
+summary = 'Command line client for AWS federation proxy api'
 authors = [Author('Stefan Neben', "stefan.neben@immobilienscout24.de"),
            Author('Tobias Vollmer', "tobias.vollmer@immobilienscout24.de"),
            Author('Stefan Nordhausen', "stefan.nordhausen@immobilienscout24.de"),
