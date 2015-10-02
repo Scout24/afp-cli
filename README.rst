@@ -156,7 +156,7 @@ Adding credentials:
 
    $ eval $(afp --export <rolename>)
 
-Removing the again:
+Removing them again:
 
 .. code-block:: console
 
