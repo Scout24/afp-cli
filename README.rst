@@ -126,7 +126,7 @@ UNIX and ``set`` for Windows.
 
 .. code-block:: console
 
-   $ afp --show myrole
+   $ afp --show <myaccount> [<myrole>]
    Password for myuser:
    AWS_VALID_SECONDS='600'
    AWS_SESSION_TOKEN='XXX'
@@ -137,7 +137,7 @@ UNIX and ``set`` for Windows.
 
 .. code-block:: console
 
-   $ afp --export myrole
+   $ afp --export <myaccount> [<myrole>]
    Password for myuser:
    export AWS_VALID_SECONDS='600'
    export AWS_SESSION_TOKEN='XXX'
@@ -154,7 +154,7 @@ Adding credentials:
 
 .. code-block:: console
 
-   $ eval $(afp --export <rolename>)
+   $ eval $(afp --export <accountname>)
 
 Removing them again:
 
