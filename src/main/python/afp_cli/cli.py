@@ -202,7 +202,7 @@ def main():
 
         elif arguments['--export']:
             for key, value in aws_credentials.items():
-                if os.name is "nt":
+                if os.name == "nt":
                     print("set {key}='{value}'".format(key=key, value=value))
                 else:
                     print("export {key}='{value}'".format(key=key, value=value))
