@@ -29,7 +29,7 @@ import yamlreader
 
 from docopt import docopt
 from datetime import datetime, timedelta
-from afp_cli import AWSFederationClientCmd
+from afp_cli import AWSFederationClientCmd, print_aws_credentials
 
 CFGDIR = '/etc/afp-cli'
 DEBUG = False
@@ -210,15 +210,13 @@ def main():
         aws_credentials = get_aws_credentials(federation_client, account, role)
 
         if arguments['--show']:
-            for key, value in aws_credentials.items():
-                print("{key}='{value}'".format(key=key, value=value))
+            print_aws_credentials(aws_credentials)
 
         elif arguments['--export']:
-            for key, value in aws_credentials.items():
-                if os.name == "nt":
-                    print("set {key}='{value}'".format(key=key, value=value))
-                else:
-                    print("export {key}='{value}'".format(key=key, value=value))
+            if os.name == "nt":
+                print_aws_credentials(aws_credentials, prefix='set ')
+            else:
+                print_aws_credentials(aws_credentials, prefix='export ')
 
         else:
             print("Entering AFP subshell for account {0}, role {1}.".format(
