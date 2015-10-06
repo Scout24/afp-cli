@@ -6,11 +6,12 @@
   Command line client for the AFP (AWS Federation Proxy)
   
   Usage:
-      afp [--user=<username>] [--api-url=<api url>]
+      afp [--debug] [--user=<username>] [--api-url=<api url>]
                                 [--show | --export ] [(<accountname> [<rolename>])]
   
   Options:
     -h --help                Show this.
+    --debug                  Activate debug output.
     --user=<username>        The user you want to use.
     --api-url=<api url>      The URL of the AFP server.
     --show                   Show credentials instead of opening subshell.

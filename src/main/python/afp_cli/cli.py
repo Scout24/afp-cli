@@ -2,11 +2,12 @@
 Command line client for the AFP (AWS Federation Proxy)
 
 Usage:
-    afp [--user=<username>] [--api-url=<api url>]
+    afp [--debug] [--user=<username>] [--api-url=<api url>]
                               [--show | --export ] [(<accountname> [<rolename>])]
 
 Options:
   -h --help                Show this.
+  --debug                  Activate debug output.
   --user=<username>        The user you want to use.
   --api-url=<api url>      The URL of the AFP server.
   --show                   Show credentials instead of opening subshell.
@@ -30,11 +31,17 @@ from datetime import datetime, timedelta
 from afp_cli import AWSFederationClientCmd
 
 CFGDIR = '/etc/afp-cli'
+DEBUG = False
 
 
 def error(message):
     print(message, file=sys.stderr)
     sys.exit(1)
+
+
+def debug(message):
+    if DEBUG:
+        print(message)
 
 
 def get_user(username):
@@ -178,6 +185,11 @@ def get_aws_credentials(federation_client, account, role):
 def main():
     """Main function for script execution"""
     arguments = docopt(__doc__)
+    if arguments['--debug']:
+        global DEBUG
+        DEBUG = True
+    debug(arguments)
+
     try:
         config = load_config()
     except Exception as exc:
