@@ -41,29 +41,29 @@
 # Test failing to access AFP with debug
 
   $ afp --debug --no-ask-pw --api-url=http://localhost:5555
-  Failed to get account list from AWS: ('Connection aborted.', error(111, 'Connection refused'))
-  {u'--api-url': 'http://localhost:5555',
-   u'--debug': True,
-   u'--export': False,
-   u'--no-ask-pw': True,
-   u'--show': False,
-   u'--user': None,
-   u'<accountname>': None,
-   u'<rolename>': None}
+  Failed to get account list from AWS: .* (re)
+  {u?'--api-url': 'http://localhost:5555', (re)
+   u?'--debug': True, (re)
+   u?'--export': False, (re)
+   u?'--no-ask-pw': True, (re)
+   u?'--show': False, (re)
+   u?'--user': None, (re)
+   u?'<accountname>': None, (re)
+   u?'<rolename>': None} (re)
   [1]
 
 # Test failing to access AFP with debug and username
 
   $ afp --debug --no-ask-pw --api-url=http://localhost:5555 --user=test_user
-  Failed to get account list from AWS: ('Connection aborted.', error(111, 'Connection refused'))
-  {u'--api-url': 'http://localhost:5555',
-   u'--debug': True,
-   u'--export': False,
-   u'--no-ask-pw': True,
-   u'--show': False,
-   u'--user': 'test_user',
-   u'<accountname>': None,
-   u'<rolename>': None}
+  Failed to get account list from AWS: .* (re)
+  {u?'--api-url': 'http://localhost:5555', (re)
+   u?'--debug': True, (re)
+   u?'--export': False, (re)
+   u?'--no-ask-pw': True, (re)
+   u?'--show': False, (re)
+   u?'--user': 'test_user', (re)
+   u?'<accountname>': None, (re)
+   u?'<rolename>': None} (re)
   [1]
 
 # BEGIN mocking AFP
