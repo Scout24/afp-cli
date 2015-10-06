@@ -35,7 +35,7 @@
 # Test failing to access AFP
 
   $ afp --no-ask-pw --api-url=http://localhost:5555
-  Failed to get account list from AWS: ('Connection aborted.', error(111, 'Connection refused'))
+  Failed to get account list from AWS: .* (re)
   [1]
 
 # Test failing to access AFP with debug
