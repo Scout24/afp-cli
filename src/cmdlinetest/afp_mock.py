@@ -3,6 +3,7 @@ from bottle import route
 from bottledaemon import daemon_run
 from textwrap import dedent
 
+""" Simple AFP mock to allow testing the afp-cli. """
 
 @route('/account')
 def account():
