@@ -31,7 +31,10 @@ def set_properties(project):
     project.build_depends_on("mock")
     project.build_depends_on("six")
     project.build_depends_on("bottle")
-    project.build_depends_on("bottledaemon")
+    # BEGIN bottledaemon dependencies
+    project.build_depends_on("lockfile")
+    project.build_depends_on("python-daemon")
+    # END bottledaemon dependencies
     project.depends_on("yamlreader>=3.0.1")
     project.depends_on("requests")
     project.depends_on("docopt")
