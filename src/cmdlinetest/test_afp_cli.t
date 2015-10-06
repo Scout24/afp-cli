@@ -1,6 +1,12 @@
 #!/usr/bin/env cram
 # vim: set syntax=cram :
 
+# These are the cram tests for the afp-cli. Since the tool prompts for a
+# password and needs to connect to a server, both these things have to be
+# mocked away. As for the password, we use the '--no-ask-pw' flag which will
+# simply not prompt for a password. For the server, we included a minimal
+# bottle based AFP mock that only responds to two API endpoints.
+
   $ export PROJECT_ROOT=$TESTDIR/../../
   $ cp $TESTDIR/afp_mock.py .
   $ ls
