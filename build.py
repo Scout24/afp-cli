@@ -8,6 +8,7 @@ use_plugin("python.coverage")
 use_plugin("python.distutils")
 use_plugin('copy_resources')
 use_plugin("filter_resources")
+use_plugin('python.cram')
 
 name = 'afp-cli'
 summary = 'Command line client for AWS federation proxy api'
@@ -29,6 +30,11 @@ def set_properties(project):
     project.build_depends_on("unittest2")
     project.build_depends_on("mock")
     project.build_depends_on("six")
+    project.build_depends_on("bottle")
+    # BEGIN bottledaemon dependencies
+    project.build_depends_on("lockfile")
+    project.build_depends_on("python-daemon")
+    # END bottledaemon dependencies
     project.depends_on("yamlreader>=3.0.1")
     project.depends_on("requests")
     project.depends_on("docopt")

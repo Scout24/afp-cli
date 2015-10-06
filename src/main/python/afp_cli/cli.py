@@ -2,20 +2,22 @@
 Command line client for the AFP (AWS Federation Proxy)
 
 Usage:
-    afp [--user=<username>] [--api-url=<api url>]
+    afp [--debug] [--user=<username>] [--no-ask-pw] [--api-url=<api-url>]
                               [--show | --export ] [(<accountname> [<rolename>])]
 
 Options:
   -h --help                Show this.
+  --debug                  Activate debug output.
   --user=<username>        The user you want to use.
-  --api-url=<api url>      The URL of the AFP server.
+  --api-url=<api-url>      The URL of the AFP server.
   --show                   Show credentials instead of opening subshell.
   --export                 Show credentials in an export suitable format.
+  --no-ask-pw              Don't promt for password (for testing only).
   <accountname>            The AWS account id you want to login to.
   <rolename>               The AWS role you want to use for login. Defaults to the first role.
 """
 
-from __future__ import print_function, absolute_import, unicode_literals, division
+from __future__ import print_function, absolute_import, division
 import getpass
 import os
 import random
@@ -27,14 +29,20 @@ import yamlreader
 
 from docopt import docopt
 from datetime import datetime, timedelta
-from afp_cli import AWSFederationClientCmd
+from afp_cli import AWSFederationClientCmd, print_aws_credentials
 
 CFGDIR = '/etc/afp-cli'
+DEBUG = False
 
 
 def error(message):
     print(message, file=sys.stderr)
     sys.exit(1)
+
+
+def debug(message):
+    if DEBUG:
+        print(message)
 
 
 def get_user(username):
@@ -116,7 +124,7 @@ set AWS_SECURITY_TOKEN={AWS_SECURITY_TOKEN}
 
 def start_subshell(aws_credentials, role, account):
     print("Press CTRL+D to exit.")
-    rc_script = tempfile.NamedTemporaryFile()
+    rc_script = tempfile.NamedTemporaryFile(mode='w')
     rc_script.write(RC_SCRIPT_TEMPLATE.format(role=role, account=account, **aws_credentials))
     rc_script.flush()
     subprocess.call(
@@ -178,6 +186,11 @@ def get_aws_credentials(federation_client, account, role):
 def main():
     """Main function for script execution"""
     arguments = docopt(__doc__)
+    if arguments['--debug']:
+        global DEBUG
+        DEBUG = True
+    debug(arguments)
+
     try:
         config = load_config()
     except Exception as exc:
@@ -187,7 +200,7 @@ def main():
     if api_url is None:
         api_url = 'https://{fqdn}/afp-api/latest'.format(fqdn=get_default_afp_server())
     username = get_user(arguments['--user'] or config.get("user"))
-    password = get_password(username)
+    password = 'PASSWORD' if arguments['--no-ask-pw'] else get_password(username)
     federation_client = AWSFederationClientCmd(api_url=api_url,
                                                username=username,
                                                password=password)
@@ -197,15 +210,13 @@ def main():
         aws_credentials = get_aws_credentials(federation_client, account, role)
 
         if arguments['--show']:
-            for key, value in aws_credentials.items():
-                print("{key}='{value}'".format(key=key, value=value))
+            print_aws_credentials(aws_credentials)
 
         elif arguments['--export']:
-            for key, value in aws_credentials.items():
-                if os.name == "nt":
-                    print("set {key}='{value}'".format(key=key, value=value))
-                else:
-                    print("export {key}='{value}'".format(key=key, value=value))
+            if os.name == "nt":
+                print_aws_credentials(aws_credentials, prefix='set ')
+            else:
+                print_aws_credentials(aws_credentials, prefix='export ')
 
         else:
             print("Entering AFP subshell for account {0}, role {1}.".format(
