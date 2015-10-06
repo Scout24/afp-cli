@@ -3,6 +3,8 @@
 
   $ export PROJECT_ROOT=$TESTDIR/../../
   $ cp $TESTDIR/afp_mock.py .
+  $ ls
+  afp_mock.py
 
 # Test help
 
@@ -62,6 +64,10 @@
 
   $ ./afp_mock.py start
   $ sleep 1
+  $ ls bottle.*
+  bottle.log
+  bottle.pid
+  bottle.pid.lock
 
 # Test get account and role
 
@@ -109,3 +115,6 @@
 # END mocking AFP
 
   $ ./afp_mock.py stop
+  $ ls
+  afp_mock.py
+  bottle.log
