@@ -30,6 +30,21 @@
   Failed to get account list from AWS: ('Connection aborted.', error(111, 'Connection refused'))
   [1]
 
+# Test failing to access AFP with debug
+
+  $ afp --debug --no-ask-pw --api-url=http://localhost:5555 
+  Failed to get account list from AWS: ('Connection aborted.', error(111, 'Connection refused'))
+  {u'--api-url': 'http://localhost:5555',
+   u'--debug': True,
+   u'--export': False,
+   u'--no-ask-pw': True,
+   u'--show': False,
+   u'--user': None,
+   u'<accountname>': None,
+   u'<rolename>': None,
+   u'url>': False}
+  [1]
+
 # BEGIN mocking AFP
 
   $ ./afp_mock.py start
