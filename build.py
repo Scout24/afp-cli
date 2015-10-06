@@ -8,6 +8,7 @@ use_plugin("python.coverage")
 use_plugin("python.distutils")
 use_plugin('copy_resources')
 use_plugin("filter_resources")
+use_plugin('python.cram')
 
 name = 'afp-cli'
 summary = 'Command line client for AWS federation proxy api'
