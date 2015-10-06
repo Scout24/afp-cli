@@ -17,7 +17,7 @@ Options:
   <rolename>               The AWS role you want to use for login. Defaults to the first role.
 """
 
-from __future__ import print_function, absolute_import, unicode_literals, division
+from __future__ import print_function, absolute_import, division
 import getpass
 import os
 import random
@@ -124,7 +124,7 @@ set AWS_SECURITY_TOKEN={AWS_SECURITY_TOKEN}
 
 def start_subshell(aws_credentials, role, account):
     print("Press CTRL+D to exit.")
-    rc_script = tempfile.NamedTemporaryFile()
+    rc_script = tempfile.NamedTemporaryFile(mode='w')
     rc_script.write(RC_SCRIPT_TEMPLATE.format(role=role, account=account, **aws_credentials))
     rc_script.flush()
     subprocess.call(
