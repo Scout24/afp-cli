@@ -54,6 +54,7 @@ def set_properties(project):
          ])
 
     project.set_property('distutils_console_scripts', ['afp=afp_cli.cli:main'])
+    project.set_property('install_dependencies_upgrade', True)
 
 
 @init(environments='teamcity')
