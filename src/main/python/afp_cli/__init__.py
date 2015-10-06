@@ -4,4 +4,4 @@ from __future__ import print_function, absolute_import, unicode_literals, divisi
 
 from .client import AWSFederationClientCmd, print_aws_credentials
 
-__all__ = ['AWSFederationClientCmd']
+__all__ = ['AWSFederationClientCmd', 'print_aws_credentials']

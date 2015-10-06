@@ -62,4 +62,3 @@ class AWSFederationClientCmd(object):
         for account, roles in accounts_and_roles:
             role_string = ",".join(sorted(roles))
             print("{0:<20} {1}".format(account, role_string))
-
