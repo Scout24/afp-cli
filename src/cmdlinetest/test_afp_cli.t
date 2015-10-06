@@ -10,14 +10,14 @@
   Command line client for the AFP (AWS Federation Proxy)
   
   Usage:
-      afp [--debug] [--user=<username>] [--no-ask-pw] [--api-url=<api url>]
+      afp [--debug] [--user=<username>] [--no-ask-pw] [--api-url=<api-url>]
                                 [--show | --export ] [(<accountname> [<rolename>])]
   
   Options:
     -h --help                Show this.
     --debug                  Activate debug output.
     --user=<username>        The user you want to use.
-    --api-url=<api url>      The URL of the AFP server.
+    --api-url=<api-url>      The URL of the AFP server.
     --show                   Show credentials instead of opening subshell.
     --export                 Show credentials in an export suitable format.
     --no-ask-pw              Don't promt for password (for testing only).
@@ -26,13 +26,13 @@
 
 # Test failing to access AFP
 
-  $ afp --no-ask-pw --api-url=http://localhost:5555 
+  $ afp --no-ask-pw --api-url=http://localhost:5555
   Failed to get account list from AWS: ('Connection aborted.', error(111, 'Connection refused'))
   [1]
 
 # Test failing to access AFP with debug
 
-  $ afp --debug --no-ask-pw --api-url=http://localhost:5555 
+  $ afp --debug --no-ask-pw --api-url=http://localhost:5555
   Failed to get account list from AWS: ('Connection aborted.', error(111, 'Connection refused'))
   {u'--api-url': 'http://localhost:5555',
    u'--debug': True,
@@ -41,8 +41,7 @@
    u'--show': False,
    u'--user': None,
    u'<accountname>': None,
-   u'<rolename>': None,
-   u'url>': False}
+   u'<rolename>': None}
   [1]
 
 # BEGIN mocking AFP
