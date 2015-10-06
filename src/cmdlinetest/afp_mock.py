@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from bottle import route, run, response
+from bottle import route
 from bottledaemon import daemon_run
 from textwrap import dedent
 
@@ -18,6 +18,6 @@ def credentials(account, role):
                    "SecretAccessKey": "XXXXXXXXXXXX",
                    "Token": "XXXXXXXXXXXX",
                    "Expiration": "2032-01-01T00:00:00Z",
-                  "Type": "AWS-HMAC"}""").strip()
+                   "Type": "AWS-HMAC"}""").strip()
+
 daemon_run(host='localhost', port=5555)
-#run(host='localhost', port=5555)
