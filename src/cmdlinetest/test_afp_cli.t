@@ -108,5 +108,4 @@
 
 # END mocking AFP
 
-
   $ ./afp_mock.py stop
