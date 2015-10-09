@@ -1,0 +1,3 @@
+[report]
+# This part is tested by cram tests, which do not produce coverage info.
+omit = src/main/python/afp_cli/cli.py
