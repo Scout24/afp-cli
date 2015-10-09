@@ -6,6 +6,10 @@ AFP CLI
    :alt: Travis build status image
    :target: https://travis-ci.org/ImmobilienScout24/afp-cli
 
+.. image:: https://coveralls.io/repos/ImmobilienScout24/afp-cli/badge.png?branch=master
+    :alt: Coverage status
+    :target: https://coveralls.io/r/ImmobilienScout24/afp-cli?branch=master
+
 .. image:: https://img.shields.io/pypi/v/afp-cli.svg
    :alt: Version
    :target: https://pypi.python.org/pypi/afp-cli
