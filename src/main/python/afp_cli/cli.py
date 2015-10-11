@@ -3,7 +3,7 @@ Command line client for the AFP (AWS Federation Proxy)
 
 Usage:
     afp [--debug] [--user=<username>] [--no-ask-pw] [--api-url=<api-url>]
-                              [--show | --export ] [(<accountname> [<rolename>])]
+                              [--show | --export | --write-credentials] [(<accountname> [<rolename>])]
 
 Options:
   -h --help                Show this.
@@ -12,6 +12,7 @@ Options:
   --api-url=<api-url>      The URL of the AFP server.
   --show                   Show credentials instead of opening subshell.
   --export                 Show credentials in an export suitable format.
+  --write-credentials      Write credentials to aws credentials file.
   --no-ask-pw              Don't promt for password (for testing only).
   <accountname>            The AWS account id you want to login to.
   <rolename>               The AWS role you want to use for login. Defaults to the first role.
@@ -29,7 +30,7 @@ import yamlreader
 
 from docopt import docopt
 from datetime import datetime, timedelta
-from afp_cli import AWSFederationClientCmd, print_aws_credentials
+from afp_cli import AWSFederationClientCmd, print_aws_credentials, aws_credentials_file
 
 CFGDIR = '/etc/afp-cli'
 DEBUG = False
@@ -217,7 +218,8 @@ def main():
                 print_aws_credentials(aws_credentials, prefix='set ')
             else:
                 print_aws_credentials(aws_credentials, prefix='export ')
-
+        elif arguments['--write-credentials']:
+            aws_credentials_file.write(aws_credentials)
         else:
             print("Entering AFP subshell for account {0}, role {1}.".format(
                 account, role))

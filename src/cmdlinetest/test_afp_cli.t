@@ -19,7 +19,7 @@
   
   Usage:
       afp [--debug] [--user=<username>] [--no-ask-pw] [--api-url=<api-url>]
-                                [--show | --export ] [(<accountname> [<rolename>])]
+                                [--show | --export | --write-credentials] [(<accountname> [<rolename>])]
   
   Options:
     -h --help                Show this.
@@ -28,6 +28,7 @@
     --api-url=<api-url>      The URL of the AFP server.
     --show                   Show credentials instead of opening subshell.
     --export                 Show credentials in an export suitable format.
+    --write-credentials      Write credentials to aws credentials file.
     --no-ask-pw              Don't promt for password (for testing only).
     <accountname>            The AWS account id you want to login to.
     <rolename>               The AWS role you want to use for login. Defaults to the first role.
