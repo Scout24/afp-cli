@@ -165,3 +165,14 @@ Removing them again:
 .. code-block:: console
 
     $ env | grep AWS | cut -f 1 -d'=' | while read line ; do ; unset $line ; done ;
+
+Write to AWS Credentials File
+-----------------------------
+
+The AWS Tools reads credentials specified with aws configure in a local file named
+credentials in a folder named .aws in your home directory. The afp-cli Tool can write
+your temporary credentials to this file.
+
+.. code-block:: console
+
+   $ afp --write-credentials <myaccount> [<myrole>]
