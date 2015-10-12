@@ -3,7 +3,7 @@
 import ConfigParser
 import os
 
-def write(aws_credentials, filename=None, profile_name='default'):
+def write(aws_credentials, profile_name='default', filename=None):
 
     # WTF
     ORIG_DEFAULTSECT = ConfigParser.DEFAULTSECT

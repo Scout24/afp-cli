@@ -49,6 +49,7 @@
    u?'--no-ask-pw': True, (re)
    u?'--show': False, (re)
    u?'--user': None, (re)
+   '--write-credentials': False,
    u?'<accountname>': None, (re)
    u?'<rolename>': None} (re)
   [1]
@@ -63,6 +64,7 @@
    u?'--no-ask-pw': True, (re)
    u?'--show': False, (re)
    u?'--user': 'test_user', (re)
+   '--write-credentials': False,
    u?'<accountname>': None, (re)
    u?'<rolename>': None} (re)
   [1]
@@ -118,6 +120,17 @@
   export AWS_SECURITY_TOKEN='XXXXXXXXXXXX'
   export AWS_SESSION_TOKEN='XXXXXXXXXXXX'
   export AWS_VALID_SECONDS='.*' (re)
+
+# Test write credentials to file
+
+  $ export HOME=$CRAMTMP
+  $ afp --no-ask-pw --api-url=http://localhost:5555 --write-credentials test_account test_role
+  $ cat $HOME/.aws/credentials
+  [default]
+  aws_access_key_id = XXXXXXXXXXXX
+  aws_secret_access_key = XXXXXXXXXXXX
+  aws_session_token = XXXXXXXXXXXX
+  * (glob)
 
 # END mocking AFP
 
