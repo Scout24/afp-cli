@@ -81,7 +81,7 @@ class AwsCredentialsFileTest(TestCase):
             'AWS_SESSION_TOKEN': 'Token',
             'AWS_SECURITY_TOKEN': 'Token',
             'AWS_EXPIRATION_DATE': 'Expiration'
-        }, 'profile', credentials_filename)
+        }, credentials_filename, 'profile')
 
         self.assertEqual(open(credentials_filename).read(), (
             '[profile]\n'
@@ -111,7 +111,7 @@ class AwsCredentialsFileTest(TestCase):
             'AWS_SESSION_TOKEN': 'Token',
             'AWS_SECURITY_TOKEN': 'Token',
             'AWS_EXPIRATION_DATE': 'Expiration'
-        }, 'new-profile', credentials_filename)
+        }, credentials_filename, 'new-profile')
 
         self.assertEqual(open(credentials_filename).read(), (
             '[default]\n'
@@ -149,7 +149,7 @@ class AwsCredentialsFileTest(TestCase):
             'AWS_SESSION_TOKEN': 'Token',
             'AWS_SECURITY_TOKEN': 'Token',
             'AWS_EXPIRATION_DATE': 'Expiration'
-        }, 'profile-to-overwrite', credentials_filename)
+        }, credentials_filename, 'profile-to-overwrite')
 
         self.assertEqual(open(credentials_filename).read(), (
             '[default]\n'
