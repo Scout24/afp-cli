@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import ConfigParser
+from six.moves import configparser
 import os
 
 def write(aws_credentials, filename=None, profile_name='default'):
 
     # WTF
-    ORIG_DEFAULTSECT = ConfigParser.DEFAULTSECT
-    ConfigParser.DEFAULTSECT = 'default'
+    ORIG_DEFAULTSECT = configparser.DEFAULTSECT
+    configparser.DEFAULTSECT = 'default'
 
     try:
 
@@ -17,7 +17,7 @@ def write(aws_credentials, filename=None, profile_name='default'):
         if not os.path.exists(os.path.dirname(filename)):
             os.makedirs(os.path.dirname(filename))
 
-        config = ConfigParser.RawConfigParser()
+        config = configparser.RawConfigParser()
         config.read(filename)
 
         if not config.has_section(profile_name) and profile_name.lower() != 'default':
@@ -31,4 +31,4 @@ def write(aws_credentials, filename=None, profile_name='default'):
                 config.write(config_file)
 
     finally:
-        ConfigParser.DEFAULTSECT = ORIG_DEFAULTSECT
+        configparser.DEFAULTSECT = ORIG_DEFAULTSECT
