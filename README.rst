@@ -175,4 +175,4 @@ your temporary credentials to this file.
 
 .. code-block:: console
 
-   $ afp --write-credentials <myaccount> [<myrole>]
+   $ afp --write <myaccount> [<myrole>]

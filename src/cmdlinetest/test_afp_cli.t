@@ -19,7 +19,7 @@
   
   Usage:
       afp [--debug] [--user=<username>] [--no-ask-pw] [--api-url=<api-url>]
-                                [--show | --export | --write-credentials] [(<accountname> [<rolename>])]
+                                [--show | --export | --write] [(<accountname> [<rolename>])]
   
   Options:
     -h --help                Show this.
@@ -28,7 +28,7 @@
     --api-url=<api-url>      The URL of the AFP server.
     --show                   Show credentials instead of opening subshell.
     --export                 Show credentials in an export suitable format.
-    --write-credentials      Write credentials to aws credentials file.
+    --write                  Write credentials to aws credentials file.
     --no-ask-pw              Don't promt for password (for testing only).
     <accountname>            The AWS account id you want to login to.
     <rolename>               The AWS role you want to use for login. Defaults to the first role.
@@ -49,7 +49,7 @@
    u?'--no-ask-pw': True, (re)
    u?'--show': False, (re)
    u?'--user': None, (re)
-   '--write-credentials': False,
+   '--write': False,
    u?'<accountname>': None, (re)
    u?'<rolename>': None} (re)
   [1]
@@ -64,7 +64,7 @@
    u?'--no-ask-pw': True, (re)
    u?'--show': False, (re)
    u?'--user': 'test_user', (re)
-   '--write-credentials': False,
+   '--write': False,
    u?'<accountname>': None, (re)
    u?'<rolename>': None} (re)
   [1]
@@ -124,7 +124,7 @@
 # Test write credentials to file
 
   $ export HOME=$CRAMTMP
-  $ afp --no-ask-pw --api-url=http://localhost:5555 --write-credentials test_account test_role
+  $ afp --no-ask-pw --api-url=http://localhost:5555 --write test_account test_role
   $ cat $HOME/.aws/credentials
   [default]
   aws_access_key_id = XXXXXXXXXXXX
