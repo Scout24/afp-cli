@@ -49,7 +49,7 @@
    u?'--no-ask-pw': True, (re)
    u?'--show': False, (re)
    u?'--user': None, (re)
-   '--write': False,
+   u?'--write': False, (re)
    u?'<accountname>': None, (re)
    u?'<rolename>': None} (re)
   [1]
@@ -64,7 +64,7 @@
    u?'--no-ask-pw': True, (re)
    u?'--show': False, (re)
    u?'--user': 'test_user', (re)
-   '--write': False,
+   u?'--write': False, (re)
    u?'<accountname>': None, (re)
    u?'<rolename>': None} (re)
   [1]
