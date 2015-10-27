@@ -29,7 +29,7 @@
     --show                   Show credentials instead of opening subshell.
     --export                 Show credentials in an export suitable format.
     --write                  Write credentials to aws credentials file.
-    --no-ask-pw              Don't promt for password (for testing only).
+    --no-ask-pw              Don't prompt for password (for testing only).
     <accountname>            The AWS account id you want to login to.
     <rolename>               The AWS role you want to use for login. Defaults to the first role.
 
