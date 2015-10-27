@@ -6,6 +6,7 @@ from afp_cli import aws_credentials_file
 import tempfile
 import shutil
 
+
 class AwsCredentialsFileTest(TestCase):
     def setUp(self):
         self.tempdir = tempfile.mkdtemp()

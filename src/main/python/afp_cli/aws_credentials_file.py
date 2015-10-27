@@ -4,6 +4,7 @@ from six.moves import configparser
 import os
 import six
 
+
 def write(aws_credentials, filename=None, profile_name='default'):
 
     if six.PY2:
