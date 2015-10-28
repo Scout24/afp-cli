@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from six.moves import configparser
+from collections import OrderedDict
 import os
 import six
 
@@ -20,7 +21,7 @@ def write(aws_credentials, filename=None, profile_name='default'):
         if not os.path.exists(os.path.dirname(filename)):
             os.makedirs(os.path.dirname(filename))
 
-        config = configparser.RawConfigParser()
+        config = configparser.RawConfigParser(dict_type=OrderedDict)
         config.read(filename)
 
         if not config.has_section(profile_name) and (profile_name.lower() != 'default' or six.PY3):
