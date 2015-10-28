@@ -39,6 +39,7 @@ The following configuration options are supported:
 * ``api_url: <api-url>``
   Defaults to lookup a FQDN of a host named **afp** via DNS and construct
   the server url from it: ``https://{FQDN}/afp-api/latest``
+  The specified url must contain full server url (not just the FQDN).
 * ``user: <username>``
   Defaults to the currently logged in username
 
@@ -115,7 +116,7 @@ Specify the URL of the AFP server, overriding any config file:
 
 .. code-block:: console
 
-    $ afp --api-url=https://yourhost/some/path
+    $ afp --api-url=https://afp-server.my.domain/afp-api/latest
 
 Show and Export
 ---------------
