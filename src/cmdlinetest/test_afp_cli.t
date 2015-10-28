@@ -130,6 +130,7 @@
   aws_access_key_id = XXXXXXXXXXXX
   aws_secret_access_key = XXXXXXXXXXXX
   aws_session_token = XXXXXXXXXXXX
+  aws_security_token = XXXXXXXXXXXX
   * (glob)
 
 # END mocking AFP
