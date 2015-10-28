@@ -1,3 +1,5 @@
+import sys
+
 from pybuilder.core import use_plugin, init, Author
 
 use_plugin("python.core")
@@ -32,6 +34,8 @@ def set_properties(project):
     project.build_depends_on("six")
     project.build_depends_on("bottle")
     project.build_depends_on("BottleDaemon")
+    if sys.version_info[0:2] < (2, 7):
+        project.depends_on("ordereddict")
     project.depends_on("yamlreader>=3.0.1")
     project.depends_on("requests")
     project.depends_on("docopt")

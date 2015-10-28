@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from six.moves import configparser
-from collections import OrderedDict
+from afp_cli.compat import OrderedDict
 import os
 import six
 
