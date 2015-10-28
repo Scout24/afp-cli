@@ -9,7 +9,7 @@ Options:
   -h --help                Show this.
   --debug                  Activate debug output.
   --user=<username>        The user you want to use.
-  --api-url=<api-url>      The URL of the AFP server (e.g. https://afp.rz.is/afp-api/latest).
+  --api-url=<api-url>      The URL of the AFP server (e.g. https://afp/afp-api/latest).
   --show                   Show credentials instead of opening subshell.
   --export                 Show credentials in an export suitable format.
   --write                  Write credentials to aws credentials file.
