@@ -28,7 +28,8 @@ class AwsCredentialsFileTest(TestCase):
             '[default]\n'
             'aws_access_key_id = AccessKeyId\n'
             'aws_secret_access_key = SecretAccessKey\n'
-            'aws_session_token = Token\n\n'
+            'aws_session_token = Token\n'
+            'aws_security_token = Token\n\n'
         ))
 
     def test_write_default_profile_to_new_file_in_not_existing_directory(self):
@@ -45,7 +46,8 @@ class AwsCredentialsFileTest(TestCase):
             '[default]\n'
             'aws_access_key_id = AccessKeyId\n'
             'aws_secret_access_key = SecretAccessKey\n'
-            'aws_session_token = Token\n\n'
+            'aws_session_token = Token\n'
+            'aws_security_token = Token\n\n'
         ))
 
     def test_overwrite_default_profile(self):
@@ -56,7 +58,8 @@ class AwsCredentialsFileTest(TestCase):
                 '[default]\n'
                 'aws_access_key_id = AccessKeyIdToOverwrite\n'
                 'aws_secret_access_key = SecretAccessKeyToOverwrite\n'
-                'aws_session_token = TokenToOverwrite\n\n'
+                'aws_session_token = TokenToOverwrite\n'
+                'aws_security_token = TokenToOverwrite\n\n'
             ))
 
         aws_credentials_file.write({
@@ -71,7 +74,8 @@ class AwsCredentialsFileTest(TestCase):
             '[default]\n'
             'aws_access_key_id = AccessKeyId\n'
             'aws_secret_access_key = SecretAccessKey\n'
-            'aws_session_token = Token\n\n'
+            'aws_session_token = Token\n'
+            'aws_security_token = Token\n\n'
         ))
 
     def test_write_profile_to_new_file(self):
@@ -88,7 +92,8 @@ class AwsCredentialsFileTest(TestCase):
             '[profile]\n'
             'aws_access_key_id = AccessKeyId\n'
             'aws_secret_access_key = SecretAccessKey\n'
-            'aws_session_token = Token\n\n'
+            'aws_session_token = Token\n'
+            'aws_security_token = Token\n\n'
         ))
 
     def test_add_profile(self):
@@ -99,11 +104,13 @@ class AwsCredentialsFileTest(TestCase):
                 '[default]\n'
                 'aws_access_key_id = defaultAccessKeyId\n'
                 'aws_secret_access_key = defaultSecretAccessKey\n'
-                'aws_session_token = defaultToken\n\n'
+                'aws_session_token = defaultToken\n'
+                'aws_security_token = defaultToken\n\n'
                 '[profile]\n'
                 'aws_access_key_id = profileAccessKeyId\n'
                 'aws_secret_access_key = profileSecretAccessKey\n'
-                'aws_session_token = profileToken\n\n'
+                'aws_session_token = profileToken\n'
+                'aws_security_token = profileToken\n\n'
             ))
 
         aws_credentials_file.write({
@@ -118,15 +125,18 @@ class AwsCredentialsFileTest(TestCase):
             '[default]\n'
             'aws_access_key_id = defaultAccessKeyId\n'
             'aws_secret_access_key = defaultSecretAccessKey\n'
-            'aws_session_token = defaultToken\n\n'
+            'aws_session_token = defaultToken\n'
+            'aws_security_token = defaultToken\n\n'
             '[profile]\n'
             'aws_access_key_id = profileAccessKeyId\n'
             'aws_secret_access_key = profileSecretAccessKey\n'
-            'aws_session_token = profileToken\n\n'
+            'aws_session_token = profileToken\n'
+            'aws_security_token = profileToken\n\n'
             '[new-profile]\n'
             'aws_access_key_id = AccessKeyId\n'
             'aws_secret_access_key = SecretAccessKey\n'
-            'aws_session_token = Token\n\n'
+            'aws_session_token = Token\n'
+            'aws_security_token = Token\n\n'
         ))
 
     def test_overwrite_profile(self):
@@ -137,11 +147,13 @@ class AwsCredentialsFileTest(TestCase):
                 '[default]\n'
                 'aws_access_key_id = defaultAccessKeyId\n'
                 'aws_secret_access_key = defaultSecretAccessKey\n'
-                'aws_session_token = defaultToken\n\n'
+                'aws_session_token = defaultToken\n'
+                'aws_security_token = defaultToken\n\n'
                 '[profile-to-overwrite]\n'
                 'aws_access_key_id = profileAccessKeyIdToOverwrite\n'
                 'aws_secret_access_key = profileSecretAccessKeyToOverwrite\n'
-                'aws_session_token = profileTokenToOverwrite\n\n'
+                'aws_session_token = profileTokenToOverwrite\n'
+                'aws_security_token = profileTokenToOverwrite\n\n'
             ))
 
         aws_credentials_file.write({
@@ -156,9 +168,11 @@ class AwsCredentialsFileTest(TestCase):
             '[default]\n'
             'aws_access_key_id = defaultAccessKeyId\n'
             'aws_secret_access_key = defaultSecretAccessKey\n'
-            'aws_session_token = defaultToken\n\n'
+            'aws_session_token = defaultToken\n'
+            'aws_security_token = defaultToken\n\n'
             '[profile-to-overwrite]\n'
             'aws_access_key_id = AccessKeyId\n'
             'aws_secret_access_key = SecretAccessKey\n'
-            'aws_session_token = Token\n\n'
+            'aws_session_token = Token\n'
+            'aws_security_token = Token\n\n'
         ))
