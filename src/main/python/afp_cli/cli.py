@@ -20,18 +20,17 @@ Options:
 
 from __future__ import print_function, absolute_import, division
 import getpass
+import os
 import random
 import socket
 import subprocess
 import sys
 import tempfile
-
-import os
 import yamlreader
+
 from docopt import docopt
 from afp_cli import AWSFederationClientCmd, aws_credentials_file
 import afp_cli.cli_functions as cli
-
 
 CFGDIR = '/etc/afp-cli'
 DEBUG = False
