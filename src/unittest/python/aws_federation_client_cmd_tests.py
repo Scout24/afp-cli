@@ -4,7 +4,7 @@ from __future__ import print_function, absolute_import, unicode_literals, divisi
 
 from mock import patch, Mock
 from unittest2 import TestCase
-from afp_cli import AWSFederationClientCmd, print_aws_credentials
+from afp_cli import AWSFederationClientCmd
 
 
 class AWSFederationClientCmdTest(TestCase):
@@ -53,13 +53,3 @@ class AWSFederationClientCmdTest(TestCase):
         mock_get_account_and_role_list.return_value = expected_result
         self.api_client.print_account_and_role_list()
         mock_print.assert_called_with("testaccount2         testrole1,testrole2")
-
-    @patch("six.moves.builtins.print")
-    def test_print_aws_credentials_with_export_style_with_correct_format(self, mock_print):
-        input_ = {"AWS_ACCESS_KEY_ID": "testAccessKey"}
-        print_aws_credentials(input_)
-        mock_print.assert_called_with("AWS_ACCESS_KEY_ID='testAccessKey'")
-        print_aws_credentials(input_, prefix='export ')
-        mock_print.assert_called_with("export AWS_ACCESS_KEY_ID='testAccessKey'")
-        print_aws_credentials(input_, prefix='set ')
-        mock_print.assert_called_with("set AWS_ACCESS_KEY_ID='testAccessKey'")

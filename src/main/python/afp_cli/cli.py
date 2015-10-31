@@ -20,17 +20,17 @@ Options:
 
 from __future__ import print_function, absolute_import, division
 import getpass
-import os
 import random
 import socket
 import subprocess
 import sys
 import tempfile
-import yamlreader
+from datetime import datetime
 
+import os
+import yamlreader
 from docopt import docopt
-from datetime import datetime, timedelta
-from afp_cli import AWSFederationClientCmd, print_aws_credentials, aws_credentials_file
+from afp_cli import AWSFederationClientCmd, aws_credentials_file
 
 CFGDIR = '/etc/afp-cli'
 DEBUG = False
@@ -44,11 +44,6 @@ def error(message):
 def debug(message):
     if DEBUG:
         print(message)
-
-
-def get_user(username):
-    """Check if we have a given user, else take the current one"""
-    return username or getpass.getuser()
 
 
 def get_password(username):
@@ -106,27 +101,19 @@ function afp_minutes_left {{
 }}
 
 PS1="(AWS {account}/{role} \\$(afp_minutes_left)) $PS1"
-export AWS_ACCESS_KEY_ID={AWS_ACCESS_KEY_ID}
-export AWS_SECRET_ACCESS_KEY={AWS_SECRET_ACCESS_KEY}
-export AWS_SESSION_TOKEN={AWS_SESSION_TOKEN}
-export AWS_SECURITY_TOKEN={AWS_SECURITY_TOKEN}
 """
 
 BATCH_FILE_TEMPLATE = """
 @echo off
 set PROMPT=$C AWS {account}/{role} $F
-
-set AWS_ACCESS_KEY_ID={AWS_ACCESS_KEY_ID}
-set AWS_SECRET_ACCESS_KEY={AWS_SECRET_ACCESS_KEY}
-set AWS_SESSION_TOKEN={AWS_SESSION_TOKEN}
-set AWS_SECURITY_TOKEN={AWS_SECURITY_TOKEN}
 """
 
 
 def start_subshell(aws_credentials, role, account):
     print("Press CTRL+D to exit.")
     rc_script = tempfile.NamedTemporaryFile(mode='w')
-    rc_script.write(RC_SCRIPT_TEMPLATE.format(role=role, account=account, **aws_credentials))
+    rc_script.write(RC_SCRIPT_TEMPLATE.format(role=role, account=account))
+    rc_script.write(format_aws_credentials(aws_credentials, prefix='export '))
     rc_script.flush()
     subprocess.call(
         ["bash", "--rcfile", rc_script.name],
@@ -136,7 +123,8 @@ def start_subshell(aws_credentials, role, account):
 
 def start_subcmd(aws_credentials, role, account):
     batch_file = tempfile.NamedTemporaryFile(suffix=".bat", delete=False)
-    batch_file.write(BATCH_FILE_TEMPLATE.format(role=role, account=account, **aws_credentials))
+    batch_file.write(BATCH_FILE_TEMPLATE.format(role=role, account=account))
+    batch_file.write(format_aws_credentials(aws_credentials, prefix='set '))
     batch_file.flush()
     batch_file.close()
     subprocess.call(
@@ -161,27 +149,34 @@ def get_role(arguments, federation_client, account):
             error("Could not find any role for account %s" % account)
 
 
+def get_valid_seconds(aws_expiration_date, utcnow=datetime.utcnow()):
+    try:
+        credentials_valid_until = datetime.strptime(aws_expiration_date, "%Y-%m-%dT%H:%M:%SZ", )
+        return (credentials_valid_until - utcnow).seconds
+    except Exception:
+        default_seconds = 3600
+        msg = "Failed to parse expiration date '{0}' for AWS credentials, assuming {1} seconds.".format(
+            aws_expiration_date, default_seconds)
+        print(msg, file=sys.stderr)
+        return default_seconds
+
+
 def get_aws_credentials(federation_client, account, role):
     try:
         aws_credentials = federation_client.get_aws_credentials(account, role)
     except Exception as exc:
         error("Failed to get credentials from AWS: %s" % exc)
 
-    try:
-        credentials_valid_until = datetime.strptime(
-            aws_credentials['AWS_EXPIRATION_DATE'],
-            "%Y-%m-%dT%H:%M:%SZ",)
-    except Exception:
-        default_seconds = 3600
-        msg = ("Failed to parse expiration date '{0}' for "
-               "AWS credentials, assuming {1} seconds.").format(
-            aws_credentials['AWS_EXPIRATION_DATE'], default_seconds)
-        print(msg, file=sys.stderr)
-        credentials_valid_until = (datetime.utcnow() +
-                                   timedelta(seconds=default_seconds))
-    valid_seconds = (credentials_valid_until - datetime.utcnow()).seconds
-    aws_credentials['AWS_VALID_SECONDS'] = valid_seconds
+    aws_credentials['AWS_VALID_SECONDS'] = get_valid_seconds(aws_credentials['AWS_EXPIRATION_DATE'])
+    aws_credentials['AWS_ACCOUNT_NAME'] = account
+    aws_credentials['AWS_ASSUMED_ROLE'] = role
     return aws_credentials
+
+
+def format_aws_credentials(credentials, prefix=''):
+    """Format aws credentials with optional prefix"""
+    return os.linesep.join(["{0}{1}='{2}'".format(prefix, key, value)
+                            for (key, value) in sorted(credentials.items())])
 
 
 def main():
@@ -200,7 +195,7 @@ def main():
     api_url = arguments['--api-url'] or config.get('api_url')
     if api_url is None:
         api_url = 'https://{fqdn}/afp-api/latest'.format(fqdn=get_default_afp_server())
-    username = get_user(arguments['--user'] or config.get("user"))
+    username = arguments['--user'] or config.get("user") or getpass.getuser()
     password = 'PASSWORD' if arguments['--no-ask-pw'] else get_password(username)
     federation_client = AWSFederationClientCmd(api_url=api_url,
                                                username=username,
@@ -211,13 +206,13 @@ def main():
         aws_credentials = get_aws_credentials(federation_client, account, role)
 
         if arguments['--show']:
-            print_aws_credentials(aws_credentials)
+            print(format_aws_credentials(aws_credentials))
 
         elif arguments['--export']:
             if os.name == "nt":
-                print_aws_credentials(aws_credentials, prefix='set ')
+                print(format_aws_credentials(aws_credentials, prefix='set '))
             else:
-                print_aws_credentials(aws_credentials, prefix='export ')
+                print(format_aws_credentials(aws_credentials, prefix='export '))
         elif arguments['--write']:
             aws_credentials_file.write(aws_credentials)
         else:

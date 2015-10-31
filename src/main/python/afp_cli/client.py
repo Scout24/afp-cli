@@ -7,12 +7,6 @@ import json
 from requests.auth import HTTPBasicAuth
 
 
-def print_aws_credentials(credentials, prefix=''):
-    """Print aws credentials with optional prefix"""
-    for key, value in sorted(credentials.items()):
-        print("{0}{1}='{2}'".format(prefix, key, value))
-
-
 class AWSFederationClientCmd(object):
     """Class for a command line client which uses the afp api"""
 
