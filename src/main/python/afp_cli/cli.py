@@ -179,6 +179,11 @@ def format_aws_credentials(credentials, prefix=''):
                             for (key, value) in sorted(credentials.items())])
 
 
+def format_account_and_role_list(account_and_role_list):
+    return os.linesep.join(["{0:<20} {1}".format(account, ",".join(sorted(roles)))
+                            for account, roles in sorted(account_and_role_list.items())])
+
+
 def main():
     """Main function for script execution"""
     arguments = docopt(__doc__)
@@ -227,6 +232,6 @@ def main():
                 error("Failed to start subshell: %s" % exc)
     else:
         try:
-            federation_client.print_account_and_role_list()
+            print(format_account_and_role_list(federation_client.get_account_and_role_list()))
         except Exception as exc:
             error("Failed to get account list from AWS: %s" % exc)

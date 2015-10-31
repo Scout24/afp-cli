@@ -49,10 +49,3 @@ class AWSFederationClientCmd(object):
                 'AWS_SESSION_TOKEN': aws_credentials['Token'],
                 'AWS_SECURITY_TOKEN': aws_credentials['Token'],
                 'AWS_EXPIRATION_DATE': aws_credentials['Expiration']}
-
-    def print_account_and_role_list(self):
-        """Print account and role list to stdout"""
-        accounts_and_roles = sorted(self.get_account_and_role_list().items())
-        for account, roles in accounts_and_roles:
-            role_string = ",".join(sorted(roles))
-            print("{0:<20} {1}".format(account, role_string))

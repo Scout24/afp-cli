@@ -34,3 +34,11 @@ class CliFunctionsTest(TestCase):
     def test_get_valid_seconds(self):
         self.assertEqual(cli.get_valid_seconds('2016-08-16T07:45:00Z', datetime(2016, 8, 16, hour=7, minute=15)),
                          30*60)
+
+    def test_format_account_and_one_role(self):
+        self.assertEqual(cli.format_account_and_role_list({"testaccount1": ["testrole1"]}),
+                         "testaccount1         testrole1")
+
+    def test_format_account_and_two_roles(self):
+        self.assertEqual(cli.format_account_and_role_list({"testaccount2": ["testrole1", "testrole2"]}),
+                         "testaccount2         testrole1,testrole2")
