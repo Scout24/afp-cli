@@ -37,4 +37,3 @@ class AWSFederationClientCmdTest(TestCase):
                                   "AWS_SECURITY_TOKEN": "testToken",
                                   "AWS_EXPIRATION_DATE": "2015-01-01T12:34:56Z"},
                          msg='Should be the same')
-
