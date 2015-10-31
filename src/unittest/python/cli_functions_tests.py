@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from unittest2 import TestCase
-from afp_cli import cli
+import afp_cli.cli_functions as cli
 from datetime import datetime
 
 
