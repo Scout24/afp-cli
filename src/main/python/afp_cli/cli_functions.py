@@ -1,11 +1,11 @@
 from __future__ import print_function
 
+from datetime import datetime
 import os
 import sys
-from datetime import datetime
 
 
-def get_valid_seconds(aws_expiration_date, utcnow=datetime.utcnow()):
+def get_valid_seconds(aws_expiration_date, utcnow):
     try:
         credentials_valid_until = datetime.strptime(aws_expiration_date, "%Y-%m-%dT%H:%M:%SZ", )
         return (credentials_valid_until - utcnow).seconds

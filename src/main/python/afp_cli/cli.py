@@ -19,6 +19,7 @@ Options:
 """
 
 from __future__ import print_function, absolute_import, division
+from datetime import datetime
 import getpass
 import os
 import random
@@ -153,7 +154,8 @@ def get_aws_credentials(federation_client, account, role):
     except Exception as exc:
         error("Failed to get credentials from AWS: %s" % exc)
 
-    aws_credentials['AWS_VALID_SECONDS'] = cli.get_valid_seconds(aws_credentials['AWS_EXPIRATION_DATE'])
+    aws_credentials['AWS_VALID_SECONDS'] = cli.get_valid_seconds(aws_credentials['AWS_EXPIRATION_DATE'],
+                                                                 datetime.utcnow())
     aws_credentials['AWS_ACCOUNT_NAME'] = account
     aws_credentials['AWS_ASSUMED_ROLE'] = role
     return aws_credentials
