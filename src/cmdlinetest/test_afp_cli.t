@@ -85,10 +85,10 @@
 
 # Test credentials with subshell
 
-#  $ afp --no-ask-pw --api-url=http://localhost:5555 test_account test_role
-#  Entering AFP subshell for account test_account, role test_role.
-#  Press CTRL+D to exit.
-#  Left AFP subshell.
+  $ afp --no-ask-pw --api-url=http://localhost:5555 test_account test_role < /dev/null
+  Entering AFP subshell for account test_account, role test_role.
+  Press CTRL+D to exit.
+  Left AFP subshell.
 
 
 # Test credentials with show
