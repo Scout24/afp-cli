@@ -94,10 +94,10 @@ for file in /etc/bash.bashrc ~/.bashrc; do
 done
 
 function afp_minutes_left {{
-    if ((SECONDS >= {AWS_VALID_SECONDS})) ; then
+    if ((SECONDS >= {valid_seconds})) ; then
         echo EXPIRED
     else
-        echo $((({AWS_VALID_SECONDS}-SECONDS)/60)) Min
+        echo $((({valid_seconds}-SECONDS)/60)) Min
     fi
 }}
 
@@ -113,7 +113,8 @@ set PROMPT=$C AWS {account}/{role} $F
 def start_subshell(aws_credentials, role, account):
     print("Press CTRL+D to exit.")
     rc_script = tempfile.NamedTemporaryFile(mode='w')
-    rc_script.write(RC_SCRIPT_TEMPLATE.format(role=role, account=account))
+    rc_script.write(RC_SCRIPT_TEMPLATE.format(role=role, account=account,
+                                              valid_seconds=aws_credentials['AWS_VALID_SECONDS']))
     rc_script.write(cli.format_aws_credentials(aws_credentials, prefix='export '))
     rc_script.flush()
     subprocess.call(
