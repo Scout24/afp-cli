@@ -27,6 +27,7 @@ class AWSFederationClientCmd(object):
                                                      self._password))
         if api_result.status_code != 200:
             if api_result.status_code == 401:
+                # Need to treat 401 specially since it is directly send from webserver and body has different format.
                 raise Exception("API call to AWS (%s/%s) failed: %s %s" % (
                     self.api_url, url_suffix, api_result.status_code, api_result.reason))
             else:
