@@ -33,7 +33,7 @@ def write(aws_credentials, filename=None, profile_name='default'):
         config.set(profile_name, 'aws_security_token', aws_credentials['AWS_SECURITY_TOKEN'])
 
         with open(filename, 'w') as config_file:
-                config.write(config_file)
+            config.write(config_file)
 
     finally:
         if six.PY2:
