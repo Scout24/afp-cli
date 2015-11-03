@@ -1,11 +1,11 @@
 #!/usr/bin/env python
+""" Simple AFP mock to allow testing the afp-cli. """
+
 import bottle
 from bottle import route
 from textwrap import dedent
 from bottledaemon import daemon_run
 import sys
-
-""" Simple AFP mock to allow testing the afp-cli. """
 
 @route('/account')
 def account():
