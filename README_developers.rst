@@ -10,3 +10,9 @@ and
 .. code-block:: console
 
     pyb run_cram_tests || less /home/robert/ss/afp-cli/target/reports/cram.err
+
+Or alternatively, you can use the versbose switch ``-v``:
+
+.. code-block:: console
+
+    pyb -v run_unit_tests
