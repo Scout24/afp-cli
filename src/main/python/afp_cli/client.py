@@ -7,12 +7,6 @@ import json
 from requests.auth import HTTPBasicAuth
 
 
-def print_aws_credentials(credentials, prefix=''):
-    """Print aws credentials with optional prefix"""
-    for key, value in sorted(credentials.items()):
-        print("{0}{1}='{2}'".format(prefix, key, value))
-
-
 class AWSFederationClientCmd(object):
     """Class for a command line client which uses the afp api"""
 
@@ -33,6 +27,7 @@ class AWSFederationClientCmd(object):
                                                      self._password))
         if api_result.status_code != 200:
             if api_result.status_code == 401:
+                # Need to treat 401 specially since it is directly send from webserver and body has different format.
                 raise Exception("API call to AWS (%s/%s) failed: %s %s" % (
                     self.api_url, url_suffix, api_result.status_code, api_result.reason))
             else:
@@ -55,10 +50,3 @@ class AWSFederationClientCmd(object):
                 'AWS_SESSION_TOKEN': aws_credentials['Token'],
                 'AWS_SECURITY_TOKEN': aws_credentials['Token'],
                 'AWS_EXPIRATION_DATE': aws_credentials['Expiration']}
-
-    def print_account_and_role_list(self):
-        """Print account and role list to stdout"""
-        accounts_and_roles = sorted(self.get_account_and_role_list().items())
-        for account, roles in accounts_and_roles:
-            role_string = ",".join(sorted(roles))
-            print("{0:<20} {1}".format(account, role_string))

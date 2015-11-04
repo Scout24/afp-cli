@@ -85,16 +85,18 @@
 
 # Test credentials with subshell
 
-#  $ afp --no-ask-pw --api-url=http://localhost:5555 test_account test_role
-#  Entering AFP subshell for account test_account, role test_role.
-#  Press CTRL+D to exit.
-#  Left AFP subshell.
+  $ afp --no-ask-pw --api-url=http://localhost:5555 test_account test_role < /dev/null
+  Entering AFP subshell for account test_account, role test_role.
+  Press CTRL+D to exit.
+  Left AFP subshell.
 
 
 # Test credentials with show
 
   $ afp --no-ask-pw --api-url=http://localhost:5555 --show test_account test_role
   AWS_ACCESS_KEY_ID='XXXXXXXXXXXX'
+  AWS_ACCOUNT_NAME='test_account'
+  AWS_ASSUMED_ROLE='test_role'
   AWS_EXPIRATION_DATE='2032-01-01T00:00:00Z'
   AWS_SECRET_ACCESS_KEY='XXXXXXXXXXXX'
   AWS_SECURITY_TOKEN='XXXXXXXXXXXX'
@@ -105,6 +107,8 @@
 
   $ afp --no-ask-pw --api-url=http://localhost:5555 --show test_account
   AWS_ACCESS_KEY_ID='XXXXXXXXXXXX'
+  AWS_ACCOUNT_NAME='test_account'
+  AWS_ASSUMED_ROLE='test_role'
   AWS_EXPIRATION_DATE='2032-01-01T00:00:00Z'
   AWS_SECRET_ACCESS_KEY='XXXXXXXXXXXX'
   AWS_SECURITY_TOKEN='XXXXXXXXXXXX'
@@ -115,6 +119,8 @@
 
   $ afp --no-ask-pw --api-url=http://localhost:5555 --export test_account test_role
   export AWS_ACCESS_KEY_ID='XXXXXXXXXXXX'
+  export AWS_ACCOUNT_NAME='test_account'
+  export AWS_ASSUMED_ROLE='test_role'
   export AWS_EXPIRATION_DATE='2032-01-01T00:00:00Z'
   export AWS_SECRET_ACCESS_KEY='XXXXXXXXXXXX'
   export AWS_SECURITY_TOKEN='XXXXXXXXXXXX'
