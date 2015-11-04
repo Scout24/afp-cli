@@ -9,7 +9,7 @@ def get_valid_seconds(aws_expiration_date, utcnow):
     try:
         credentials_valid_until = datetime.strptime(aws_expiration_date, "%Y-%m-%dT%H:%M:%SZ", )
         return (credentials_valid_until - utcnow).seconds
-    except Exception:
+    except ValueError:
         default_seconds = 3600
         msg = "Failed to parse expiration date '{0}' for AWS credentials, assuming {1} seconds.".format(
             aws_expiration_date, default_seconds)
