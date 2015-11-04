@@ -31,6 +31,10 @@ class CliFunctionsTest(TestCase):
         utc_now = datetime(1970, 1, 1)
         self.assertEqual(cli.get_valid_seconds(future_date, utc_now), 30*60)
 
+    def test_get_valid_seconds_catches(self):
+        future_date = 'NO_SUCH_DATE'
+        utc_now = datetime(1970, 1, 1)
+        self.assertEqual(cli.get_valid_seconds(future_date, utc_now), 3600)
 
     def test_format_account_and_one_role(self):
         self.assertEqual(cli.format_account_and_role_list({"testaccount1": ["testrole1"]}),
