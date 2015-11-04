@@ -7,11 +7,6 @@ from datetime import datetime
 
 
 class CliFunctionsTest(TestCase):
-    def setUp(self):
-        pass
-
-    def tearDown(self):
-        pass
 
     def test_format_aws_credentials_with_prefix(self):
         credentials = {"AWS_ACCESS_KEY_ID": "testAccessKey"}
