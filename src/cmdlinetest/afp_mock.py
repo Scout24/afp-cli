@@ -7,6 +7,7 @@ from textwrap import dedent
 from bottledaemon import daemon_run
 import sys
 
+
 @route('/account')
 def account():
     return """{"test_account": ["test_role"]}"""
