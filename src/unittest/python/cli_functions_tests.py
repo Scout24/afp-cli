@@ -7,11 +7,6 @@ from datetime import datetime
 
 
 class CliFunctionsTest(TestCase):
-    def setUp(self):
-        pass
-
-    def tearDown(self):
-        pass
 
     def test_format_aws_credentials_with_prefix(self):
         credentials = {"AWS_ACCESS_KEY_ID": "testAccessKey"}
@@ -32,8 +27,14 @@ class CliFunctionsTest(TestCase):
                          "AWS_ACCESS_KEY_ID='testAccessKey'\nAWS_SECRET_ACCESS_KEY='not so secret'")
 
     def test_get_valid_seconds(self):
-        self.assertEqual(cli.get_valid_seconds('2016-08-16T07:45:00Z', datetime(2016, 8, 16, hour=7, minute=15)),
-                         30*60)
+        future_date = '1970-01-01T00:30:00Z'
+        utc_now = datetime(1970, 1, 1)
+        self.assertEqual(cli.get_valid_seconds(future_date, utc_now), 30*60)
+
+    def test_get_valid_seconds_catches(self):
+        future_date = 'NO_SUCH_DATE'
+        utc_now = datetime(1970, 1, 1)
+        self.assertEqual(cli.get_valid_seconds(future_date, utc_now), 3600)
 
     def test_format_account_and_one_role(self):
         self.assertEqual(cli.format_account_and_role_list({"testaccount1": ["testrole1"]}),

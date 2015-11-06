@@ -176,7 +176,7 @@ def main():
         error("Failed to load configuration: %s" % exc)
 
     api_url = arguments['--api-url'] or config.get('api_url') or \
-              'https://{fqdn}/afp-api/latest'.format(fqdn=get_default_afp_server())
+        'https://{fqdn}/afp-api/latest'.format(fqdn=get_default_afp_server())
     username = arguments['--user'] or config.get("user") or getpass.getuser()
     password = 'PASSWORD' if arguments['--no-ask-pw'] else get_password(username)
     federation_client = AWSFederationClientCmd(api_url=api_url,

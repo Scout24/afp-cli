@@ -7,6 +7,7 @@ from textwrap import dedent
 from bottledaemon import daemon_run
 import sys
 
+
 @route('/account')
 def account():
     return """{"test_account": ["test_role"]}"""
@@ -26,5 +27,6 @@ def credentials(account, role):
 if len(sys.argv) > 1:
     daemon_run(host='localhost', port=5555)
 else:
-    # manual testing mode on different port, so it won't stop "pyb install" from running tests
+    # manual testing mode on different port, so it won't stop
+    # "pyb install" from running tests
     bottle.run(host='localhost', port=5544)
