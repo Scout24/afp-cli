@@ -4,6 +4,7 @@
 from unittest2 import TestCase
 import afp_cli.cli_functions as cli
 from datetime import datetime
+from mock import patch, Mock
 
 
 class CliFunctionsTest(TestCase):
@@ -31,6 +32,7 @@ class CliFunctionsTest(TestCase):
         utc_now = datetime(1970, 1, 1)
         self.assertEqual(cli.get_valid_seconds(future_date, utc_now), 30*60)
 
+    @patch('sys.stderr', Mock())
     def test_get_valid_seconds_catches(self):
         future_date = 'NO_SUCH_DATE'
         utc_now = datetime(1970, 1, 1)
