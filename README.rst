@@ -37,7 +37,7 @@ Configuration
 =============
 
 The ``afp`` command can be configured through yaml files in
-the following direcories:
+the following directories:
 
 * ``/etc/afp-cli/*.yaml`` (global configuration)
 * ``$HOME/.afp-cli/*.yaml`` (per-user configuration)
@@ -51,7 +51,7 @@ The following configuration options are supported:
   the server url from it: ``https://{FQDN}/afp-api/latest``
   The specified url must contain full server url (not just the FQDN).
 * ``user: <username>``
-  Defaults to the currently logged in username
+  Defaults to the currently logged in user-name
 
 Example:
 
@@ -181,9 +181,9 @@ Removing them again:
 Write to AWS Credentials File
 -----------------------------
 
-The AWS Tools reads credentials specified with aws configure in a local file
-named ``credentials`` in a folder named ``.aws`` in your home directory. The
-afp-cli Tool can write your temporary credentials to this file.
+The AWS Tools reads credentials specified with ``aws configure`` from a local
+file named ``credentials`` in a folder named ``.aws`` in your home directory.
+The afp-cli Tool can write your temporary credentials to this file.
 
 .. code-block:: console
 
