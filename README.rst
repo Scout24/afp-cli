@@ -197,7 +197,7 @@ Please the section on `Configuration Settings and Precedence
 from the  AWS documentation
 
 See also
---------
+========
 
 See Hologram_ for another solution that brings temporary AWS credentials onto Developer desktops.
 
