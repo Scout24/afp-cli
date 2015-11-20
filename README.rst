@@ -36,7 +36,7 @@ installed using the usual Python specific mechanisms, e.g.:
 Configuration
 =============
 
-The **afp** command can be configured through yaml files in
+The ``afp`` command can be configured through yaml files in
 the following direcories:
 
 * ``/etc/afp-cli/*.yaml`` (global configuration)
@@ -47,7 +47,7 @@ The yaml files are read in lexical order and merged via
 The following configuration options are supported:
 
 * ``api_url: <api-url>``
-  Defaults to lookup a FQDN of a host named **afp** via DNS and construct
+  Defaults to lookup a FQDN of a host named ``afp`` via DNS and construct
   the server url from it: ``https://{FQDN}/afp-api/latest``
   The specified url must contain full server url (not just the FQDN).
 * ``user: <username>``
