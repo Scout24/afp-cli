@@ -216,6 +216,7 @@ specific language governing permissions and limitations under the License.
 See Also
 ========
 
-See Hologram_ for another solution that brings temporary AWS credentials onto Developer desktops.
+See Hologram_ for another solution that brings temporary AWS credentials onto
+developer desktops.
 
 .. _Hologram: https://github.com/AdRoll/hologram
