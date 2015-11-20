@@ -23,6 +23,16 @@ AWS Federation Proxy (AFP).
 Its main use case is starting a new shell where your temporary
 AWS credentials have been exported into the environment.
 
+Installation
+============
+
+The tool is `hosted on PyPi <https://pypi.python.org/pypi/afp-cli>`_ and can be
+installed using the usual Python specific mechanisms, e.g.:
+
+.. code-block:: console
+
+   $ pip install afp-cli
+
 Configuration
 =============
 
@@ -53,12 +63,6 @@ Example:
 CLI Tool
 ========
 
-Install
--------
-
-.. code-block:: console
-
-   $ pip install afp-cli
 
 Get help text
 -------------
