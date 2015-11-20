@@ -135,7 +135,7 @@ Show and Export
 In case you don't want to start a subshell or are using something other than
 bash, you can use ``--show`` or ``--export`` to display the credentials. You
 can use the usual UNIX tools to add/remove them from your environment.
-``--show`` will just show them and ``--export`` will show them in format
+``--show`` will just show them and ``--export`` will show them in a format
 suitable for an export into your environment, i.e. prefixed with ``export`` for
 UNIX and ``set`` for Windows.
 
