@@ -185,6 +185,13 @@ afp-cli Tool can write your temporary credentials to this file.
 
    $ afp --write <myaccount> [<myrole>]
 
+Configuration Settings and Precedence
+-------------------------------------
+
+Please the section on `Configuration Settings and Precedence
+<https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html#config-settings-and-precedence>`_
+from the  AWS documentation
+
 See also
 --------
 
