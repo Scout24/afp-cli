@@ -60,8 +60,8 @@ Example:
     api_url: https://afp-server.my.domain/afp-api/latest
     user: myuser
 
-CLI Tool
-========
+Usage
+=====
 
 
 Get help text
