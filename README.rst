@@ -53,6 +53,13 @@ Example:
 CLI Tool
 ========
 
+Install
+-------
+
+.. code-block:: console
+
+   $ pip install afp-cli
+
 Get help text
 -------------
 
