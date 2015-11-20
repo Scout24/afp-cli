@@ -63,14 +63,14 @@ Example:
 Usage
 =====
 
-Get help text
+Get Help Text
 -------------
 
 .. code-block:: console
 
     $ afp [-h | --help]
 
-List available account names and roles
+List Available Account Aames and Roles
 --------------------------------------
 
 For the currently logged-in user:
@@ -98,8 +98,8 @@ Example output:
     abc_account    some_role_in_abc_account
     xyz_account    some_role_in_yxz_account,another_role_in_xyz
 
-Use AWS credentials
--------------------
+Obtain AWS Credentials
+----------------------
 
 This starts a subshell in which the credentials have been exported into the
 environment. Use the **exit** command or press **CTRL+D** to terminate the subshell.
@@ -195,7 +195,7 @@ Please the section on `Configuration Settings and Precedence
 <https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html#config-settings-and-precedence>`_
 from the  AWS documentation
 
-See also
+See Also
 ========
 
 See Hologram_ for another solution that brings temporary AWS credentials onto Developer desktops.
