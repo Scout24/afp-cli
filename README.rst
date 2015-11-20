@@ -181,9 +181,9 @@ Removing them again:
 Write to AWS Credentials File
 -----------------------------
 
-The AWS Tools reads credentials specified with ``aws configure`` from a local
+The AWS tools reads credentials specified with ``aws configure`` from a local
 file named ``credentials`` in a folder named ``.aws`` in your home directory.
-The afp-cli Tool can write your temporary credentials to this file.
+The afp-cli tool can write your temporary credentials to this file.
 
 .. code-block:: console
 
