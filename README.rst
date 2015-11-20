@@ -102,7 +102,8 @@ Obtain AWS Credentials
 ----------------------
 
 This starts a subshell in which the credentials have been exported into the
-environment. Use the **exit** command or press **CTRL+D** to terminate the subshell.
+environment. Use the ``exit`` command or press **CTRL+D** to terminate the
+subshell.
 
 Use credentials for currently logged in user and specified account and role:
 
