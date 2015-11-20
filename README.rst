@@ -63,7 +63,6 @@ Example:
 Usage
 =====
 
-
 Get help text
 -------------
 
