@@ -23,11 +23,21 @@ AWS Federation Proxy (AFP).
 Its main use case is starting a new shell where your temporary
 AWS credentials have been exported into the environment.
 
+Installation
+============
+
+The tool is `hosted on PyPi <https://pypi.python.org/pypi/afp-cli>`_ and can be
+installed using the usual Python specific mechanisms, e.g.:
+
+.. code-block:: console
+
+   $ pip install afp-cli
+
 Configuration
 =============
 
-The **afp** command can be configured through yaml files in
-the following direcories:
+The ``afp`` command can be configured through yaml files in
+the following directories:
 
 * ``/etc/afp-cli/*.yaml`` (global configuration)
 * ``$HOME/.afp-cli/*.yaml`` (per-user configuration)
@@ -37,11 +47,11 @@ The yaml files are read in lexical order and merged via
 The following configuration options are supported:
 
 * ``api_url: <api-url>``
-  Defaults to lookup a FQDN of a host named **afp** via DNS and construct
+  Defaults to lookup a FQDN of a host named ``afp`` via DNS and construct
   the server url from it: ``https://{FQDN}/afp-api/latest``
   The specified url must contain full server url (not just the FQDN).
 * ``user: <username>``
-  Defaults to the currently logged in username
+  Defaults to the currently logged in user-name
 
 Example:
 
@@ -50,17 +60,17 @@ Example:
     api_url: https://afp-server.my.domain/afp-api/latest
     user: myuser
 
-CLI Tool
-========
+Usage
+=====
 
-Get help text
+Get Help Text
 -------------
 
 .. code-block:: console
 
     $ afp [-h | --help]
 
-List available account names and roles
+List Available Account Aames and Roles
 --------------------------------------
 
 For the currently logged-in user:
@@ -88,11 +98,12 @@ Example output:
     abc_account    some_role_in_abc_account
     xyz_account    some_role_in_yxz_account,another_role_in_xyz
 
-Use AWS credentials
--------------------
+Obtain AWS Credentials
+----------------------
 
 This starts a subshell in which the credentials have been exported into the
-environment. Use the **exit** command or press **CTRL+D** to terminate the subshell.
+environment. Use the ``exit`` command or press **CTRL+D** to terminate the
+subshell.
 
 Use credentials for currently logged in user and specified account and role:
 
@@ -124,7 +135,7 @@ Show and Export
 In case you don't want to start a subshell or are using something other than
 bash, you can use ``--show`` or ``--export`` to display the credentials. You
 can use the usual UNIX tools to add/remove them from your environment.
-``--show`` will just show them and ``--export`` will show them in format
+``--show`` will just show them and ``--export`` will show them in a format
 suitable for an export into your environment, i.e. prefixed with ``export`` for
 UNIX and ``set`` for Windows.
 
@@ -170,17 +181,42 @@ Removing them again:
 Write to AWS Credentials File
 -----------------------------
 
-The AWS Tools reads credentials specified with aws configure in a local file named
-credentials in a folder named .aws in your home directory. The afp-cli Tool can write
-your temporary credentials to this file.
+The AWS tools reads credentials specified with ``aws configure`` from a local
+file named ``credentials`` in a folder named ``.aws`` in your home directory.
+The afp-cli tool can write your temporary credentials to this file.
 
 .. code-block:: console
 
    $ afp --write <myaccount> [<myrole>]
 
-See also
---------
+Configuration Settings and Precedence
+-------------------------------------
 
-See Hologram_ for another solution that brings temporary AWS credentials onto Developer desktops.
+Please the section on `Configuration Settings and Precedence
+<https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html#config-settings-and-precedence>`_
+from the  AWS documentation
+
+
+License
+=======
+
+Copyright 2015 Immobilienscout24 GmbH
+
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+this file except in compliance with the License. You may obtain a copy of the
+License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software distributed
+under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+CONDITIONS OF ANY KIND, either express or implied. See the License for the
+specific language governing permissions and limitations under the License.
+
+See Also
+========
+
+See Hologram_ for another solution that brings temporary AWS credentials onto
+developer desktops.
 
 .. _Hologram: https://github.com/AdRoll/hologram
