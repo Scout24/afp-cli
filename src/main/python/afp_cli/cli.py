@@ -183,8 +183,8 @@ def main():
                         'prompt'
     if password_provider == 'prompt':
         password = get_password(username)
-    elif password_provider == 'gnome':
-        password = gnome_get_password(username):
+    elif password_provider == 'keyring':
+        password = keyring_get_password(username)
     elif password_provider == 'testing':
         password = 'PASSWORD'
 
