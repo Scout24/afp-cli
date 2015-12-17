@@ -37,6 +37,9 @@ CFGDIR = '/etc/afp-cli'
 DEBUG = False
 
 
+PASSWORD_PROVIDERS = ['prompt', 'keychain', 'testing']
+
+
 def error(message):
     print(message, file=sys.stderr)
     sys.exit(1)
@@ -198,6 +201,8 @@ def main():
         password = keyring_get_password(username)
     elif password_provider == 'testing':
         password = 'PASSWORD'
+    else:
+        error("'{}' is not a valid password provider".format(password_provider))
 
     federation_client = AWSFederationClientCmd(api_url=api_url,
                                                username=username,
