@@ -202,7 +202,8 @@ def main():
     elif password_provider == 'testing':
         password = 'PASSWORD'
     else:
-        error("'{}' is not a valid password provider".format(password_provider))
+        error("'{}' is not a valid password provider.\n".format(password_provider) +
+              "Valid options are: {}".format(str(PASSWORD_PROVIDERS)))
 
     federation_client = AWSFederationClientCmd(api_url=api_url,
                                                username=username,
