@@ -6,16 +6,16 @@ Usage:
                               [--show | --export | --write] [(<accountname> [<rolename>])]
 
 Options:
-  -h --help                Show this.
-  --debug                  Activate debug output.
-  --user=<username>        The user you want to use.
-  --api-url=<api-url>      The URL of the AFP server (e.g. https://afp/afp-api/latest).
-  --show                   Show credentials instead of opening subshell.
-  --export                 Show credentials in an export suitable format.
-  --write                  Write credentials to aws credentials file.
-  --password-provider      Password provider.
-  <accountname>            The AWS account id you want to login to.
-  <rolename>               The AWS role you want to use for login. Defaults to the first role.
+  -h --help                       Show this.
+  --debug                         Activate debug output.
+  --user=<username>               The user you want to use.
+  --api-url=<api-url>             The URL of the AFP server (e.g. https://afp/afp-api/latest).
+  --show                          Show credentials instead of opening subshell.
+  --export                        Show credentials in an export suitable format.
+  --write                         Write credentials to aws credentials file.
+  --password-provider=<provider>  Password provider.
+  <accountname>                   The AWS account id you want to login to.
+  <rolename>                      The AWS role you want to use for login. Defaults to the first role.
 """
 
 from __future__ import print_function, absolute_import, division
@@ -50,6 +50,17 @@ def debug(message):
 def get_password(username):
     """Return password for the given user"""
     return getpass.getpass(b"Password for {0}: ".format(username))
+
+
+def keyring_get_password(username):
+
+    import keyring
+    password = keyring.get_password('afp', username)
+    if not password:
+        print("No password found in keychain, please enter it now to store it.")
+        password = get_password(username)
+        keyring.set_password('afp', username, password)
+    return password
 
 
 def load_config(global_config_dir=CFGDIR):
