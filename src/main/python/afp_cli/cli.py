@@ -189,9 +189,9 @@ def main():
     api_url = arguments['--api-url'] or config.get('api_url') or \
         'https://{fqdn}/afp-api/latest'.format(fqdn=get_default_afp_server())
     username = arguments['--user'] or config.get("user") or getpass.getuser()
-    password_provider = arguments['--password-provider'] or \
-                        config.get("password-provider") or \
-                        'prompt'
+    password_provider = (arguments['--password-provider'] or
+                         config.get("password-provider") or
+                         'prompt')
     if password_provider == 'prompt':
         password = get_password(username)
     elif password_provider == 'keyring':
