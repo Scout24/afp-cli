@@ -19,13 +19,13 @@ Options:
   <rolename>                          The AWS role you want to use for login. Defaults to the first role.
 
 Subcommands:
-  help                          Show help
-  version                       Show version
-  list                          List available accounts and roles.
-  show                          Show credentials instead of opening subshell.
-  export                        Show credentials in an export suitable format.
-  write                         Write credentials to aws credentials file.
-  subshell                      Open a subshell.
+  help                                Show help.
+  version                             Show version.
+  list                                List available accounts and roles.
+  show                                Show credentials instead of opening subshell.
+  export                              Show credentials in an export suitable format.
+  write                               Write credentials to aws credentials file.
+  subshell                            Open a subshell.
 """
 
 from __future__ import print_function, absolute_import, division
