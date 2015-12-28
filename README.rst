@@ -247,7 +247,7 @@ uses the system site packages because it has been created with the
 A second issue arises when the ``gi`` module is not installed. In this case,
 the ``keyring`` library simply selects an insecure ``PlaintextKeyring`` which
 simply stores the base64 encoded password in it's default location at:
-``~/.local/share/python_keyring/keyring_pass.cfg``(!). Since we prefer a
+``~/.local/share/python_keyring/keyring_pass.cfg`` (!). Since we prefer a
 secure-by-default approach, the ``afp-cli`` will abort with an appropriate
 message in case this backend is detected.
 
