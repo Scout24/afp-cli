@@ -57,11 +57,20 @@ def get_password(username):
 
 def keyring_get_password(username):
 
-    import keyring
+    try:
+        import keyring
+    except ImportError:
+        error("You requested to use the 'keyring' module as password provider, "
+              "but do not have this installed.")
+
+    keyring_impl = keyring.get_keyring()
+    if keyring_impl.__class__.__name__ == 'PlaintextKeyring':
+        error("Aborting: the 'keyring' module has selected the insecure 'PlaintextKeyring'.")
+
+    debug("Note: will use the backend: '{}'".format(keyring_impl))
     password = keyring.get_password('afp', username)
     if not password:
         print("No password found in keychain, please enter it now to store it.")
-        print("Note: will use the backend: '{}'".format(keyring.get_keyring()))
         password = get_password(username)
         keyring.set_password('afp', username, password)
     return password
