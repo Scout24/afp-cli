@@ -7,7 +7,7 @@ from datetime import datetime
 from mock import patch, Mock
 
 
-class CliFunctionsTest(TestCase):
+class GetValidSecondsTest(TestCase):
 
     def test_get_valid_seconds(self):
         future_date = '1970-01-01T00:30:00Z'
