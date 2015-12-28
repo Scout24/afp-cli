@@ -14,6 +14,7 @@ from afp_cli.exporters import (format_aws_credentials,
                                print_export,
                                start_subshell,
                                start_subcmd,
+                               enter_subx,
                                )
 
 
@@ -112,3 +113,15 @@ class SubShellTests(TestCase):
         memfile.seek(0)
         received = memfile.read()
         self.assertEqual(received, expected)
+
+    @patch('os.name', 'unix')
+    @patch('afp_cli.exporters.start_subshell')
+    def test_start_subx_unix(self, format_mock):
+        credentials = {'AWS_VALID_SECONDS': 600}
+        enter_subx(credentials, 'ACCOUNT', 'ROLE')
+
+    @patch('os.name', 'nt')
+    @patch('afp_cli.exporters.start_subcmd')
+    def test_start_subx_nt(self, format_mock):
+        credentials = {'AWS_VALID_SECONDS': 600}
+        enter_subx(credentials, 'ACCOUNT', 'ROLE')
