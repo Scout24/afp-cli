@@ -14,8 +14,8 @@ install:
   - pyb install_dependencies
   
 script:
-  - pyb verify analyze
-  - cat '/home/travis/build/ImmobilienScout24/afp-cli/target/reports/cram.err'
+    - pyb -X
+    - cat '/home/travis/build/ImmobilienScout24/afp-cli/target/reports/cram.err'
 
 after_success:
   - coveralls --verbose
