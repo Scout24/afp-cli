@@ -5,7 +5,10 @@ from unittest2 import TestCase
 from datetime import datetime
 from mock import patch, Mock, ANY
 
-from afp_cli.cli_functions import get_valid_seconds, get_first_role
+from afp_cli.cli_functions import (get_valid_seconds,
+                                   get_first_role,
+                                   get_aws_credentials,
+                                   )
 from afp_cli.client import APICallError
 
 
@@ -65,4 +68,30 @@ class GetFirstRoleTests(TestCase):
         client.get_account_and_role_list.return_value = \
             {'ACCOUNT1': []}
         get_first_role(client, 'ACCOUNT1')
+        error_mock.assert_called_once_with(ANY)
+
+
+class GetAWSCredentialsTest(TestCase):
+
+    @patch('afp_cli.cli_functions.get_valid_seconds', Mock(return_value=600))
+    def test_getting_valid_aws_credentials(self):
+        client = Mock()
+        client.get_aws_credentials.return_value = \
+            {'AWS_CREDENTIALS': 'SECRET',
+             'AWS_EXPIRATION_DATE': 'DATE'}
+        expected = {
+            'AWS_CREDENTIALS': 'SECRET',
+            'AWS_VALID_SECONDS': 600,
+            'AWS_ACCOUNT_NAME': 'ACCOUNT1',
+            'AWS_ASSUMED_ROLE': 'ROLE1',
+            'AWS_EXPIRATION_DATE': 'DATE',
+        }
+        received = get_aws_credentials(client, 'ACCOUNT1', 'ROLE1')
+        self.assertEqual(expected, received)
+
+    @patch('afp_cli.cli_functions.error')
+    def test_excpetion(self, error_mock):
+        client = Mock()
+        client.get_aws_credentials.side_effect = APICallError
+        get_aws_credentials(client, 'ACCOUNT1', 'ROLE1')
         error_mock.assert_called_once_with(ANY)

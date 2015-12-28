@@ -58,11 +58,11 @@ def get_first_role(federation_client, account):
 def get_aws_credentials(federation_client, account, role):
     try:
         aws_credentials = federation_client.get_aws_credentials(account, role)
-    except Exception as exc:
+    except APICallError as exc:
         error("Failed to get credentials from AWS: %s" % exc)
-
-    aws_credentials['AWS_VALID_SECONDS'] = get_valid_seconds(aws_credentials['AWS_EXPIRATION_DATE'],
-                                                             datetime.utcnow())
-    aws_credentials['AWS_ACCOUNT_NAME'] = account
-    aws_credentials['AWS_ASSUMED_ROLE'] = role
-    return aws_credentials
+    else:
+        aws_credentials['AWS_VALID_SECONDS'] = get_valid_seconds(aws_credentials['AWS_EXPIRATION_DATE'],
+                                                                 datetime.utcnow())
+        aws_credentials['AWS_ACCOUNT_NAME'] = account
+        aws_credentials['AWS_ASSUMED_ROLE'] = role
+        return aws_credentials
