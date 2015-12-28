@@ -18,35 +18,40 @@
   Command line client for the AFP (AWS Federation Proxy)
   
   Usage:
-      afp [--debug] [--user=<username>] [--no-ask-pw] [--api-url=<api-url>]
+      afp [--debug] [--user=<username>] [--password-provider=<provider>] [--api-url=<api-url>]
                                 [--show | --export | --write] [(<accountname> [<rolename>])]
   
   Options:
-    -h --help                Show this.
-    --debug                  Activate debug output.
-    --user=<username>        The user you want to use.
-    --api-url=<api-url>      The URL of the AFP server (e.g. https://afp/afp-api/latest).
-    --show                   Show credentials instead of opening subshell.
-    --export                 Show credentials in an export suitable format.
-    --write                  Write credentials to aws credentials file.
-    --no-ask-pw              Don't prompt for password (for testing only).
-    <accountname>            The AWS account id you want to login to.
-    <rolename>               The AWS role you want to use for login. Defaults to the first role.
+    -h --help                       Show this.
+    --debug                         Activate debug output.
+    --user=<username>               The user you want to use.
+    --api-url=<api-url>             The URL of the AFP server (e.g. https://afp/afp-api/latest).
+    --show                          Show credentials instead of opening subshell.
+    --export                        Show credentials in an export suitable format.
+    --write                         Write credentials to aws credentials file.
+    --password-provider=<provider>  Password provider.
+    <accountname>                   The AWS account id you want to login to.
+    <rolename>                      The AWS role you want to use for login. Defaults to the first role.
 
 # Test failing to access AFP
 
-  $ afp --no-ask-pw --api-url=http://localhost:5555
+  $ afp --password-provider testing --api-url=http://localhost:5555
   Failed to get account list from AWS: .* (re)
+  [1]
+
+  $ afp --password-provider no_such_provider
+  'no_such_provider' is not a valid password provider.
+  Valid options are: ['prompt', 'keychain', 'testing']
   [1]
 
 # Test failing to access AFP with debug
 
-  $ afp --debug --no-ask-pw --api-url=http://localhost:5555
+  $ afp --debug --password-provider testing --api-url=http://localhost:5555
   Failed to get account list from AWS: .* (re)
   {u?'--api-url': 'http://localhost:5555', (re)
    u?'--debug': True, (re)
    u?'--export': False, (re)
-   u?'--no-ask-pw': True, (re)
+   u?'--password-provider': 'testing', (re)
    u?'--show': False, (re)
    u?'--user': None, (re)
    u?'--write': False, (re)
@@ -56,12 +61,12 @@
 
 # Test failing to access AFP with debug and username
 
-  $ afp --debug --no-ask-pw --api-url=http://localhost:5555 --user=test_user
+  $ afp --debug --password-provider testing --api-url=http://localhost:5555 --user=test_user
   Failed to get account list from AWS: .* (re)
   {u?'--api-url': 'http://localhost:5555', (re)
    u?'--debug': True, (re)
    u?'--export': False, (re)
-   u?'--no-ask-pw': True, (re)
+   u?'--password-provider': 'testing', (re)
    u?'--show': False, (re)
    u?'--user': 'test_user', (re)
    u?'--write': False, (re)
@@ -80,12 +85,12 @@
 
 # Test get account and role
 
-  $ afp --no-ask-pw --api-url=http://localhost:5555
+  $ afp --password-provider testing --api-url=http://localhost:5555
   test_account         test_role
 
 # Test credentials with subshell
 
-  $ afp --no-ask-pw --api-url=http://localhost:5555 test_account test_role < /dev/null
+  $ afp --password-provider testing --api-url=http://localhost:5555 test_account test_role < /dev/null
   Entering AFP subshell for account test_account, role test_role.
   Press CTRL+D to exit.
   Left AFP subshell.
@@ -93,7 +98,7 @@
 
 # Test credentials with show
 
-  $ afp --no-ask-pw --api-url=http://localhost:5555 --show test_account test_role
+  $ afp --password-provider testing --api-url=http://localhost:5555 --show test_account test_role
   AWS_ACCESS_KEY_ID='XXXXXXXXXXXX'
   AWS_ACCOUNT_NAME='test_account'
   AWS_ASSUMED_ROLE='test_role'
@@ -105,7 +110,7 @@
 
 # Test credentials with show and only a single role
 
-  $ afp --no-ask-pw --api-url=http://localhost:5555 --show test_account
+  $ afp --password-provider testing --api-url=http://localhost:5555 --show test_account
   AWS_ACCESS_KEY_ID='XXXXXXXXXXXX'
   AWS_ACCOUNT_NAME='test_account'
   AWS_ASSUMED_ROLE='test_role'
@@ -117,7 +122,7 @@
 
 # Test credentials with export
 
-  $ afp --no-ask-pw --api-url=http://localhost:5555 --export test_account test_role
+  $ afp --password-provider testing --api-url=http://localhost:5555 --export test_account test_role
   export AWS_ACCESS_KEY_ID='XXXXXXXXXXXX'
   export AWS_ACCOUNT_NAME='test_account'
   export AWS_ASSUMED_ROLE='test_role'
@@ -130,7 +135,7 @@
 # Test write credentials to file
 
   $ export HOME=$CRAMTMP
-  $ afp --no-ask-pw --api-url=http://localhost:5555 --write test_account test_role
+  $ afp --password-provider testing --api-url=http://localhost:5555 --write test_account test_role
   $ cat $HOME/.aws/credentials
   [default]
   aws_access_key_id = XXXXXXXXXXXX

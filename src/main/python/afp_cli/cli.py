@@ -2,20 +2,20 @@
 Command line client for the AFP (AWS Federation Proxy)
 
 Usage:
-    afp [--debug] [--user=<username>] [--no-ask-pw] [--api-url=<api-url>]
+    afp [--debug] [--user=<username>] [--password-provider=<provider>] [--api-url=<api-url>]
                               [--show | --export | --write] [(<accountname> [<rolename>])]
 
 Options:
-  -h --help                Show this.
-  --debug                  Activate debug output.
-  --user=<username>        The user you want to use.
-  --api-url=<api-url>      The URL of the AFP server (e.g. https://afp/afp-api/latest).
-  --show                   Show credentials instead of opening subshell.
-  --export                 Show credentials in an export suitable format.
-  --write                  Write credentials to aws credentials file.
-  --no-ask-pw              Don't prompt for password (for testing only).
-  <accountname>            The AWS account id you want to login to.
-  <rolename>               The AWS role you want to use for login. Defaults to the first role.
+  -h --help                       Show this.
+  --debug                         Activate debug output.
+  --user=<username>               The user you want to use.
+  --api-url=<api-url>             The URL of the AFP server (e.g. https://afp/afp-api/latest).
+  --show                          Show credentials instead of opening subshell.
+  --export                        Show credentials in an export suitable format.
+  --write                         Write credentials to aws credentials file.
+  --password-provider=<provider>  Password provider.
+  <accountname>                   The AWS account id you want to login to.
+  <rolename>                      The AWS role you want to use for login. Defaults to the first role.
 """
 
 from __future__ import print_function, absolute_import, division
@@ -37,6 +37,9 @@ CFGDIR = '/etc/afp-cli'
 DEBUG = False
 
 
+PASSWORD_PROVIDERS = ['prompt', 'keychain', 'testing']
+
+
 def error(message):
     print(message, file=sys.stderr)
     sys.exit(1)
@@ -50,6 +53,27 @@ def debug(message):
 def get_password(username):
     """Return password for the given user"""
     return getpass.getpass(b"Password for {0}: ".format(username))
+
+
+def keyring_get_password(username):
+
+    try:
+        import keyring
+    except ImportError:
+        error("You requested to use the 'keyring' module as password provider, "
+              "but do not have this installed.")
+
+    keyring_impl = keyring.get_keyring()
+    if keyring_impl.__class__.__name__ == 'PlaintextKeyring':
+        error("Aborting: the 'keyring' module has selected the insecure 'PlaintextKeyring'.")
+
+    debug("Note: will use the backend: '{}'".format(keyring_impl))
+    password = keyring.get_password('afp', username)
+    if not password:
+        print("No password found in keychain, please enter it now to store it.")
+        password = get_password(username)
+        keyring.set_password('afp', username, password)
+    return password
 
 
 def load_config(global_config_dir=CFGDIR):
@@ -178,7 +202,19 @@ def main():
     api_url = arguments['--api-url'] or config.get('api_url') or \
         'https://{fqdn}/afp-api/latest'.format(fqdn=get_default_afp_server())
     username = arguments['--user'] or config.get("user") or getpass.getuser()
-    password = 'PASSWORD' if arguments['--no-ask-pw'] else get_password(username)
+    password_provider = (arguments['--password-provider'] or
+                         config.get("password-provider") or
+                         'prompt')
+    if password_provider == 'prompt':
+        password = get_password(username)
+    elif password_provider == 'keyring':
+        password = keyring_get_password(username)
+    elif password_provider == 'testing':
+        password = 'PASSWORD'
+    else:
+        error("'{}' is not a valid password provider.\n".format(password_provider) +
+              "Valid options are: {}".format(str(PASSWORD_PROVIDERS)))
+
     federation_client = AWSFederationClientCmd(api_url=api_url,
                                                username=username,
                                                password=password)
