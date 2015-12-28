@@ -14,7 +14,7 @@ Options:
   -d, --debug                         Activate debug output.
   -u, --user <username>               The user you want to use.
   -a, --api-url <api-url>             The URL of the AFP server (e.g. https://afp/afp-api/latest).
-  -p, --password-provider <provider>  Password provider.
+  -p, --password-provider <provider>  Password provider. Valid values are: 'prompt', 'keyring' and 'testing'.
   <accountname>                       The AWS account id you want to login to.
   <rolename>                          The AWS role you want to use for login. Defaults to the first role.
 
@@ -25,7 +25,7 @@ Subcommands:
   show                                Show credentials instead of opening subshell.
   export                              Show credentials in an export suitable format.
   write                               Write credentials to aws credentials file.
-  subshell                            Open a subshell.
+  subshell                            Open a subshell with exported credentials.
 """
 
 from __future__ import print_function, absolute_import, division
