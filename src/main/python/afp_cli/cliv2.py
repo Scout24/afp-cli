@@ -10,13 +10,13 @@ Usage:
     afp [options] (show | export | write | subshell) (<accountname> [<rolename>])
 
 Options:
-  -h, --help                      Show this.
-  -d, --debug                     Activate debug output.
-  -u, --user <username>           The user you want to use.
-  -a, --api-url <api-url>         The URL of the AFP server (e.g. https://afp/afp-api/latest).
-  --password-provider=<provider>  Password provider.
-  <accountname>                   The AWS account id you want to login to.
-  <rolename>                      The AWS role you want to use for login. Defaults to the first role.
+  -h, --help                          Show this.
+  -d, --debug                         Activate debug output.
+  -u, --user <username>               The user you want to use.
+  -a, --api-url <api-url>             The URL of the AFP server (e.g. https://afp/afp-api/latest).
+  -p, --password-provider <provider>  Password provider.
+  <accountname>                       The AWS account id you want to login to.
+  <rolename>                          The AWS role you want to use for login. Defaults to the first role.
 
 Subcommands:
   help                          Show help
