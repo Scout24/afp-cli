@@ -223,6 +223,15 @@ Examples:
 .. code-block:: console
 
    $ afp --password-provider keychain
+   No password found in keychain, please enter it now to store it.
+   Password for vhaenel: 
+
+As you can see, you will be prompted for your password the first time. Note
+that if you fail to enter the password correctly, the incorrect version will be
+stored. Note further that if you are using the Gnome-Keychain you can use the
+tool ``seahorse`` to update and delete saved passwords, in this case for the
+service ``afp``.
+
 
 There are two intricate caveats when using the ``keyring`` module with
 Gnome-Keychain which is why this feature is considered experimental.
@@ -260,7 +269,6 @@ selected:
     ...
     Note: will use the backend: '<keyring.backends.Gnome.Keyring object at 0x7f48a13e9510>'
     ...
-
 
 License
 =======
