@@ -36,6 +36,7 @@ from .exporters import (format_aws_credentials,
                         format_account_and_role_list,
                         start_subshell,
                         start_subcmd,
+                        print_export,
                         )
 from . import log
 from .log import error, debug
@@ -73,12 +74,8 @@ def main():
 
         if arguments['--show']:
             print(format_aws_credentials(aws_credentials))
-
         elif arguments['--export']:
-            if os.name == "nt":
-                print(format_aws_credentials(aws_credentials, prefix='set '))
-            else:
-                print(format_aws_credentials(aws_credentials, prefix='export '))
+            print_export(aws_credentials)
         elif arguments['--write']:
             write(aws_credentials)
         else:

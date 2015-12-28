@@ -42,6 +42,13 @@ def format_account_and_role_list(account_and_role_list):
                             for account, roles in sorted(account_and_role_list.items())])
 
 
+def print_export(aws_credentials):
+    if os.name == "nt":
+        print(format_aws_credentials(aws_credentials, prefix='set '))
+    else:
+        print(format_aws_credentials(aws_credentials, prefix='export '))
+
+
 def start_subshell(aws_credentials, role, account):
     print("Press CTRL+D to exit.")
     rc_script = tempfile.NamedTemporaryFile(mode='w')
