@@ -18,6 +18,7 @@ authors = [Author('Stefan Neben', "stefan.neben@immobilienscout24.de"),
            Author('Tobias Vollmer', "tobias.vollmer@immobilienscout24.de"),
            Author('Stefan Nordhausen', "stefan.nordhausen@immobilienscout24.de"),
            Author('Enrico Heine', "enrico.heine@immobilienscout24.de"),
+           Author('Valentin Haenel', "valentin.haenel@immobilienscout24.de"),
            ]
 url = 'https://github.com/ImmobilienScout24/afp-cli'
 version = '1.2.1'
