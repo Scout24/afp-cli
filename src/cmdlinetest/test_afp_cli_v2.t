@@ -113,18 +113,18 @@
 
 # Test failing to access AFP
 
-  $ afp --password-provider testing --api-url=http://localhost:5555 list
+  $ afp -p testing -a http://localhost:5555 list
   Failed to get account list from AWS: .* (re)
   [1]
 
-  $ afp --password-provider no_such_provider list
+  $ afp -p no_such_provider list
   'no_such_provider' is not a valid password provider.
   Valid options are: ['prompt', 'keyring', 'testing']
   [1]
 
 # Test failing to access AFP with debug
 
-  $ afp --debug --password-provider testing --api-url=http://localhost:5555 list
+  $ afp -d -p testing -a http://localhost:5555 list
   Failed to get account list from AWS: .* (re)
   {u?'--api-url': 'http://localhost:5555', (re)
    u?'--debug': True, (re)
@@ -170,7 +170,7 @@
   'password-provider' is 'testing'
   [1]
 
-# Test failing to access AFP with debug and username, this time with short # options
+# Test failing to access AFP with debug and username with long options
 
   $ afp -d -p testing -a http://localhost:5555 -u test_user list
   Failed to get account list from AWS: .* (re)
