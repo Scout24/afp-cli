@@ -2,7 +2,11 @@ from __future__ import print_function
 
 from datetime import datetime
 import os
+import random
+import socket
 import sys
+
+from .log import error, debug
 
 
 def get_valid_seconds(aws_expiration_date, utcnow):
@@ -26,3 +30,52 @@ def format_aws_credentials(credentials, prefix=''):
 def format_account_and_role_list(account_and_role_list):
     return os.linesep.join(["{0:<20} {1}".format(account, ",".join(sorted(roles)))
                             for account, roles in sorted(account_and_role_list.items())])
+
+
+def get_default_afp_server():
+    """Return the FQDN of the host that is called "afp"
+
+    This is done by resolving "afp" into (potentially multiple) IPs.
+    One of those IPs is randomly chosen, then a reverse-lookup is performed
+    on that IP to get its FQDN.
+    """
+    try:
+        addrinfos = socket.getaddrinfo("afp", 443,
+                                       socket.AF_INET, socket.SOCK_STREAM)
+    except Exception as exc:
+        error("Could not resolve hostname 'afp': %s" % exc)
+    addrinfo = random.choice(addrinfos)
+    afp_server_ip = addrinfo[4][0]
+
+    try:
+        return socket.gethostbyaddr(afp_server_ip)[0]
+    except Exception as exc:
+        error("DNS reverse lookup failed for IP %s: %s" % (
+            afp_server_ip, exc))
+
+
+def get_first_role(federation_client, account):
+    try:
+        accounts_and_roles = federation_client.get_account_and_role_list()
+    except Exception as exc:
+        error("Failed to get account list from AWS: %s" % exc)
+
+    try:
+        return sorted(accounts_and_roles[account])[0]
+    except KeyError:
+        error("%s is not a valid AWS account" % account)
+    except IndexError:
+        error("Could not find any role for account %s" % account)
+
+
+def get_aws_credentials(federation_client, account, role):
+    try:
+        aws_credentials = federation_client.get_aws_credentials(account, role)
+    except Exception as exc:
+        error("Failed to get credentials from AWS: %s" % exc)
+
+    aws_credentials['AWS_VALID_SECONDS'] = get_valid_seconds(aws_credentials['AWS_EXPIRATION_DATE'],
+                                                             datetime.utcnow())
+    aws_credentials['AWS_ACCOUNT_NAME'] = account
+    aws_credentials['AWS_ASSUMED_ROLE'] = role
+    return aws_credentials
