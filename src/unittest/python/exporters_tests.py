@@ -2,8 +2,12 @@
 # -*- coding: utf-8 -*-
 
 from unittest2 import TestCase
+
+from mock import patch
+
 from afp_cli.exporters import (format_aws_credentials,
                                format_account_and_role_list,
+                               print_export,
                                )
 
 
@@ -34,3 +38,15 @@ class FormattingTest(TestCase):
     def test_format_account_and_two_roles(self):
         self.assertEqual(format_account_and_role_list({"testaccount2": ["testrole1", "testrole2"]}),
                          "testaccount2         testrole1,testrole2")
+
+    @patch('os.name', 'unix')
+    @patch('afp_cli.exporters.format_aws_credentials')
+    def test_print_export_unix(self, format_mock):
+        print_export('CREDENTIALS')
+        format_mock.assert_called_once_with('CREDENTIALS', prefix='export ')
+
+    @patch('os.name', 'nt')
+    @patch('afp_cli.exporters.format_aws_credentials')
+    def test_print_export_nt(self, format_mock):
+        print_export('CREDENTIALS')
+        format_mock.assert_called_once_with('CREDENTIALS', prefix='set ')
