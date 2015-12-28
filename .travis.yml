@@ -14,7 +14,7 @@ install:
   - pyb install_dependencies
   
 script:
-    - pyb -X
+    - pyb -v
 
 after_success:
   - coveralls --verbose
