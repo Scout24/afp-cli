@@ -1,12 +1,11 @@
 from __future__ import print_function
 
 from datetime import datetime
-import os
 import random
 import socket
 import sys
 
-from .log import error, debug
+from .log import error
 
 
 def get_valid_seconds(aws_expiration_date, utcnow):
