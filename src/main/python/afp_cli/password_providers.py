@@ -4,7 +4,10 @@
 import getpass
 from .log import error, debug
 
-PASSWORD_PROVIDERS = ['prompt', 'keychain', 'testing']
+PROMPT = 'prompt'
+KEYRING = 'keyring'
+TESTING = 'testing'
+PASSWORD_PROVIDERS = [PROMPT, KEYRING, TESTING]
 
 
 def prompt_get_password(username):
@@ -34,11 +37,11 @@ def keyring_get_password(username):
 
 
 def get_password(password_provider, username):
-    if password_provider == 'prompt':
-        password = get_password(username)
-    elif password_provider == 'keyring':
+    if password_provider == PROMPT:
+        password = prompt_get_password(username)
+    elif password_provider == KEYRING:
         password = keyring_get_password(username)
-    elif password_provider == 'testing':
+    elif password_provider == TESTING:
         password = 'PASSWORD'
     else:
         error("'{}' is not a valid password provider.\n".format(password_provider) +
