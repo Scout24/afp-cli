@@ -22,7 +22,6 @@ Options:
 
 from __future__ import print_function, absolute_import, division
 import getpass
-import os
 
 from docopt import docopt
 from .aws_credentials_file import write
@@ -34,9 +33,8 @@ from .cli_functions import (get_default_afp_server,
 from .config import load_config
 from .exporters import (format_aws_credentials,
                         format_account_and_role_list,
-                        start_subshell,
-                        start_subcmd,
                         print_export,
+                        enter_subx,
                         )
 from . import log
 from .log import error, debug
@@ -79,15 +77,7 @@ def main():
         elif arguments['--write']:
             write(aws_credentials)
         else:
-            print("Entering AFP subshell for account {0}, role {1}.".format(
-                account, role))
-            try:
-                if os.name == "nt":
-                    start_subcmd(aws_credentials=aws_credentials, role=role, account=account)
-                else:
-                    start_subshell(aws_credentials=aws_credentials, role=role, account=account)
-            except Exception as exc:
-                error("Failed to start subshell: %s" % exc)
+            enter_subx(aws_credentials, account, role)
     else:
         try:
             print(format_account_and_role_list(federation_client.get_account_and_role_list()))

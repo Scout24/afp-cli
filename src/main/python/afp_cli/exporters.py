@@ -8,6 +8,8 @@ import subprocess
 import sys
 import tempfile
 
+from .log import error
+
 RC_SCRIPT_TEMPLATE = """
 # Pretend to be an interactive, non-login shell
 for file in /etc/bash.bashrc ~/.bashrc; do
@@ -49,7 +51,7 @@ def print_export(aws_credentials):
         print(format_aws_credentials(aws_credentials, prefix='export '))
 
 
-def start_subshell(aws_credentials, role, account):
+def start_subshell(aws_credentials, account, role):
     print("Press CTRL+D to exit.")
     rc_script = tempfile.NamedTemporaryFile(mode='w')
     rc_script.write(RC_SCRIPT_TEMPLATE.format(role=role, account=account,
@@ -62,7 +64,7 @@ def start_subshell(aws_credentials, role, account):
     print("Left AFP subshell.")
 
 
-def start_subcmd(aws_credentials, role, account):
+def start_subcmd(aws_credentials, account, role):
     batch_file = tempfile.NamedTemporaryFile(suffix=".bat", delete=False)
     batch_file.write(BATCH_FILE_TEMPLATE.format(role=role, account=account))
     batch_file.write(format_aws_credentials(aws_credentials, prefix='set '))
@@ -72,3 +74,14 @@ def start_subcmd(aws_credentials, role, account):
         ["cmd", "/K", batch_file.name])
     print("Left AFP subcmd.")
     os.unlink(batch_file.name)
+
+
+def enter_subx(aws_credentials, account, role):
+    print("Entering AFP subshell for account {0}, role {1}.".format(account, role))
+    try:
+        if os.name == "nt":
+            start_subcmd(aws_credentials, account, role)
+        else:
+            start_subshell(aws_credentials, account, role)
+    except Exception as exc:
+        error("Failed to start subshell: %s" % exc)
