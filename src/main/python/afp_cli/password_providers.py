@@ -44,7 +44,7 @@ def get_password(password_provider, username):
     elif password_provider == TESTING:
         password = 'PASSWORD'
     else:
-        error("'{}' is not a valid password provider.\n".format(password_provider) +
-              "Valid options are: {}".format(str(PASSWORD_PROVIDERS)))
+        error("'{0}' is not a valid password provider.\n".format(password_provider) +
+              "Valid options are: {0}".format(str(PASSWORD_PROVIDERS)))
 
     return password
