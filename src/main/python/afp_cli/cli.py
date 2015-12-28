@@ -32,48 +32,11 @@ import yamlreader
 from docopt import docopt
 from afp_cli import AWSFederationClientCmd, aws_credentials_file
 import afp_cli.cli_functions as cli
+from afp_cli.log import error, debug
+from .password_providers import get_password
+from . import log
 
 CFGDIR = '/etc/afp-cli'
-DEBUG = False
-
-
-PASSWORD_PROVIDERS = ['prompt', 'keychain', 'testing']
-
-
-def error(message):
-    print(message, file=sys.stderr)
-    sys.exit(1)
-
-
-def debug(message):
-    if DEBUG:
-        print(message)
-
-
-def get_password(username):
-    """Return password for the given user"""
-    return getpass.getpass(b"Password for {0}: ".format(username))
-
-
-def keyring_get_password(username):
-
-    try:
-        import keyring
-    except ImportError:
-        error("You requested to use the 'keyring' module as password provider, "
-              "but do not have this installed.")
-
-    keyring_impl = keyring.get_keyring()
-    if keyring_impl.__class__.__name__ == 'PlaintextKeyring':
-        error("Aborting: the 'keyring' module has selected the insecure 'PlaintextKeyring'.")
-
-    debug("Note: will use the backend: '{}'".format(keyring_impl))
-    password = keyring.get_password('afp', username)
-    if not password:
-        print("No password found in keychain, please enter it now to store it.")
-        password = get_password(username)
-        keyring.set_password('afp', username, password)
-    return password
 
 
 def load_config(global_config_dir=CFGDIR):
@@ -190,8 +153,7 @@ def main():
     """Main function for script execution"""
     arguments = docopt(__doc__)
     if arguments['--debug']:
-        global DEBUG
-        DEBUG = True
+        log.DEBUG = True
     debug(arguments)
 
     try:
@@ -205,15 +167,8 @@ def main():
     password_provider = (arguments['--password-provider'] or
                          config.get("password-provider") or
                          'prompt')
-    if password_provider == 'prompt':
-        password = get_password(username)
-    elif password_provider == 'keyring':
-        password = keyring_get_password(username)
-    elif password_provider == 'testing':
-        password = 'PASSWORD'
-    else:
-        error("'{}' is not a valid password provider.\n".format(password_provider) +
-              "Valid options are: {}".format(str(PASSWORD_PROVIDERS)))
+
+    password = get_password(password_provider, username)
 
     federation_client = AWSFederationClientCmd(api_url=api_url,
                                                username=username,
