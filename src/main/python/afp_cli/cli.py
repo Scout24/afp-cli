@@ -61,6 +61,7 @@ def keyring_get_password(username):
     password = keyring.get_password('afp', username)
     if not password:
         print("No password found in keychain, please enter it now to store it.")
+        print("Note: will use the backend: '{}'".format(keyring.get_keyring()))
         password = get_password(username)
         keyring.set_password('afp', username, password)
     return password
