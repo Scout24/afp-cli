@@ -25,20 +25,21 @@ import getpass
 import os
 
 from docopt import docopt
-from afp_cli import AWSFederationClientCmd, aws_credentials_file
+from .aws_credentials_file import write
+from .client import AWSFederationClientCmd
 from .cli_functions import (get_default_afp_server,
                             get_aws_credentials,
                             get_first_role,
                             )
+from .config import load_config
 from .exporters import (format_aws_credentials,
                         format_account_and_role_list,
                         start_subshell,
                         start_subcmd,
                         )
-from afp_cli.log import error, debug
-from .password_providers import get_password
 from . import log
-from .config import load_config
+from .log import error, debug
+from .password_providers import get_password
 
 
 def main():
@@ -79,7 +80,7 @@ def main():
             else:
                 print(format_aws_credentials(aws_credentials, prefix='export '))
         elif arguments['--write']:
-            aws_credentials_file.write(aws_credentials)
+            write(aws_credentials)
         else:
             print("Entering AFP subshell for account {0}, role {1}.".format(
                 account, role))
