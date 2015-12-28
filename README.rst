@@ -196,6 +196,71 @@ Please read the section on `Configuration Settings and Precedence
 <https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html#config-settings-and-precedence>`_
 from the AWS documentation.
 
+Interface with the System Keyring
+---------------------------------
+
+Staring with version ``1.3.0`` experimental support for the `Python keyring
+module <https://pypi.python.org/pypi/keyring>`_ has been implemented. This has
+only been testing with the Gnome Keyring but supposedly also works with other
+systems such as Mac OS X Keychain and Windows Credential Vault. If you have
+made it work with anything other than the Gnome Keyring, please submit a
+pull-request to modify this sentence.
+
+You can configure to use the keychain by config-file or command-line switch.
+Viable options are: ``prompt`` to prompt for the password during every
+interaction with the AFP server. ``keyring`` to use the
+Python ``keyring`` module. And ``testing``, which will simply send
+the hardcoded string ``PASSWORD`` every time. As the name suggests, this is
+only useful for testing.
+
+Examples:
+
+.. code-block:: yaml
+
+    user: myuser
+    password-provider: keychain
+
+.. code-block:: console
+
+   $ afp --password-provider keychain
+
+There are two intricate caveats when using the ``keyring`` module with
+Gnome-Keychain which is why this feature is considered experimental.
+
+In order for the module to correctly use the Gnome Keychain the Python module
+`PyGObject aka gi
+<https://wiki.gnome.org/action/show/Projects/PyGObject?action=show&redirect=PyGObject>`_
+is required. As stated on the project website: "PyGObject is a Python extension
+module that gives clean and consistent access to the entire GNOME software
+platform through the use of GObject Introspection." Now, unfortunately, even
+though this project is `available on PyPi
+<https://pypi.python.org/pypi/PyGObject>`_ it can not be installed from there
+using ``pip`` due to issues with the build system. It is however available as a
+system package for Ubuntu distributions as package ``python-gi``. Long story
+short; in order to use the ``keychain`` module from ``afp-cli`` you need to
+have the ``gi`` module available to your Python interpreter. You can achieve
+this, for example, by doing a global install of ``afp-cli`` using something
+like ``sudo pip install afp-cli`` or install it into a virtual environment that
+uses the system site packages because it has been created with the
+``--system-site-packages`` flag.
+
+A second issue arises when the ``gi`` module is not installed. In this case,
+the ``keyring`` library simply selects an insecure ``PlaintextKeyring`` which
+simply stores the base64 encoded password in it's default location at:
+``~/.local/share/python_keyring/keyring_pass.cfg``(!). Since we prefer a
+secure-by-default approach, the ``afp-cli`` will abort with an appropriate
+message in case this backend is detected.
+
+Lastly, you can use the ``debug`` switch to check at runtime which backend was
+selected:
+
+.. code:: console
+
+    $ afp-cli --debug --password-provider keychain
+    ...
+    Note: will use the backend: '<keyring.backends.Gnome.Keyring object at 0x7f48a13e9510>'
+    ...
+
 
 License
 =======
