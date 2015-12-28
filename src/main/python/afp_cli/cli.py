@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 """
 Command line client for the AFP (AWS Federation Proxy)
 
