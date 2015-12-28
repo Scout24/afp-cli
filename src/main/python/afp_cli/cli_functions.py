@@ -21,17 +21,6 @@ def get_valid_seconds(aws_expiration_date, utcnow):
         return default_seconds
 
 
-def format_aws_credentials(credentials, prefix=''):
-    """Format aws credentials with optional prefix"""
-    return os.linesep.join(["{0}{1}='{2}'".format(prefix, key, value)
-                            for (key, value) in sorted(credentials.items())])
-
-
-def format_account_and_role_list(account_and_role_list):
-    return os.linesep.join(["{0:<20} {1}".format(account, ",".join(sorted(roles)))
-                            for account, roles in sorted(account_and_role_list.items())])
-
-
 def get_default_afp_server():
     """Return the FQDN of the host that is called "afp"
 
