@@ -6,6 +6,7 @@ import socket
 import sys
 
 from .log import error
+from .client import APICallError
 
 
 def get_valid_seconds(aws_expiration_date, utcnow):
@@ -45,11 +46,9 @@ def get_default_afp_server():
 def get_first_role(federation_client, account):
     try:
         accounts_and_roles = federation_client.get_account_and_role_list()
-    except Exception as exc:
-        error("Failed to get account list from AWS: %s" % exc)
-
-    try:
         return sorted(accounts_and_roles[account])[0]
+    except APICallError as exc:
+        error("Failed to get account list from AWS: %s" % exc)
     except KeyError:
         error("%s is not a valid AWS account" % account)
     except IndexError:
