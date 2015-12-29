@@ -52,7 +52,7 @@
     help                                Show help.
     version                             Show version.
     list                                List available accounts and roles.
-    show                                Show credentials instead of opening subshell.
+    show                                Show credentials.
     export                              Show credentials in an export suitable format.
     write                               Write credentials to aws credentials file.
     subshell                            Open a subshell with exported credentials.
@@ -79,7 +79,7 @@
     help                                Show help.
     version                             Show version.
     list                                List available accounts and roles.
-    show                                Show credentials instead of opening subshell.
+    show                                Show credentials.
     export                              Show credentials in an export suitable format.
     write                               Write credentials to aws credentials file.
     subshell                            Open a subshell with exported credentials.
@@ -106,7 +106,7 @@
     help                                Show help.
     version                             Show version.
     list                                List available accounts and roles.
-    show                                Show credentials instead of opening subshell.
+    show                                Show credentials.
     export                              Show credentials in an export suitable format.
     write                               Write credentials to aws credentials file.
     subshell                            Open a subshell with exported credentials.
