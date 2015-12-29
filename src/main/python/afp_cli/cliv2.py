@@ -45,7 +45,7 @@ from .exporters import (format_aws_credentials,
                         enter_subx,
                         )
 from . import log
-from .log import error, debug
+from .log import info, error, debug, CMDLineExit
 from .password_providers import get_password
 
 HELP, VERSION, LIST, SHOW, EXPORT, WRITE, SUBSHELL = \
@@ -56,6 +56,13 @@ ASSUME_SUBCOMMANDS = [SHOW, EXPORT, WRITE, SUBSHELL]
 
 
 def main():
+
+    try:
+        unprotected_main()
+    except CMDLineExit as e:
+        error(e)
+
+def unprotected_main():
     """Main function for script execution"""
     arguments = docopt(__doc__)
     if arguments['--debug']:
@@ -67,7 +74,7 @@ def main():
     debug("Subcommand is '{0}'".format(subcommand))
 
     if subcommand == VERSION:
-        print('Reporting version is not implemented yet')
+        info('Reporting version is not implemented yet')
         return 0
     elif subcommand == HELP:
         # exit early with help message
@@ -102,11 +109,11 @@ def main():
 
     if arguments['list']:
         try:
-            print(format_account_and_role_list(federation_client.get_account_and_role_list()))
+            info(format_account_and_role_list(federation_client.get_account_and_role_list()))
         except Exception as exc:
             error("Failed to get account list from AWS: %s" % exc)
     elif arguments['show']:
-            print(format_aws_credentials(aws_credentials))
+            info(format_aws_credentials(aws_credentials))
     elif arguments['export']:
             print_export(aws_credentials)
     elif arguments['write']:
