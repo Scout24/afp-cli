@@ -17,7 +17,7 @@ PASSWORD_PROVIDERS = [PROMPT, KEYRING, TESTING]
 
 def prompt_get_password(username):
     """Return password for the given user"""
-    return getpass.getpass(b"Password for {0}: ".format(username))
+    return getpass.getpass("Password for {0}: ".format(username))
 
 
 def keyring_get_password(username):
