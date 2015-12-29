@@ -42,6 +42,14 @@ from .password_providers import get_password
 
 
 def main():
+
+    try:
+        unprotected_main()
+    except CMDLineExit as e:
+        error(e)
+
+
+def unprotected_main():
     """Main function for script execution"""
     arguments = docopt(__doc__)
     if arguments['--debug']:
@@ -60,10 +68,7 @@ def main():
                          config.get("password-provider") or
                          'prompt')
 
-    try:
-        password = get_password(password_provider, username)
-    except CMDLineExit as e:
-        error(e)
+    password = get_password(password_provider, username)
 
     federation_client = AWSFederationClientCmd(api_url=api_url,
                                                username=username,

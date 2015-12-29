@@ -5,7 +5,7 @@ import random
 import socket
 import sys
 
-from .log import error
+from .log import CMDLineExit
 from .client import APICallError
 
 
@@ -32,14 +32,14 @@ def get_default_afp_server():
         addrinfos = socket.getaddrinfo("afp", 443,
                                        socket.AF_INET, socket.SOCK_STREAM)
     except Exception as exc:
-        error("Could not resolve hostname 'afp': %s" % exc)
+        raise CMDLineExit("Could not resolve hostname 'afp': %s" % exc)
     addrinfo = random.choice(addrinfos)
     afp_server_ip = addrinfo[4][0]
 
     try:
         return socket.gethostbyaddr(afp_server_ip)[0]
     except Exception as exc:
-        error("DNS reverse lookup failed for IP %s: %s" % (
+        raise CMDLineExit("DNS reverse lookup failed for IP %s: %s" % (
             afp_server_ip, exc))
 
 
@@ -48,18 +48,18 @@ def get_first_role(federation_client, account):
         accounts_and_roles = federation_client.get_account_and_role_list()
         return sorted(accounts_and_roles[account])[0]
     except APICallError as exc:
-        error("Failed to get account list from AWS: %s" % exc)
+        raise CMDLineExit("Failed to get account list from AWS: %s" % exc)
     except KeyError:
-        error("%s is not a valid AWS account" % account)
+        raise CMDLineExit("%s is not a valid AWS account" % account)
     except IndexError:
-        error("Could not find any role for account %s" % account)
+        raise CMDLineExit("Could not find any role for account %s" % account)
 
 
 def get_aws_credentials(federation_client, account, role):
     try:
         aws_credentials = federation_client.get_aws_credentials(account, role)
     except APICallError as exc:
-        error("Failed to get credentials from AWS: %s" % exc)
+        raise CMDLineExit("Failed to get credentials from AWS: %s" % exc)
     else:
         aws_credentials['AWS_VALID_SECONDS'] = get_valid_seconds(aws_credentials['AWS_EXPIRATION_DATE'],
                                                                  datetime.utcnow())

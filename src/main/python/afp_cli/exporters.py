@@ -8,7 +8,7 @@ import subprocess
 import sys
 import tempfile
 
-from .log import error
+from .log import CMDLineExit
 
 RC_SCRIPT_TEMPLATE = """
 # Pretend to be an interactive, non-login shell
@@ -84,4 +84,4 @@ def enter_subx(aws_credentials, account, role):
         else:
             start_subshell(aws_credentials, account, role)
     except Exception as exc:
-        error("Failed to start subshell: %s" % exc)
+        raise CMDLineExit("Failed to start subshell: %s" % exc)
