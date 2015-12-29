@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
 Command line client for the AFP V2 (AWS Federation Proxy)
@@ -56,7 +55,6 @@ ASSUME_SUBCOMMANDS = [SHOW, EXPORT, WRITE, SUBSHELL]
 
 
 def main():
-
     try:
         unprotected_main()
     except CMDLineExit as e:

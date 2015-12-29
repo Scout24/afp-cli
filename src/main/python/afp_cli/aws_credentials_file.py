@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from six.moves import configparser
 from afp_cli.compat import OrderedDict
