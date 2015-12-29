@@ -27,7 +27,7 @@ def keyring_get_password(username):
     if keyring_impl.__class__.__name__ == 'PlaintextKeyring':
         error("Aborting: the 'keyring' module has selected the insecure 'PlaintextKeyring'.")
 
-    debug("Note: will use the backend: '{}'".format(keyring_impl))
+    debug("Note: will use the backend: '{0}'".format(keyring_impl))
     password = keyring.get_password('afp', username)
     if not password:
         print("No password found in keychain, please enter it now to store it.")
