@@ -37,7 +37,7 @@ from .exporters import (format_aws_credentials,
                         enter_subx,
                         )
 from . import log
-from .log import error, debug, CMDLineExit
+from .log import info, error, debug, CMDLineExit
 from .password_providers import get_password
 
 
@@ -79,7 +79,7 @@ def unprotected_main():
         aws_credentials = get_aws_credentials(federation_client, account, role)
 
         if arguments['--show']:
-            print(format_aws_credentials(aws_credentials))
+            info(format_aws_credentials(aws_credentials))
         elif arguments['--export']:
             print_export(aws_credentials)
         elif arguments['--write']:
@@ -88,6 +88,6 @@ def unprotected_main():
             enter_subx(aws_credentials, account, role)
     else:
         try:
-            print(format_account_and_role_list(federation_client.get_account_and_role_list()))
+            info(format_account_and_role_list(federation_client.get_account_and_role_list()))
         except Exception as exc:
             error("Failed to get account list from AWS: %s" % exc)
