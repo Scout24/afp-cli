@@ -57,6 +57,8 @@ def set_properties(project):
 
     project.set_property('distutils_console_scripts', ['afp=afp_cli.cli:main'])
     project.set_property('install_dependencies_upgrade', True)
+    project.set_property('coverage_exceptions', ['afp_cli.config',
+                                                 'afp_cli.cli'])
 
 
 @init(environments='teamcity')

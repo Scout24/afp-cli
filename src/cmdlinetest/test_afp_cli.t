@@ -39,7 +39,7 @@
   Failed to get account list from AWS: .* (re)
   [1]
 
-  $ afp --password-provider no_such_provider
+  $ afp --password-provider no_such_provider --api-url=http://localhost:5555
   'no_such_provider' is not a valid password provider.
   Valid options are: ['prompt', 'keyring', 'testing']
   [1]
