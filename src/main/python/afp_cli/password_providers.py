@@ -1,5 +1,5 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from __future__ import print_function, absolute_import, division
 
 import getpass
 from .log import info, debug, CMDLineExit
@@ -21,7 +21,6 @@ def prompt_get_password(username):
 
 
 def keyring_get_password(username):
-
     if keyring is None:
         raise CMDLineExit("You requested to use the 'keyring' module "
                           "as password provider, but do not have this "
@@ -52,6 +51,6 @@ def get_password(password_provider, username):
         raise CMDLineExit("'{0}' is not a valid password provider.\n".
                           format(password_provider) +
                           "Valid options are: {0}".
-                          format(str(PASSWORD_PROVIDERS)))
+                          format(PASSWORD_PROVIDERS))
 
     return password
