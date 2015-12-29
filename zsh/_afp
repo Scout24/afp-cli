@@ -42,23 +42,39 @@ __afp_commands(){
 }
 
 __afp_accounts(){
-    local -a response accounts roles
+    # okay this is one big hack and can surely be done better
+    local -a response accounts roles current_account found
+    # get all accounts and roles
     response=$( afp list )
+    # get the accounts
     accounts=($(echo $response | cut -f1 -d' '))
-    if ! [ "${line[2]}" = 'XXXXXXXXXXXX' ] ;
-    then
+    # get the current account on the line, if any
+    current_account=${line[2]}
+    # see if the account can be found
+    found=''
+    for a in $accounts ;
+    do
+        # check if the current_account is a prefix, but not a full match
+        # We need this to determine, if we should continue to complete the
+        # account, or if we should move onto the roles
+        if [[ $a = $current_account* ]] && [[ $a != $current_account ]]; then
+            found='yes'
+        fi
+    done
+    # if there is no account yet or if one was found above
+    # -> complete accounts
+    if [[ -z $current_account ]] || [[ -n $found ]]; then
         _describe -t accounts 'accounts' accounts
+    # otherwise complete roles
     else
+        # roles is zsh array
         roles=($(echo $response |
-                 grep 'XXXXXXXXXXXXXX' |
-                 cut --complement -f1 -d' ' |
-                 tr -d '[[:space:]]' |
-                 sed 's/,/\ /'))
+                 grep $current_account |      # look for line with current account
+                 cut --complement -f1 -d' ' | # cut everything except the first field
+                 tr -d '[[:space:]]' |        # prune whitespace before and after
+                 sed 's/,/\ /'))              # replace space with comma
         _describe -t roles 'roles' roles
     fi
-
-
-
 }
 
 _arguments -C \
