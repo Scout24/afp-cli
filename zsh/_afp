@@ -1,0 +1,81 @@
+#compdef afp
+#description:afp cli
+#
+# ZSH Completion for afp-cli
+#
+# To use this completion drop it somewhere in you '$fpath', e.g.:
+#
+#     $ git clone $CLONEURL
+#     $ fpath+=$PWD/afp-cli/zsh
+#     $ compinit afp
+#
+# To activate the completion cache for packages, add the following to your
+# '.zshrc':
+#
+#     zstyle ':completion::complete:*' use-cache 1
+#
+# To forcefully clean the completion cache, look in '~/.zcompcache' and remove
+# file starting with 'afp_'.
+#
+# When developing, you can use the following to reload the completion after
+# having modified it:
+#
+#    $ unfunction _afp && autoload -U _afp
+
+local state line context
+
+__afp_commands(){
+    local -a help_commands list_commands assume_commands
+    help_commands=(
+        help:'Show help.'
+        version:'Show version.'
+    )
+    assume_commands=(
+        list:'List available accounts and roles.'
+        show:'Show credentials instead of opening subshell.'
+        export:'Show credentials in an export suitable format.'
+        write:'Write credentials to aws credentials file.'
+        subshell:'Open a subshell with exported credentials.'
+    )
+    _describe -t assume_commands "assume_commands" assume_commands
+    _describe -t help_commands "help_commands" help_commands
+}
+
+__afp_accounts(){
+    local -a response accounts roles
+    response=$( afp list )
+    accounts=($(echo $response | cut -f1 -d' '))
+    if ! [ "${line[2]}" = 'XXXXXXXXXXXX' ] ;
+    then
+        _describe -t accounts 'accounts' accounts
+    else
+        roles=($(echo $response |
+                 grep 'XXXXXXXXXXXXXX' |
+                 cut --complement -f1 -d' ' |
+                 tr -d '[[:space:]]' |
+                 sed 's/,/\ /'))
+        _describe -t roles 'roles' roles
+    fi
+
+
+
+}
+
+_arguments -C \
+           ': :->command' \
+           '*:: :->subcmd'
+
+case $state in
+(command)
+    __afp_commands
+    ;;
+(subcmd)
+    case ${line[1]} in
+    (help|version|list)
+        _message 'No more arguments'
+        ;;
+    (show|export|write|subshell)
+        __afp_accounts
+        ;;
+    esac
+esac
