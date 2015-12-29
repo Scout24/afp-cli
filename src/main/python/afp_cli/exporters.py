@@ -8,7 +8,7 @@ import subprocess
 import sys
 import tempfile
 
-from .log import CMDLineExit
+from .log import CMDLineExit, info
 
 RC_SCRIPT_TEMPLATE = """
 # Pretend to be an interactive, non-login shell
@@ -46,13 +46,13 @@ def format_account_and_role_list(account_and_role_list):
 
 def print_export(aws_credentials):
     if os.name == "nt":
-        print(format_aws_credentials(aws_credentials, prefix='set '))
+        info(format_aws_credentials(aws_credentials, prefix='set '))
     else:
-        print(format_aws_credentials(aws_credentials, prefix='export '))
+        info(format_aws_credentials(aws_credentials, prefix='export '))
 
 
 def start_subshell(aws_credentials, account, role):
-    print("Press CTRL+D to exit.")
+    info("Press CTRL+D to exit.")
     rc_script = tempfile.NamedTemporaryFile(mode='w')
     rc_script.write(RC_SCRIPT_TEMPLATE.format(role=role, account=account,
                                               valid_seconds=aws_credentials['AWS_VALID_SECONDS']))
@@ -61,7 +61,7 @@ def start_subshell(aws_credentials, account, role):
     subprocess.call(
         ["bash", "--rcfile", rc_script.name],
         stdout=sys.stdout, stderr=sys.stderr, stdin=sys.stdin)
-    print("Left AFP subshell.")
+    info("Left AFP subshell.")
 
 
 def start_subcmd(aws_credentials, account, role):
@@ -72,12 +72,12 @@ def start_subcmd(aws_credentials, account, role):
     batch_file.close()
     subprocess.call(
         ["cmd", "/K", batch_file.name])
-    print("Left AFP subcmd.")
+    info("Left AFP subcmd.")
     os.unlink(batch_file.name)
 
 
 def enter_subx(aws_credentials, account, role):
-    print("Entering AFP subshell for account {0}, role {1}.".format(account, role))
+    info("Entering AFP subshell for account {0}, role {1}.".format(account, role))
     try:
         if os.name == "nt":
             start_subcmd(aws_credentials, account, role)
