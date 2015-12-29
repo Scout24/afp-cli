@@ -4,6 +4,11 @@
 import getpass
 from .log import info, debug, CMDLineExit
 
+try:
+    import keyring
+except ImportError:  # pragma: no cover
+    keyring = None
+
 PROMPT = 'prompt'
 KEYRING = 'keyring'
 TESTING = 'testing'
@@ -17,9 +22,7 @@ def prompt_get_password(username):
 
 def keyring_get_password(username):
 
-    try:
-        import keyring
-    except ImportError:
+    if keyring is None:
         raise CMDLineExit("You requested to use the 'keyring' module "
                           "as password provider, but do not have this "
                           "installed.")
