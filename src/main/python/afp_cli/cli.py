@@ -37,7 +37,7 @@ from .exporters import (format_aws_credentials,
                         enter_subx,
                         )
 from . import log
-from .log import error, debug
+from .log import error, debug, CMDLineExit
 from .password_providers import get_password
 
 
@@ -60,7 +60,10 @@ def main():
                          config.get("password-provider") or
                          'prompt')
 
-    password = get_password(password_provider, username)
+    try:
+        password = get_password(password_provider, username)
+    except CMDLineExit as e:
+        error(e)
 
     federation_client = AWSFederationClientCmd(api_url=api_url,
                                                username=username,

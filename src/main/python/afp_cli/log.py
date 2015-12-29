@@ -11,6 +11,14 @@ import sys
 DEBUG = False
 
 
+class CMDLineExit(Exception):
+    pass
+
+
+def info(message):
+    print(message)
+
+
 def error(message):
     print(message, file=sys.stderr)
     sys.exit(1)
