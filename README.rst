@@ -70,7 +70,7 @@ Get Help Text
 
     $ afp [-h | --help]
 
-List Available Account Aames and Roles
+List Available Account Names and Roles
 --------------------------------------
 
 For the currently logged-in user:
