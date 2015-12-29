@@ -80,7 +80,10 @@ def main():
         elif arguments['--write']:
             write(aws_credentials)
         else:
-            enter_subx(aws_credentials, account, role)
+            try:
+                enter_subx(aws_credentials, account, role)
+            except CMDLineExit as e:
+                error(e)
     else:
         try:
             print(format_account_and_role_list(federation_client.get_account_and_role_list()))
