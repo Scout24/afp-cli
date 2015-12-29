@@ -9,9 +9,6 @@
 #     $ fpath+=$PWD/afp-cli/zsh
 #     $ compinit afp
 #
-# To forcefully clean the completion cache, look in '~/.zcompcache' and remove
-# file starting with 'afp_'.
-#
 # When developing, you can use the following to reload the completion after
 # having modified it:
 #
