@@ -32,8 +32,8 @@ __afp_commands(){
         write:'Write credentials to aws credentials file.'
         subshell:'Open a subshell with exported credentials.'
     )
-    _describe -t assume_commands "assume_commands" assume_commands
-    _describe -t help_commands "help_commands" help_commands
+    _describe -t assume_commands "assume commands" assume_commands
+    _describe -t help_commands "help commands" help_commands
 }
 
 __afp_provider(){
