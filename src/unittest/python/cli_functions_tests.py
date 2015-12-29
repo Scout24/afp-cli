@@ -3,13 +3,14 @@
 
 from unittest2 import TestCase
 from datetime import datetime
-from mock import patch, Mock, ANY
+from mock import patch, Mock
 
 from afp_cli.cli_functions import (get_valid_seconds,
                                    get_first_role,
                                    get_aws_credentials,
                                    )
 from afp_cli.client import APICallError
+from afp_cli.log import CMDLineExit
 
 
 class GetValidSecondsTest(TestCase):
@@ -47,28 +48,22 @@ class GetFirstRoleTests(TestCase):
              'ACCOUNT2': ['ROLE3', 'ROLE4']}
         self.assertEqual('ROLE1', get_first_role(client, 'ACCOUNT1'))
 
-    @patch('afp_cli.cli_functions.error')
-    def test_excpetion_when_fetching_roles(self, error_mock):
+    def test_excpetion_when_fetching_roles(self):
         client = Mock()
         client.get_account_and_role_list.side_effect = APICallError
-        get_first_role(client, 'ANY_ACCOUNT')
-        error_mock.assert_called_once_with(ANY)
+        self.assertRaises(CMDLineExit, get_first_role, client, 'ANY_ACCOUNT')
 
-    @patch('afp_cli.cli_functions.error')
-    def test_excpetion_when_looking_for_account(self, error_mock):
+    def test_excpetion_when_looking_for_account(self):
         client = Mock()
         client.get_account_and_role_list.return_value = \
             {'ACCOUNT1': ['ROLE1']}
-        get_first_role(client, 'ACCOUNT2')
-        error_mock.assert_called_once_with(ANY)
+        self.assertRaises(CMDLineExit, get_first_role, client, 'ACCOUNT2')
 
-    @patch('afp_cli.cli_functions.error')
-    def test_excpetion_when_looking_for_role(self, error_mock):
+    def test_excpetion_when_looking_for_role(self):
         client = Mock()
         client.get_account_and_role_list.return_value = \
             {'ACCOUNT1': []}
-        get_first_role(client, 'ACCOUNT1')
-        error_mock.assert_called_once_with(ANY)
+        self.assertRaises(CMDLineExit, get_first_role, client, 'ACCOUNT1')
 
 
 class GetAWSCredentialsTest(TestCase):
@@ -89,9 +84,7 @@ class GetAWSCredentialsTest(TestCase):
         received = get_aws_credentials(client, 'ACCOUNT1', 'ROLE1')
         self.assertEqual(expected, received)
 
-    @patch('afp_cli.cli_functions.error')
-    def test_excpetion(self, error_mock):
+    def test_excpetion(self):
         client = Mock()
         client.get_aws_credentials.side_effect = APICallError
-        get_aws_credentials(client, 'ACCOUNT1', 'ROLE1')
-        error_mock.assert_called_once_with(ANY)
+        self.assertRaises(CMDLineExit, get_aws_credentials, client, 'ACCOUNT1', 'ROLE1')
