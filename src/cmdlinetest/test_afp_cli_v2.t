@@ -27,7 +27,7 @@
       afp [options] help
       afp [options] version
       afp [options] list
-      afp [options] (show | export | write | subshell) (<accountname> [<rolename>])
+      afp [options] (show | export | write | subshell) <accountname> [<rolename>]
   [1]
 
   $ afp -h
@@ -37,7 +37,7 @@
       afp [options] help
       afp [options] version
       afp [options] list
-      afp [options] (show | export | write | subshell) (<accountname> [<rolename>])
+      afp [options] (show | export | write | subshell) <accountname> [<rolename>]
   
   Options:
     -h, --help                          Show this.
@@ -64,7 +64,7 @@
       afp [options] help
       afp [options] version
       afp [options] list
-      afp [options] (show | export | write | subshell) (<accountname> [<rolename>])
+      afp [options] (show | export | write | subshell) <accountname> [<rolename>]
   
   Options:
     -h, --help                          Show this.
@@ -91,7 +91,7 @@
       afp [options] help
       afp [options] version
       afp [options] list
-      afp [options] (show | export | write | subshell) (<accountname> [<rolename>])
+      afp [options] (show | export | write | subshell) <accountname> [<rolename>]
   
   Options:
     -h, --help                          Show this.
