@@ -5,6 +5,7 @@ from unittest2 import TestCase
 from afp_cli import aws_credentials_file
 import tempfile
 import shutil
+import os
 
 
 class AwsCredentialsFileTest(TestCase):
@@ -15,7 +16,7 @@ class AwsCredentialsFileTest(TestCase):
         shutil.rmtree(self.tempdir)
 
     def test_write_default_profile_to_new_file(self):
-        credentials_filename = self.tempdir + 'credentials'
+        credentials_filename = os.path.join(self.tempdir, 'credentials')
         aws_credentials_file.write({
             'AWS_ACCESS_KEY_ID': 'AccessKeyId',
             'AWS_SECRET_ACCESS_KEY': 'SecretAccessKey',
@@ -33,7 +34,7 @@ class AwsCredentialsFileTest(TestCase):
         ))
 
     def test_write_default_profile_to_new_file_in_not_existing_directory(self):
-        credentials_filename = self.tempdir + '/.aws/credentials'
+        credentials_filename = os.path.join(self.tempdir, '.aws/credentials')
         aws_credentials_file.write({
             'AWS_ACCESS_KEY_ID': 'AccessKeyId',
             'AWS_SECRET_ACCESS_KEY': 'SecretAccessKey',
@@ -51,8 +52,7 @@ class AwsCredentialsFileTest(TestCase):
         ))
 
     def test_overwrite_default_profile(self):
-        credentials_filename = self.tempdir + 'credentials'
-
+        credentials_filename = os.path.join(self.tempdir, 'credentials')
         with open(credentials_filename, "w") as credentials_file:
             credentials_file.write((
                 '[default]\n'
@@ -79,7 +79,7 @@ class AwsCredentialsFileTest(TestCase):
         ))
 
     def test_write_profile_to_new_file(self):
-        credentials_filename = self.tempdir + 'credentials'
+        credentials_filename = os.path.join(self.tempdir, 'credentials')
         aws_credentials_file.write({
             'AWS_ACCESS_KEY_ID': 'AccessKeyId',
             'AWS_SECRET_ACCESS_KEY': 'SecretAccessKey',
@@ -97,8 +97,7 @@ class AwsCredentialsFileTest(TestCase):
         ))
 
     def test_add_profile(self):
-        credentials_filename = self.tempdir + 'credentials'
-
+        credentials_filename = os.path.join(self.tempdir, 'credentials')
         with open(credentials_filename, "w") as credentials_file:
             credentials_file.write((
                 '[default]\n'
@@ -140,8 +139,7 @@ class AwsCredentialsFileTest(TestCase):
         ))
 
     def test_overwrite_profile(self):
-        credentials_filename = self.tempdir + 'credentials'
-
+        credentials_filename = os.path.join(self.tempdir, 'credentials')
         with open(credentials_filename, "w") as credentials_file:
             credentials_file.write((
                 '[default]\n'
