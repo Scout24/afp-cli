@@ -13,6 +13,13 @@
 # having modified it:
 #
 #    $ unfunction _afp && autoload -U _afp
+#
+# TODO
+#
+#    * Implement a cache for the available accounts and roles
+#      to reduce load on the afp server.
+#    * Cleanup the stuff that figures out if to complete accounts or roles
+#    * Cleanup the stuff that extracts the roles from the output
 
 local state line context
 
