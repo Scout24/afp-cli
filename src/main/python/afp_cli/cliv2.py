@@ -62,6 +62,7 @@ def main():
     except CMDLineExit as e:
         error(e)
 
+
 def unprotected_main():
     """Main function for script execution"""
     arguments = docopt(__doc__)
