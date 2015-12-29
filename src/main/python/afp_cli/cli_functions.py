@@ -5,7 +5,7 @@ import random
 import socket
 import sys
 
-from .log import CMDLineExit, info
+from .log import CMDLineExit
 from .client import APICallError
 
 
