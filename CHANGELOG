@@ -1,0 +1,8 @@
+1.3.0
+-----
+
+* Major refactor and modularization of the code base 
+* Many additional unit-tests and improved coverage
+* Several bug-fixes
+* Integration of the keyring module
+* New command-line interface: afpv2
