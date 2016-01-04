@@ -201,10 +201,13 @@ Interface with the System Keyring
 
 Staring with version ``1.3.0`` experimental support for the `Python keyring
 module <https://pypi.python.org/pypi/keyring>`_ has been implemented. This has
-only been testing with the Gnome Keyring but supposedly also works with other
-systems such as Mac OS X Keychain and Windows Credential Vault. If you have
-made it work with anything other than the Gnome Keyring, please submit a
-pull-request to modify this sentence.
+been tested with the Gnome Keyring and Max OS X Keychain but supposedly also
+works with Windows Credential Vault. Note: you need to additionally install the
+``keyring`` module, for example using:
+
+.. code-block:: console
+
+   $ pip install keyring
 
 You can configure to use the keychain by config-file or command-line switch.
 Viable options are: ``prompt`` to prompt for the password during every
@@ -216,13 +219,15 @@ only useful for testing.
 Examples:
 
 .. code-block:: yaml
+   :cpation: config-file
 
     user: myuser
-    password-provider: keychain
+    password-provider: keyring
 
 .. code-block:: console
+   :caption: command-line
 
-   $ afp --password-provider keychain
+   $ afp --password-provider keyring
    No password found in keychain, please enter it now to store it.
    Password for vhaenel: 
 
@@ -246,7 +251,7 @@ though this project is `available on PyPi
 <https://pypi.python.org/pypi/PyGObject>`_ it can not be installed from there
 using ``pip`` due to issues with the build system. It is however available as a
 system package for Ubuntu distributions as package ``python-gi``. Long story
-short; in order to use the ``keychain`` module from ``afp-cli`` you need to
+short; in order to use the ``keyring`` module from ``afp-cli`` you need to
 have the ``gi`` module available to your Python interpreter. You can achieve
 this, for example, by doing a global install of ``afp-cli`` using something
 like ``sudo pip install afp-cli`` or install it into a virtual environment that
