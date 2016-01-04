@@ -216,16 +216,16 @@ Python ``keyring`` module. And ``testing``, which will simply send
 the hardcoded string ``PASSWORD`` every time. As the name suggests, this is
 only useful for testing.
 
-Examples:
+Example config-file:
 
 .. code-block:: yaml
-   :cpation: config-file
 
     user: myuser
     password-provider: keyring
 
+Example command-line:
+
 .. code-block:: console
-   :caption: command-line
 
    $ afp --password-provider keyring
    No password found in keychain, please enter it now to store it.
