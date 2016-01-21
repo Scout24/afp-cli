@@ -4,7 +4,6 @@
 import bottle
 from bottle import route
 from textwrap import dedent
-from bottledaemon import daemon_run
 import sys
 
 ########################################################################
