@@ -16,7 +16,8 @@ name = 'afp-cli'
 summary = 'Command line client for AWS federation proxy api'
 authors = [Author('Stefan Neben', "stefan.neben@immobilienscout24.de"),
            Author('Tobias Vollmer', "tobias.vollmer@immobilienscout24.de"),
-           Author('Stefan Nordhausen', "stefan.nordhausen@immobilienscout24.de"),
+           Author(
+               'Stefan Nordhausen', "stefan.nordhausen@immobilienscout24.de"),
            Author('Enrico Heine', "enrico.heine@immobilienscout24.de"),
            Author('Valentin Haenel', "valentin.haenel@immobilienscout24.de"),
            ]
@@ -33,7 +34,6 @@ def set_properties(project):
     project.build_depends_on("unittest2")
     project.build_depends_on("mock")
     project.build_depends_on("six")
-    project.build_depends_on("bottle")
     project.build_depends_on("BottleDaemon")
     if sys.version_info[0:2] < (2, 7):
         project.depends_on("ordereddict")
@@ -53,10 +53,11 @@ def set_properties(project):
         "Programming Language :: Python :: 3.3",
         "Programming Language :: Python :: 3.4",
         "Programming Language :: Python :: 3.5",
-        ])
+    ])
 
     project.set_property('distutils_console_scripts', ['afp=afp_cli.cli:main'])
-    project.set_property('distutils_console_scripts', ['afpv2=afp_cli.cliv2:main'])
+    project.set_property(
+        'distutils_console_scripts', ['afpv2=afp_cli.cliv2:main'])
     project.set_property('install_dependencies_upgrade', True)
     project.set_property('coverage_exceptions', ['afp_cli.config',
                                                  'afp_cli.cli'])

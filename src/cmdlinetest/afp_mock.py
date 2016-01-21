@@ -8,7 +8,7 @@ from bottledaemon import daemon_run
 import sys
 
 ########################################################################
-### BEGIN VENDOR BOTTLEDAEMON
+# BEGIN VENDOR BOTTLEDAEMON
 ########################################################################
 
 import os
@@ -16,15 +16,15 @@ import argparse
 import signal
 import daemon
 import lockfile
-import bottle
 from contextlib import contextmanager
+
 
 @contextmanager
 def __locked_pidfile(filename):
     # Acquire the lockfile
     lock = lockfile.FileLock(filename)
     lock.acquire(-1)
-    
+
     # Write out our pid
     realfile = open(filename, "w")
     realfile.write(str(os.getpid()))
@@ -32,7 +32,7 @@ def __locked_pidfile(filename):
 
     # Yield to the daemon
     yield
-    
+
     # Cleanup after ourselves
     os.remove(filename)
     lock.release()
@@ -41,7 +41,7 @@ def __locked_pidfile(filename):
 def daemon_run(host="localhost", port="8080", pidfile=None, logfile=None):
     """
     Get the bottle 'run' function running in the background as a daemonized
-    process. 
+    process.
     :host: The host interface to listen for connections on. Enter 0.0.0.0
            to listen on all interfaces. Defaults to localhost.
     :port: The host port to listen on. Defaults to 8080.
@@ -57,7 +57,7 @@ def daemon_run(host="localhost", port="8080", pidfile=None, logfile=None):
             os.getcwd(),
             "bottle.pid"
         )
-    
+
     if logfile is None:
         logfile = os.path.join(
             os.getcwd(),
@@ -65,24 +65,25 @@ def daemon_run(host="localhost", port="8080", pidfile=None, logfile=None):
         )
 
     if args.action == "start":
-        log = open(logfile,"w+")
-        context = daemon.DaemonContext( 
+        log = open(logfile, "w+")
+        context = daemon.DaemonContext(
             pidfile=__locked_pidfile(pidfile),
             stdout=log,
             stderr=log,
             initgroups=False
         )
-        
+
         with context:
             bottle.run(host=host, port=port)
     else:
-        with open(pidfile,"r") as p:
+        with open(pidfile, "r") as p:
             pid = int(p.read())
             os.kill(pid, signal.SIGTERM)
 
 ########################################################################
-### END VENDOR BOTTLEDAEMON
+# END VENDOR BOTTLEDAEMON
 ########################################################################
+
 
 @route('/account')
 def account():
