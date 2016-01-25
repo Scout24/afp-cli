@@ -34,7 +34,7 @@ def set_properties(project):
     project.build_depends_on("unittest2")
     project.build_depends_on("mock")
     project.build_depends_on("six")
-    project.build_depends_on("BottleDaemon")
+    project.build_depends_on("bottle")
     if sys.version_info[0:2] < (2, 7):
         project.depends_on("ordereddict")
     project.depends_on("yamlreader>=3.0.1")
