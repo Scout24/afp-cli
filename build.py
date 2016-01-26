@@ -55,10 +55,11 @@ def set_properties(project):
         "Programming Language :: Python :: 3.3",
         "Programming Language :: Python :: 3.4",
         "Programming Language :: Python :: 3.5",
-        ])
+    ])
 
     project.set_property('distutils_console_scripts', ['afp=afp_cli.cli:main'])
-    project.set_property('distutils_console_scripts', ['afpv2=afp_cli.cliv2:main'])
+    project.set_property(
+        'distutils_console_scripts', ['afpv2=afp_cli.cliv2:main'])
     project.set_property('install_dependencies_upgrade', True)
     project.set_property('coverage_exceptions', ['afp_cli.config',
                                                  'afp_cli.cli'])

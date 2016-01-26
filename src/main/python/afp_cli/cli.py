@@ -20,24 +20,25 @@ Options:
   <rolename>                      The AWS role you want to use for login. Defaults to the first role.
 """
 
-from __future__ import print_function, absolute_import, division
+from __future__ import absolute_import, division, print_function
+
 import getpass
 
 from docopt import docopt
-from .aws_credentials_file import write
-from .client import AWSFederationClientCmd
-from .cli_functions import (get_default_afp_server,
-                            get_aws_credentials,
-                            get_first_role,
-                            )
-from .config import load_config
-from .exporters import (format_aws_credentials,
-                        format_account_and_role_list,
-                        print_export,
-                        enter_subx,
-                        )
+
 from . import log
-from .log import info, error, debug, CMDLineExit
+from .aws_credentials_file import write
+from .cli_functions import (get_aws_credentials,
+                            get_default_afp_server,
+                            get_first_role,
+                            sanitize_credentials)
+from .client import AWSFederationClientCmd
+from .config import load_config
+from .exporters import (enter_subx,
+                        format_account_and_role_list,
+                        format_aws_credentials,
+                        print_export)
+from .log import CMDLineExit, debug, error, info
 from .password_providers import get_password
 
 
@@ -70,12 +71,15 @@ def unprotected_main():
 
     password = get_password(password_provider, username)
 
-    federation_client = AWSFederationClientCmd(api_url=api_url,
-                                               username=username,
-                                               password=password)
+    # Do the sanitize dance
+    sanitize_credentials(username, password)
+
+    federation_client = AWSFederationClientCmd(
+        api_url=api_url, username=username, password=password)
     if arguments['<accountname>']:
         account = arguments['<accountname>']
-        role = arguments['<rolename>'] or get_first_role(federation_client, account)
+        role = arguments['<rolename>'] or get_first_role(
+            federation_client, account)
         aws_credentials = get_aws_credentials(federation_client, account, role)
 
         if arguments['--show']:
@@ -88,6 +92,7 @@ def unprotected_main():
             enter_subx(aws_credentials, account, role)
     else:
         try:
-            info(format_account_and_role_list(federation_client.get_account_and_role_list()))
+            info(format_account_and_role_list(
+                federation_client.get_account_and_role_list()))
         except Exception as exc:
             error("Failed to get account list from AWS: %s" % exc)

@@ -27,25 +27,27 @@ Subcommands:
   subshell                            Open a subshell with exported credentials.
 """
 
-from __future__ import print_function, absolute_import, division
+from __future__ import absolute_import, division, print_function
+
 import getpass
 
 from docopt import docopt
-from .aws_credentials_file import write
-from .client import AWSFederationClientCmd
-from .cli_functions import (get_default_afp_server,
-                            get_aws_credentials,
-                            get_first_role,
-                            )
-from .config import load_config
-from .exporters import (format_aws_credentials,
-                        format_account_and_role_list,
-                        print_export,
-                        enter_subx,
-                        )
+
 from . import log
-from .log import info, error, debug, CMDLineExit
+from .aws_credentials_file import write
+from .cli_functions import (get_aws_credentials,
+                            get_default_afp_server,
+                            get_first_role,
+                            sanitize_credentials)
+from .client import AWSFederationClientCmd
+from .config import load_config
+from .exporters import (enter_subx,
+                        format_account_and_role_list,
+                        format_aws_credentials,
+                        print_export)
+from .log import CMDLineExit, debug, error, info
 from .password_providers import get_password
+
 
 HELP, VERSION, LIST, SHOW, EXPORT, WRITE, SUBSHELL = \
     'help', 'version', 'list', 'show', 'export', 'write', 'subshell'
@@ -103,19 +105,21 @@ def unprotected_main():
     aws_credentials = None
     if subcommand in ASSUME_SUBCOMMANDS:
         account = arguments['<accountname>']
-        role = arguments['<rolename>'] or get_first_role(federation_client, account)
+        role = arguments.get('<rolename>') or \
+            get_first_role(federation_client, account)
         aws_credentials = get_aws_credentials(federation_client, account, role)
 
     if arguments['list']:
         try:
-            info(format_account_and_role_list(federation_client.get_account_and_role_list()))
+            info(format_account_and_role_list(
+                federation_client.get_account_and_role_list()))
         except Exception as exc:
             error("Failed to get account list from AWS: %s" % exc)
     elif arguments['show']:
-            info(format_aws_credentials(aws_credentials))
+        info(format_aws_credentials(aws_credentials))
     elif arguments['export']:
-            print_export(aws_credentials)
+        print_export(aws_credentials)
     elif arguments['write']:
-            write(aws_credentials)
+        write(aws_credentials)
     elif arguments['subshell']:
-            enter_subx(aws_credentials, account, role)
+        enter_subx(aws_credentials, account, role)
