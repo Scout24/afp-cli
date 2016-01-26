@@ -1,0 +1,115 @@
+#compdef afp
+#description:afp cli
+#
+# ZSH Completion for afp-cli
+#
+# To use this completion drop it somewhere in you '$fpath', e.g.:
+#
+#     $ git clone $CLONEURL
+#     $ fpath+=$PWD/afp-cli/zsh
+#     $ compinit afp
+#
+# When developing, you can use the following to reload the completion after
+# having modified it:
+#
+#    $ unfunction _afp && autoload -U _afp
+#
+# TODO
+#
+#    * Implement a cache for the available accounts and roles
+#      to reduce load on the afp server.
+#    * Cleanup the stuff that figures out if to complete accounts or roles
+#    * Cleanup the stuff that extracts the roles from the output
+
+local state line context
+
+__afp_commands(){
+    local -a help_commands list_commands assume_commands
+    help_commands=(
+        help:'Show help.'
+        version:'Show version.'
+    )
+    assume_commands=(
+        list:'List available accounts and roles.'
+        show:'Show credentials.'
+        export:'Show credentials in an export suitable format.'
+        write:'Write credentials to aws credentials file.'
+        subshell:'Open a subshell with exported credentials.'
+    )
+    _describe -t assume_commands "assume commands" assume_commands
+    _describe -t help_commands "help commands" help_commands
+}
+
+__afp_provider(){
+    local -a providers
+    providers=(
+        prompt
+        keyring
+        testing
+    )
+    _describe -t providers "providers" providers
+}
+
+
+__afp_accounts(){
+    # okay this is one big hack and can surely be done better
+    local -a response accounts roles current_account found
+    # get all accounts and roles
+    response=$( afp list )
+    # get the accounts
+    accounts=($(echo $response | cut -f1 -d' '))
+    # get the current account on the line, if any
+    current_account=${line[2]}
+    # see if the account can be found
+    found=''
+    for a in $accounts ;
+    do
+        # check if the current_account is a prefix, but not a full match
+        # We need this to determine, if we should continue to complete the
+        # account, or if we should move onto the roles
+        if [[ $a = $current_account* ]] && [[ $a != $current_account ]]; then
+            found='yes'
+        fi
+    done
+    # if there is no account yet or if one was found above
+    # -> complete accounts
+    if [[ -z $current_account ]] || [[ -n $found ]]; then
+        _describe -t accounts 'accounts' accounts
+    # otherwise complete roles
+    else
+        # roles is zsh array
+        roles=($(echo $response |
+                 grep $current_account |      # look for line with current account
+                 cut --complement -f1 -d' ' | # cut everything except the first field
+                 tr -d '[[:space:]]' |        # prune whitespace before and after
+                 sed 's/,/\ /'))              # replace space with comma
+        _describe -t roles 'roles' roles
+    fi
+}
+
+opts=(
+    '(-h --help)'{-h,--help}'[Show help]'
+    '(-d --debug)'{-d,--debug}'[Activate debug output.]'
+    '(-u --user)'{-u,--user}'[The user you want to use.]':user:
+    '(-a  --api-url)'{-a,--api-url}'[The URL of the AFP server.]'
+    '(-p --password-provider)'{-p,--password-provider}'[Password provider.]':provider:__afp_provider
+)
+
+_arguments -C $opts \
+           ': :->command' \
+           '*:: :->subcmd'
+
+case $state in
+(command)
+    __afp_commands
+    ;;
+(subcmd)
+    case ${line[1]} in
+    (help|version|list)
+        _message 'No more arguments'
+        ;;
+    (show|export|write|subshell)
+        __afp_accounts
+        ;;
+    esac
+esac
