@@ -6,13 +6,14 @@ python:
   - "3.4"
   - "3.5"
   - "pypy"
-  - "pypy3"
 
 install:
-  - pip install pybuilder
-  - pip install coveralls
-  - pyb install_dependencies
-  
+  - travis_retry pip install pybuilder coveralls
+  - travis_retry pyb install_dependencies
+
+env:
+  PYTHONIOENCODING=UTF-8
+
 script:
     - pyb -v
 

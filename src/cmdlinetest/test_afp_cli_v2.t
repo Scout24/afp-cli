@@ -262,7 +262,9 @@
   aws_session_token = XXXXXXXXXXXX
   aws_security_token = XXXXXXXXXXXX
   
+# Test that an unicode role name doesn't break the commandline
 
+  $ afp -p testing -a http://localhost:5555 write test_account test_rolé
 
 # END mocking AFP
 

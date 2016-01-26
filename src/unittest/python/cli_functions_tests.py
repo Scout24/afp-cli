@@ -1,16 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from unittest2 import TestCase
 from datetime import datetime
-from mock import patch, Mock
 
-from afp_cli.cli_functions import (get_valid_seconds,
+from afp_cli.cli_functions import (get_aws_credentials,
                                    get_first_role,
-                                   get_aws_credentials,
-                                   )
+                                   get_valid_seconds,
+                                   sanitize_credentials)
 from afp_cli.client import APICallError
 from afp_cli.log import CMDLineExit
+from mock import Mock, patch
+from unittest2 import TestCase
 
 
 class GetValidSecondsTest(TestCase):
@@ -18,7 +18,7 @@ class GetValidSecondsTest(TestCase):
     def test_get_valid_seconds(self):
         future_date = '1970-01-01T00:30:00Z'
         utc_now = datetime(1970, 1, 1)
-        self.assertEqual(get_valid_seconds(future_date, utc_now), 30*60)
+        self.assertEqual(get_valid_seconds(future_date, utc_now), 30 * 60)
 
     @patch('sys.stderr', Mock())
     def test_get_valid_seconds_catches(self):
@@ -87,4 +87,20 @@ class GetAWSCredentialsTest(TestCase):
     def test_excpetion(self):
         client = Mock()
         client.get_aws_credentials.side_effect = APICallError
-        self.assertRaises(CMDLineExit, get_aws_credentials, client, 'ACCOUNT1', 'ROLE1')
+        self.assertRaises(
+            CMDLineExit, get_aws_credentials, client, 'ACCOUNT1', 'ROLE1')
+
+
+class SanitizeCredentialsTest(TestCase):
+
+    def test_py2_utf8(self):
+        username = 'a'
+        password = 'ö'
+        with self.assertRaises(CMDLineExit):
+            sanitize_credentials(username, password)
+
+    def test_py3_utf8(self):
+        username = u'a'
+        password = u'ö'
+        with self.assertRaises(CMDLineExit):
+            sanitize_credentials(username, password)

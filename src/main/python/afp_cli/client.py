@@ -1,41 +1,49 @@
 # -*- coding: utf-8 -*-
-from __future__ import print_function, absolute_import, division
+from __future__ import absolute_import, division, print_function
+
+import json
 
 import requests
-import json
 from requests.auth import HTTPBasicAuth
+from six import PY3, u
 
 
 class APICallError(Exception):
-    pass
+    def __str__(self, *args, **kwargs):
+        if PY3:
+            return super(APICallError, self).__str__(*args, **kwargs)
+        return self.message
+        return u(self.message).encode('unicode-escape')
 
 
 class AWSFederationClientCmd(object):
     """Class for a command line client which uses the afp api"""
 
     def __init__(self, *args, **kwargs):
-        self.username = kwargs.get('username', None)
-        self._password = kwargs.get('password', None)
+        self.username = kwargs.get('username', '')
+        self.password = kwargs.get('password', '')
+
         self.api_url = kwargs.get('api_url', None)
         self.ssl_verify = kwargs.get('ssl_verify', True)
 
     def call_api(self, url_suffix):
         """Send a request to the aws federation proxy"""
+        url_orig = '{0}{1}'.format(self.api_url, url_suffix)
+        url = requests.utils.requote_uri(url_orig)
         # TODO: Automatic versioning instead of the static below
         headers = {'User-Agent': 'afp-cli/1.0.6'}
-        api_result = requests.get('{0}{1}'.format(self.api_url, url_suffix),
-                                  headers=headers,
-                                  verify=self.ssl_verify,
-                                  auth=HTTPBasicAuth(self.username,
-                                                     self._password))
+        api_result = requests.get(
+            url, headers=headers, verify=self.ssl_verify,
+            auth=HTTPBasicAuth(self.username, self.password))
         if api_result.status_code != 200:
             if api_result.status_code == 401:
-                # Need to treat 401 specially since it is directly send from webserver and body has different format.
-                raise APICallError("API call to AWS (%s/%s) failed: %s %s" % (
-                    self.api_url, url_suffix, api_result.status_code, api_result.reason))
+                # Need to treat 401 specially since it is directly send
+                # from webserver and body has different format.
+                raise APICallError("API call to AWS url (%s) failed: %s %s" % (
+                    url_orig, api_result.status_code, api_result.reason))
             else:
-                raise APICallError("API call to AWS (%s/%s) failed: %s" % (
-                    self.api_url, url_suffix, api_result.json()['message']))
+                raise APICallError("API call to AWS (%s) failed: %s" % (
+                    url_orig, api_result.json()['message']))
         return api_result.text
 
     def get_account_and_role_list(self):
@@ -45,8 +53,8 @@ class AWSFederationClientCmd(object):
 
     def get_aws_credentials(self, account, role):
         """Return AWS credentials for a specified user and account"""
-        aws_credentials = self.call_api("/account/{0}/{1}".format(account,
-                                                                  role))
+        aws_credentials = self.call_api(
+            "/account/{0}/{1}".format(account, role))
         aws_credentials = json.loads(aws_credentials)
         return {'AWS_ACCESS_KEY_ID': aws_credentials['AccessKeyId'],
                 'AWS_SECRET_ACCESS_KEY': aws_credentials['SecretAccessKey'],

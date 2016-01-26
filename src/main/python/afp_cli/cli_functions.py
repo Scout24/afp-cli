@@ -1,21 +1,25 @@
-from __future__ import print_function, absolute_import, division
+from __future__ import (
+    absolute_import, division, print_function, unicode_literals)
 
-from datetime import datetime
 import random
 import socket
 import sys
+from datetime import datetime
 
-from .log import CMDLineExit
 from .client import APICallError
+from .log import CMDLineExit
 
 
 def get_valid_seconds(aws_expiration_date, utcnow):
     try:
-        credentials_valid_until = datetime.strptime(aws_expiration_date, "%Y-%m-%dT%H:%M:%SZ", )
+        credentials_valid_until = datetime.strptime(
+            aws_expiration_date, "%Y-%m-%dT%H:%M:%SZ")
         return (credentials_valid_until - utcnow).seconds
     except ValueError:
         default_seconds = 3600
-        msg = "Failed to parse expiration date '{0}' for AWS credentials, assuming {1} seconds.".format(
+        msg = (
+            "Failed to parse expiration date '{0}' for AWS credentials, "
+            "assuming {1} seconds.").format(
             aws_expiration_date, default_seconds)
         print(msg, file=sys.stderr)
         return default_seconds
@@ -59,10 +63,31 @@ def get_aws_credentials(federation_client, account, role):
     try:
         aws_credentials = federation_client.get_aws_credentials(account, role)
     except APICallError as exc:
-        raise CMDLineExit("Failed to get credentials from AWS: %s" % exc)
+        raise CMDLineExit("Failed to get credentials from AWS: %s" % repr(exc))
     else:
-        aws_credentials['AWS_VALID_SECONDS'] = get_valid_seconds(aws_credentials['AWS_EXPIRATION_DATE'],
-                                                                 datetime.utcnow())
+        aws_credentials['AWS_VALID_SECONDS'] = get_valid_seconds(
+            aws_credentials['AWS_EXPIRATION_DATE'], datetime.utcnow())
         aws_credentials['AWS_ACCOUNT_NAME'] = account
         aws_credentials['AWS_ASSUMED_ROLE'] = role
         return aws_credentials
+
+
+def sanitize_credentials(username, password):
+    """
+    Check if username and password contain non-ASCII characters,
+    raise an exception when yes.
+
+    Per convention, non-ASCII characters are not allowed in usernames
+    and passwords. The reasoning is, afp-cli uses HTTP Authentication
+    headers which does not go well with UTF-8 encoding.
+
+    For details, see http://stackoverflow.com/a/703341
+    """
+    try:
+        username.encode('ascii')
+        password.encode('ascii')
+    except (UnicodeDecodeError, UnicodeEncodeError):
+        # PY3 UnicodeEncodeError, PY2 UnicodeDecodeError
+        raise CMDLineExit(
+            'Non-ASCII characters in username & password aren\'t allowed. '
+            'See http://stackoverflow.com/a/703341')
