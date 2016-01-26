@@ -29,7 +29,6 @@ class AWSFederationClientCmd(object):
     def call_api(self, url_suffix):
         """Send a request to the aws federation proxy"""
         url_orig = '{0}{1}'.format(self.api_url, url_suffix)
-        # Workaround: request seems to mystically fail with utf8 stuff
         url = requests.utils.requote_uri(url_orig)
         # TODO: Automatic versioning instead of the static below
         headers = {'User-Agent': 'afp-cli/1.0.6'}

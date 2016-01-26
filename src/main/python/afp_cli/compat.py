@@ -2,9 +2,6 @@
 
 
 try:
-    from ordereddict import OrderedDict
+    from ordereddict import OrderedDict  # noqa
 except ImportError:  # pragma: no cover
-    from collections import OrderedDict
-
-# Linting purposes, no other use
-OrderedDict
+    from collections import OrderedDict  # noqa
