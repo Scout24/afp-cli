@@ -98,9 +98,11 @@ def unprotected_main():
 
     password = get_password(password_provider, username)
 
-    federation_client = AWSFederationClientCmd(api_url=api_url,
-                                               username=username,
-                                               password=password)
+    # Do the sanitize dance
+    sanitize_credentials(username, password)
+
+    federation_client = AWSFederationClientCmd(
+        api_url=api_url, username=username, password=password)
 
     aws_credentials = None
     if subcommand in ASSUME_SUBCOMMANDS:

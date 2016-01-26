@@ -5,23 +5,32 @@ import json
 
 import requests
 from requests.auth import HTTPBasicAuth
+from six import PY3, u
 
 
 class APICallError(Exception):
-    pass
+    def __str__(self, *args, **kwargs):
+        if PY3:
+            return super(APICallError, self).__str__(*args, **kwargs)
+        return self.message
+        return u(self.message).encode('unicode-escape')
 
 
 class AWSFederationClientCmd(object):
     """Class for a command line client which uses the afp api"""
 
     def __init__(self, *args, **kwargs):
-        self.username = kwargs.get('username', None)
-        self._password = kwargs.get('password', None)
+        self.username = kwargs.get('username', '')
+        self.password = kwargs.get('password', '')
+
         self.api_url = kwargs.get('api_url', None)
         self.ssl_verify = kwargs.get('ssl_verify', True)
 
     def call_api(self, url_suffix):
         """Send a request to the aws federation proxy"""
+        url_orig = '{0}{1}'.format(self.api_url, url_suffix)
+        # Workaround: request seems to mystically fail with utf8 stuff
+        url = requests.utils.requote_uri(url_orig)
         # TODO: Automatic versioning instead of the static below
         headers = {'User-Agent': 'afp-cli/1.0.6'}
         api_result = requests.get(

@@ -87,4 +87,20 @@ class GetAWSCredentialsTest(TestCase):
     def test_excpetion(self):
         client = Mock()
         client.get_aws_credentials.side_effect = APICallError
-        self.assertRaises(CMDLineExit, get_aws_credentials, client, 'ACCOUNT1', 'ROLE1')
+        self.assertRaises(
+            CMDLineExit, get_aws_credentials, client, 'ACCOUNT1', 'ROLE1')
+
+
+class SanitizeCredentialsTest(TestCase):
+
+    def test_py2_utf8(self):
+        username = 'a'
+        password = 'ö'
+        with self.assertRaises(CMDLineExit):
+            sanitize_credentials(username, password)
+
+    def test_py3_utf8(self):
+        username = u'a'
+        password = u'ö'
+        with self.assertRaises(CMDLineExit):
+            sanitize_credentials(username, password)

@@ -70,3 +70,24 @@ def get_aws_credentials(federation_client, account, role):
         aws_credentials['AWS_ACCOUNT_NAME'] = account
         aws_credentials['AWS_ASSUMED_ROLE'] = role
         return aws_credentials
+
+
+def sanitize_credentials(username, password):
+    """
+    Check if username and password contain non-ASCII characters,
+    raise an exception when yes.
+
+    Per convention, non-ASCII characters are not allowed in usernames
+    and passwords. The reasoning is, afp-cli uses HTTP Authentication
+    headers which does not go well with UTF-8 encoding.
+
+    For details, see http://stackoverflow.com/a/703341
+    """
+    try:
+        username.encode('ascii')
+        password.encode('ascii')
+    except (UnicodeDecodeError, UnicodeEncodeError):
+        # PY3 UnicodeEncodeError, PY2 UnicodeDecodeError
+        raise CMDLineExit(
+            'Non-ASCII characters in username & password aren\'t allowed. '
+            'See http://stackoverflow.com/a/703341')
