@@ -31,6 +31,13 @@ def sanitize_host(server_name):
     This is done by resolving the given server name into (potentially
     multiple) IPs. One of those IPs is randomly chosen, then a
     reverse-lookup is performed on that IP to get its FQDN.
+
+    This effort is required to avoid certificate warnings about host
+    name mismatch between the certificate and the hostname.
+
+    This can also break if the admin of the server uses several IP
+    addresses that do *not* resolve to a hostname mentioned in the
+    TLS certificate.
     """
     try:
         addrinfo_tuple = socket.getaddrinfo(
@@ -50,8 +57,8 @@ def sanitize_host(server_name):
 
 def get_api_url(arguments, config):
     """
-    Return a calculated/sanitized API URL from config & command line
-    parameters.
+    Return a calculated/sanitized API URL from config and/or command
+    line parameters.
     """
     passed_api_url = arguments['--api-url'] or config.get('api_url')
     if passed_api_url is not None:

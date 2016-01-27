@@ -226,7 +226,7 @@ class SanitizeHostTest(TestCase):
 
     def test_raises_error_on_reversenotfound(self):
         """
-        Raise an error when the host is resolvable, but it's reverse is
+        Raise an error when the host is resolvable, but its reverse is
         not.
         """
         self.mock_getaddrinfo.return_value = (
