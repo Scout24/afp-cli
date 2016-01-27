@@ -50,7 +50,7 @@ The following configuration options are supported:
   Defaults to lookup a FQDN of a host named ``afp`` via DNS and construct
   the server url from it: ``https://{FQDN}/afp-api/latest``
   The specified url must contain full server url (not just the FQDN).
-  This option always takes precedence over `server`
+  This option always takes precedence over ``server``
 * ``server: <server>``
   The AFP server to use. No default value.
   If not overwritten by ``api_url`` (see above), ``api_url`` will
