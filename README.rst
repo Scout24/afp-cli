@@ -53,7 +53,7 @@ The following configuration options are supported:
   This option always takes precedence over ``server``
 * ``server: <server>``
   The AFP server to use. No default value.
-  If not overwritten by ``api_url`` (see above), ``api_url`` will
+  If not overridden by ``api_url`` (see above), ``api_url`` will
   become ``http://<server>//afp-api/latest``
 * ``user: <username>``
   Defaults to the currently logged in user-name
