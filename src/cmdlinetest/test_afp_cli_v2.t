@@ -43,7 +43,8 @@
     -h, --help                          Show this.
     -d, --debug                         Activate debug output.
     -u, --user <username>               The user you want to use.
-    -a, --api-url <api-url>             The URL of the AFP server (e.g. https://afp/afp-api/latest).
+    -s, --server <servername>           The AFP server to use.
+    -a, --api-url <api-url>             The URL of the AFP server (e.g. https://afp/afp-api/latest). Takes precedence over --server.
     -p, --password-provider <provider>  Password provider. Valid values are: 'prompt', 'keyring' and 'testing'.
     <accountname>                       The AWS account id you want to login to.
     <rolename>                          The AWS role you want to use for login. Defaults to the first role.
@@ -70,7 +71,8 @@
     -h, --help                          Show this.
     -d, --debug                         Activate debug output.
     -u, --user <username>               The user you want to use.
-    -a, --api-url <api-url>             The URL of the AFP server (e.g. https://afp/afp-api/latest).
+    -s, --server <servername>           The AFP server to use.
+    -a, --api-url <api-url>             The URL of the AFP server (e.g. https://afp/afp-api/latest). Takes precedence over --server.
     -p, --password-provider <provider>  Password provider. Valid values are: 'prompt', 'keyring' and 'testing'.
     <accountname>                       The AWS account id you want to login to.
     <rolename>                          The AWS role you want to use for login. Defaults to the first role.
@@ -97,7 +99,8 @@
     -h, --help                          Show this.
     -d, --debug                         Activate debug output.
     -u, --user <username>               The user you want to use.
-    -a, --api-url <api-url>             The URL of the AFP server (e.g. https://afp/afp-api/latest).
+    -s, --server <servername>           The AFP server to use.
+    -a, --api-url <api-url>             The URL of the AFP server (e.g. https://afp/afp-api/latest). Takes precedence over --server.
     -p, --password-provider <provider>  Password provider. Valid values are: 'prompt', 'keyring' and 'testing'.
     <accountname>                       The AWS account id you want to login to.
     <rolename>                          The AWS role you want to use for login. Defaults to the first role.
@@ -130,6 +133,7 @@
    u?'--debug': True, (re)
    u?'--help': False, (re)
    u?'--password-provider': 'testing', (re)
+   u?'--server': None, (re)
    u?'--user': None, (re)
    u?'<accountname>': None, (re)
    u?'<rolename>': None, (re)
@@ -154,6 +158,7 @@
    u?'--debug': True, (re)
    u?'--help': False, (re)
    u?'--password-provider': 'testing', (re)
+   u?'--server': None, (re)
    u?'--user': 'test_user', (re)
    u?'<accountname>': None, (re)
    u?'<rolename>': None, (re)
@@ -178,6 +183,7 @@
    u?'--debug': True, (re)
    u?'--help': False, (re)
    u?'--password-provider': 'testing', (re)
+   u?'--server': None, (re)
    u?'--user': 'test_user', (re)
    u?'<accountname>': None, (re)
    u?'<rolename>': None, (re)

@@ -1,7 +1,6 @@
 from __future__ import (
     absolute_import, division, print_function, unicode_literals)
 
-import random
 import socket
 import sys
 from datetime import datetime
@@ -25,19 +24,21 @@ def get_valid_seconds(aws_expiration_date, utcnow):
         return default_seconds
 
 
-def get_default_afp_server():
-    """Return the FQDN of the host that is called "afp"
+def sanitize_host(server_name):
+    """
+    Return the FQDN of the host passed.
 
-    This is done by resolving "afp" into (potentially multiple) IPs.
-    One of those IPs is randomly chosen, then a reverse-lookup is performed
-    on that IP to get its FQDN.
+    This is done by resolving the given server name into (potentially
+    multiple) IPs. One of those IPs is randomly chosen, then a
+    reverse-lookup is performed on that IP to get its FQDN.
     """
     try:
-        addrinfos = socket.getaddrinfo("afp", 443,
-                                       socket.AF_INET, socket.SOCK_STREAM)
+        addrinfo_tuple = socket.getaddrinfo(
+            server_name, 443, socket.AF_INET, socket.SOCK_STREAM)
     except Exception as exc:
         raise CMDLineExit("Could not resolve hostname 'afp': %s" % exc)
-    addrinfo = random.choice(addrinfos)
+    # Take the first result, round-robin responses are default per DNS
+    addrinfo = addrinfo_tuple[0]
     afp_server_ip = addrinfo[4][0]
 
     try:
@@ -45,6 +46,20 @@ def get_default_afp_server():
     except Exception as exc:
         raise CMDLineExit("DNS reverse lookup failed for IP %s: %s" % (
             afp_server_ip, exc))
+
+
+def get_api_url(arguments, config):
+    """
+    Return a calculated/sanitized API URL from config & command line
+    parameters.
+    """
+    passed_api_url = arguments['--api-url'] or config.get('api_url')
+    if passed_api_url is not None:
+        # No checks whatsoever, just return the preferred API URL
+        return passed_api_url
+    server_name = arguments['--server'] or config.get('server') or 'afp'
+    sanitized_server_name = sanitize_host(server_name)
+    return 'https://{fqdn}/afp-api/latest'.format(fqdn=sanitized_server_name)
 
 
 def get_first_role(federation_client, account):
