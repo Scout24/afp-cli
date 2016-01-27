@@ -1,16 +1,20 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import socket
 from datetime import datetime
 
-from afp_cli.cli_functions import (get_aws_credentials,
+from afp_cli.cli_functions import (get_api_url,
+                                   get_aws_credentials,
                                    get_first_role,
                                    get_valid_seconds,
-                                   sanitize_credentials)
+                                   sanitize_credentials,
+                                   sanitize_host)
 from afp_cli.client import APICallError
 from afp_cli.log import CMDLineExit
 from mock import Mock, patch
-from unittest2 import TestCase
+from six import PY2, PY3
+from unittest2 import TestCase, skipIf
 
 
 class GetValidSecondsTest(TestCase):
@@ -93,14 +97,162 @@ class GetAWSCredentialsTest(TestCase):
 
 class SanitizeCredentialsTest(TestCase):
 
+    @skipIf(PY3, 'Python 2 only')
     def test_py2_utf8(self):
         username = 'a'
         password = 'ö'
         with self.assertRaises(CMDLineExit):
             sanitize_credentials(username, password)
 
+    @skipIf(PY2, 'Python 3 only')
     def test_py3_utf8(self):
-        username = u'a'
-        password = u'ö'
+        username = 'a'
+        password = 'ö'
         with self.assertRaises(CMDLineExit):
             sanitize_credentials(username, password)
+
+
+class GetApiUrlTest(TestCase):
+    """
+    Tests for get_api_url()
+    """
+
+    def setUp(self):
+        self.patch_sanitize_host = patch('afp_cli.cli_functions.sanitize_host')
+        self.mock_sanitize_host = self.patch_sanitize_host.start()
+        self.mock_sanitize_host.return_value = 'FQDN'
+
+    def tearDown(self):
+        self.patch_sanitize_host.stop()
+
+    def test_returns_passed_apiurl_over_everything(self):
+        """
+        When an apiurl is passed, return it without any preliminary
+        check.
+        """
+        arguments = {'--api-url': 'passed_stuff'}
+        config = {'api_url': 'irrelevant_stuff'}
+        result = get_api_url(arguments, config)
+        self.assertEqual(result, 'passed_stuff')
+        self.mock_sanitize_host.assert_not_called()
+
+    def test_returns_configured_apiurl_over_default(self):
+        """
+        When an apiurl is configured, returned it without any
+        preliminary check.
+        """
+        arguments = {'--api-url': None}
+        config = {'api_url': 'configured_stuff'}
+        result = get_api_url(arguments, config)
+        self.assertEqual(result, 'configured_stuff')
+        self.mock_sanitize_host.assert_not_called()
+
+    def test_uses_servername_parameter_when_no_apiurl_defined(self):
+        """
+        When servername is passed as a parameter, return it after
+        running `sanitize_host` on it.
+        """
+        arguments = {
+            '--api-url': None,
+            '--server': 'passed_stuff'}
+        config = {
+            'api_url': None,
+            'server': None}
+        result = get_api_url(arguments, config)
+        self.assertEqual(result, 'https://FQDN/afp-api/latest')
+        self.mock_sanitize_host.assert_called_once_with('passed_stuff')
+
+    def test_uses_configured_servername_when_no_apiurl_defined(self):
+        """
+        When servername is configured in the config, returned it after
+        running `sanitize_host` on it.
+        """
+        arguments = {
+            '--api-url': None,
+            '--server': None}
+        config = {
+            'api_url': None,
+            'server': 'configured_stuff'}
+        result = get_api_url(arguments, config)
+        self.assertEqual(result, 'https://FQDN/afp-api/latest')
+        self.mock_sanitize_host.assert_called_once_with('configured_stuff')
+
+    def test_defaults_to_afp_url_when_nothing_defined(self):
+        """
+        When nothing is configured/passed, return the default afp URL
+        after running `sanitize_host` on it.
+        """
+        arguments = {
+            '--api-url': None,
+            '--server': None}
+        config = {
+            'api_url': None,
+            'server': None}
+        result = get_api_url(arguments, config)
+        self.assertEqual(result, 'https://FQDN/afp-api/latest')
+        self.mock_sanitize_host.assert_called_once_with('afp')
+
+
+class SanitizeHostTest(TestCase):
+    """
+    Test cases for `sanitize_host()`.
+    """
+
+    def setUp(self):
+        self.patch_getaddrinfo = patch('socket.getaddrinfo')
+        self.mock_getaddrinfo = self.patch_getaddrinfo.start()
+        self.patch_gethostbyaddr = patch('socket.gethostbyaddr')
+        self.mock_gethostbyaddr = self.patch_gethostbyaddr.start()
+
+    def tearDown(self):
+        self.patch_getaddrinfo.stop()
+        self.patch_gethostbyaddr.stop()
+
+    def test_raises_error_on_hostnotfound(self):
+        """
+        Raise an error when the host is not resolvable.
+        """
+        self.mock_getaddrinfo.side_effect = socket.gaierror('error_message')
+        return_value = None
+        with self.assertRaises(CMDLineExit) as cm:
+            return_value = sanitize_host('erroneous_host')
+        self.assertIsNone(return_value)
+        self.assertEqual(
+            cm.exception.args[0],
+            'Could not resolve hostname \'afp\': error_message')
+        self.mock_getaddrinfo.assert_called_once_with(
+            'erroneous_host', 443, socket.AF_INET, socket.SOCK_STREAM)
+        self.mock_gethostbyaddr.assert_not_called()
+
+    def test_raises_error_on_reversenotfound(self):
+        """
+        Raise an error when the host is resolvable, but its reverse is
+        not.
+        """
+        self.mock_getaddrinfo.return_value = (
+            [0, 1, 2, 3, ['take_me', 'not_me']],)
+        self.mock_gethostbyaddr.side_effect = socket.gaierror('error_message')
+        return_value = None
+        with self.assertRaises(CMDLineExit) as cm:
+            return_value = sanitize_host('erroneous_host')
+        self.assertIsNone(return_value)
+        self.assertEqual(
+            cm.exception.args[0],
+            'DNS reverse lookup failed for IP take_me: error_message')
+        self.mock_getaddrinfo.assert_called_once_with(
+            'erroneous_host', 443, socket.AF_INET, socket.SOCK_STREAM)
+        self.mock_gethostbyaddr.assert_called_once_with('take_me')
+
+    def test_returns_proper_fqdn(self):
+        """
+        Return the proper FQDN of the host when it's resolvable both
+        ways.
+        """
+        self.mock_getaddrinfo.return_value = (
+            [0, 1, 2, 3, ['take_me', 'not_me']],)
+        self.mock_gethostbyaddr.return_value = ['proper_FQDN']
+        return_value = sanitize_host('erroneous_host')
+        self.mock_getaddrinfo.assert_called_once_with(
+            'erroneous_host', 443, socket.AF_INET, socket.SOCK_STREAM)
+        self.mock_gethostbyaddr.assert_called_once_with('take_me')
+        self.assertEqual(return_value, 'proper_FQDN')

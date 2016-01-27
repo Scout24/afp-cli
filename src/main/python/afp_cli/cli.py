@@ -4,21 +4,22 @@
 Command line client for the AFP (AWS Federation Proxy)
 
 Usage:
-    afp [--debug] [--user=<username>] [--password-provider=<provider>] [--api-url=<api-url>]
+    afp [--debug] [--user=<username>] [--password-provider=<provider>] [--api-url=<api-url>] [--server <servername>]
                               [--show | --export | --write] [(<accountname> [<rolename>])]
 
 Options:
   -h --help                       Show this.
   --debug                         Activate debug output.
   --user=<username>               The user you want to use.
-  --api-url=<api-url>             The URL of the AFP server (e.g. https://afp/afp-api/latest).
+  --server <servername>           The AFP server to use.
+  --api-url=<api-url>             The URL of the AFP server (e.g. https://afp/afp-api/latest). Takes precedence over --server.
   --show                          Show credentials instead of opening subshell.
   --export                        Show credentials in an export suitable format.
   --write                         Write credentials to aws credentials file.
   --password-provider=<provider>  Password provider.
   <accountname>                   The AWS account id you want to login to.
   <rolename>                      The AWS role you want to use for login. Defaults to the first role.
-"""
+"""  # NOQA, docopt stuff is allowed to be longcat, and longcat is loooong
 
 from __future__ import absolute_import, division, print_function
 
@@ -28,8 +29,8 @@ from docopt import docopt
 
 from . import log
 from .aws_credentials_file import write
-from .cli_functions import (get_aws_credentials,
-                            get_default_afp_server,
+from .cli_functions import (get_api_url,
+                            get_aws_credentials,
                             get_first_role,
                             sanitize_credentials)
 from .client import AWSFederationClientCmd
@@ -62,8 +63,7 @@ def unprotected_main():
     except Exception as exc:
         error("Failed to load configuration: %s" % exc)
 
-    api_url = arguments['--api-url'] or config.get('api_url') or \
-        'https://{fqdn}/afp-api/latest'.format(fqdn=get_default_afp_server())
+    api_url = get_api_url(arguments, config)
     username = arguments['--user'] or config.get("user") or getpass.getuser()
     password_provider = (arguments['--password-provider'] or
                          config.get("password-provider") or
