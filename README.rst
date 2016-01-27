@@ -50,6 +50,11 @@ The following configuration options are supported:
   Defaults to lookup a FQDN of a host named ``afp`` via DNS and construct
   the server url from it: ``https://{FQDN}/afp-api/latest``
   The specified url must contain full server url (not just the FQDN).
+  This option always takes precedence over `server`
+* ``server: <server>``
+  The AFP server to use. No default value.
+  If not overwritten by ``api_url`` (see above), ``api_url`` will
+  become ``http://<server>//afp-api/latest``
 * ``user: <username>``
   Defaults to the currently logged in user-name
 
@@ -229,7 +234,7 @@ Example command-line:
 
    $ afp --password-provider keyring
    No password found in keychain, please enter it now to store it.
-   Password for vhaenel: 
+   Password for vhaenel:
 
 As you can see, you will be prompted for your password the first time. Note
 that if you fail to enter the password correctly, the incorrect version will be
