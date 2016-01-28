@@ -36,6 +36,27 @@ class TestKeyringGetPassword(TestCase):
     def test_abort_in_case_of_plaintext_backend(self, keyring_mock):
         keyring_mock.get_keyring.return_value.__class__.__name__ = \
             'PlaintextKeyring'
+        keyring_mock.get_keyring.return_value.__class__.__module__ = \
+            'keyring.backends.file'
+
+        self.assertRaises(CMDLineExit, keyring_get_password, 'USERNAME')
+
+    @patch('afp_cli.password_providers.keyring')
+    def test_abort_in_case_of_encrypted_file_backend(self, keyring_mock):
+        keyring_mock.get_keyring.return_value.__class__.__name__ = \
+            'EncryptedKeyring'
+        keyring_mock.get_keyring.return_value.__class__.__module__ = \
+            'keyring.backends.file'
+
+        self.assertRaises(CMDLineExit, keyring_get_password, 'USERNAME')
+
+    @patch('afp_cli.password_providers.keyring')
+    def test_abort_in_case_of_fail_backend(self, keyring_mock):
+        keyring_mock.get_keyring.return_value.__class__.__name__ = \
+            'Keyring'
+        keyring_mock.get_keyring.return_value.__class__.__module__ = \
+            'keyring.backends.fail'
+
         self.assertRaises(CMDLineExit, keyring_get_password, 'USERNAME')
 
     @patch('afp_cli.password_providers.keyring')
