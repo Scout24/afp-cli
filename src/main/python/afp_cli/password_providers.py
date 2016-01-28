@@ -27,9 +27,21 @@ def keyring_get_password(username):
                           "installed.")
 
     keyring_impl = keyring.get_keyring()
-    if keyring_impl.__class__.__name__ == 'PlaintextKeyring':
-        raise CMDLineExit("Aborting: the 'keyring' module has selected the "
-                          "insecure 'PlaintextKeyring'.")
+
+    # For older 'keyring' module (<8.0) implementation where undesirable
+    # implementations were still permissable. And, for newer ones (>=8.0),
+    # where the 'fail' module is used to denote no available keyrings.
+    undesirable = ['keyring.backends.file.PlaintextKeyring',  # <  8.0
+                   'keyring.backends.file.EncryptedKeyring',  # <  8.0
+                   'keyring.backends.fail.Keyring',           # >= 8.0
+                   ]
+    # TODO: there has got to be a better way
+    description = '.'.join((keyring_impl.__class__.__module__,
+                            keyring_impl.__class__.__name__))
+    if description in undesirable:
+        raise CMDLineExit(
+            "Aborting: the 'keyring' module has selected the "
+            "undesirable backed: '%s'." % description)
 
     debug("Note: will use the backend: '{0}'".format(keyring_impl))
     password = keyring.get_password('afp', username)
