@@ -272,6 +272,11 @@
 
   $ afp -p testing -a http://localhost:5555 write test_account test_rolé
 
+# Output version of self
+
+  $ afp version
+  afp-cli version \d+ (re)
+
 # END mocking AFP
 
   $ ./afp_mock.py stop

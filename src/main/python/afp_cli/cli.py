@@ -9,6 +9,7 @@ Usage:
 
 Options:
   -h --help                       Show this.
+  -v --version                    Show version and exit.
   --debug                         Activate debug output.
   --user=<username>               The user you want to use.
   --server <servername>           The AFP server to use.
@@ -27,7 +28,7 @@ import getpass
 
 from docopt import docopt
 
-from . import log
+from . import __version__, log
 from .aws_credentials_file import write
 from .cli_functions import (get_api_url,
                             get_aws_credentials,
@@ -53,7 +54,8 @@ def main():
 
 def unprotected_main():
     """Main function for script execution"""
-    arguments = docopt(__doc__)
+    arguments = docopt(
+        __doc__, version='afp-cli version {}'.format(__version__))
     if arguments['--debug']:
         log.DEBUG = True
     debug(arguments)

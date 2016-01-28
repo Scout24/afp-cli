@@ -23,6 +23,7 @@
   
   Options:
     -h --help                       Show this.
+    -v --version                    Show version and exit.
     --debug                         Activate debug output.
     --user=<username>               The user you want to use.
     --server <servername>           The AFP server to use.
@@ -146,6 +147,14 @@
   aws_session_token = XXXXXXXXXXXX
   aws_security_token = XXXXXXXXXXXX
   * (glob)
+
+# Output version of self
+
+  $ afp --version
+  afp-cli version \d+ (re)
+
+  $ afp -v
+  afp-cli version \d+ (re)
 
 # END mocking AFP
 
