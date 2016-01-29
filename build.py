@@ -1,6 +1,7 @@
 import sys
 
 from pybuilder.core import use_plugin, init, Author
+from pybuilder.vcs import VCSRevision
 
 use_plugin("python.core")
 use_plugin("python.unittest")
@@ -16,12 +17,14 @@ name = 'afp-cli'
 summary = 'Command line client for AWS federation proxy api'
 authors = [Author('Stefan Neben', "stefan.neben@immobilienscout24.de"),
            Author('Tobias Vollmer', "tobias.vollmer@immobilienscout24.de"),
-           Author('Stefan Nordhausen', "stefan.nordhausen@immobilienscout24.de"),
+           Author(
+               'Stefan Nordhausen', "stefan.nordhausen@immobilienscout24.de"),
            Author('Enrico Heine', "enrico.heine@immobilienscout24.de"),
            Author('Valentin Haenel', "valentin.haenel@immobilienscout24.de"),
            ]
 url = 'https://github.com/ImmobilienScout24/afp-cli'
-version = '1.3.1'
+
+version = VCSRevision().get_git_revision_count()
 description = open("README.rst").read()
 license = 'Apache License 2.0'
 
@@ -63,6 +66,8 @@ def set_properties(project):
     project.set_property('install_dependencies_upgrade', True)
     project.set_property('coverage_exceptions', ['afp_cli.config',
                                                  'afp_cli.cli'])
+    project.get_property('filter_resources_glob').extend(
+        ['**/afp_cli/__init__.py'])
 
 
 @init(environments='teamcity')

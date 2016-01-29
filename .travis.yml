@@ -7,6 +7,8 @@ python:
   - "3.5"
   - "pypy"
 
+before_install:
+  - git fetch --unshallow
 install:
   - travis_retry pip install pybuilder coveralls
   - travis_retry pyb install_dependencies

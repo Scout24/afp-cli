@@ -34,7 +34,7 @@ import getpass
 
 from docopt import docopt
 
-from . import log
+from . import __version__, log
 from .aws_credentials_file import write
 from .cli_functions import (get_api_url,
                             get_aws_credentials,
@@ -75,7 +75,7 @@ def unprotected_main():
     debug("Subcommand is '{0}'".format(subcommand))
 
     if subcommand == VERSION:
-        info('Reporting version is not implemented yet')
+        info('afp-cli version {0}'.format(__version__))
         return 0
     elif subcommand == HELP:
         # exit early with help message
