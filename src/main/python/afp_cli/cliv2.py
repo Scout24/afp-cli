@@ -75,7 +75,7 @@ def unprotected_main():
     debug("Subcommand is '{0}'".format(subcommand))
 
     if subcommand == VERSION:
-        info('afp-cli version {}'.format(__version__))
+        info('afp-cli version {0}'.format(__version__))
         return 0
     elif subcommand == HELP:
         # exit early with help message

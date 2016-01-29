@@ -55,7 +55,7 @@ def main():
 def unprotected_main():
     """Main function for script execution"""
     arguments = docopt(
-        __doc__, version='afp-cli version {}'.format(__version__))
+        __doc__, version='afp-cli version {0}'.format(__version__))
     if arguments['--debug']:
         log.DEBUG = True
     debug(arguments)
