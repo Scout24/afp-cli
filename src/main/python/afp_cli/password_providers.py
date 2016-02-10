@@ -33,11 +33,13 @@ def keyring_get_password(username):
     # where the 'fail' module is used to denote no available keyrings.
     undesirable = ['keyring.backends.file.PlaintextKeyring',  # <  8.0
                    'keyring.backends.file.EncryptedKeyring',  # <  8.0
+                   'keyrings.alt.file.EncryptedKeyring',      # >= 8.0
                    'keyring.backends.fail.Keyring',           # >= 8.0
                    ]
     # TODO: there has got to be a better way
     description = '.'.join((keyring_impl.__class__.__module__,
                             keyring_impl.__class__.__name__))
+    debug("Description of the backend is: '{0}'".format(description))
     if description in undesirable:
         raise CMDLineExit(
             "Aborting: the 'keyring' module has selected the "
