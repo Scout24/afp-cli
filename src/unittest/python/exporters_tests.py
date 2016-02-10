@@ -36,15 +36,18 @@ class FormattingTest(TestCase):
                   "AWS_SECRET_ACCESS_KEY": "not so secret"}
 
         self.assertEqual(format_aws_credentials(input_),
-                         "AWS_ACCESS_KEY_ID='testAccessKey'\nAWS_SECRET_ACCESS_KEY='not so secret'")
+                         "AWS_ACCESS_KEY_ID='testAccessKey'\n"
+                         "AWS_SECRET_ACCESS_KEY='not so secret'")
 
     def test_format_account_and_one_role(self):
-        self.assertEqual(format_account_and_role_list({"testaccount1": ["testrole1"]}),
-                         "testaccount1         testrole1")
+        self.assertEqual(format_account_and_role_list(
+            {"testaccount1": ["testrole1"]}),
+            "testaccount1         testrole1")
 
     def test_format_account_and_two_roles(self):
-        self.assertEqual(format_account_and_role_list({"testaccount2": ["testrole1", "testrole2"]}),
-                         "testaccount2         testrole1,testrole2")
+        self.assertEqual(format_account_and_role_list(
+            {"testaccount2": ["testrole1", "testrole2"]}),
+            "testaccount2         testrole1,testrole2")
 
     @patch('os.name', 'unix')
     @patch('afp_cli.exporters.format_aws_credentials')
