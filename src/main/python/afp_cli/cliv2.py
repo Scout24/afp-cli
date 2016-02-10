@@ -5,7 +5,7 @@ Command line client for the AFP V2 (AWS Federation Proxy)
 Usage:
     afp [options] help
     afp [options] version
-    afp [options] list
+    afp [options] list [--output <output_format>]
     afp [options] (show | export | write | shell) <accountname> [<rolename>]
 
 Options:
@@ -15,6 +15,7 @@ Options:
   -s, --server <servername>           The AFP server to use.
   -a, --api-url <api-url>             The URL of the AFP server (e.g. https://afp/afp-api/latest). Takes precedence over --server.
   -p, --password-provider <provider>  Password provider. Valid values are: 'prompt', 'keyring' and 'testing'.
+  -o, --output <output_format>        Output format for 'list'. Valid values are: 'human', 'json' and 'csv'
   <accountname>                       The AWS account id you want to login to.
   <rolename>                          The AWS role you want to use for login. Defaults to the first role.
 
@@ -111,16 +112,21 @@ def unprotected_main():
         aws_credentials = get_aws_credentials(federation_client, account, role)
 
     if arguments['list']:
+
+        output_format = (arguments['--output'] or
+                         config.get("output") or
+                         'human')
+        debug("'output' is '{0}'".format(output_format))
         try:
             info(format_account_and_role_list(
-                federation_client.get_account_and_role_list()))
+                 federation_client.get_account_and_role_list(), output_format))
         except Exception as exc:
             error("Failed to get account list from AWS: %s" % exc)
-    elif arguments['show']:
+    elif arguments[SHOW]:
         info(format_aws_credentials(aws_credentials))
-    elif arguments['export']:
+    elif arguments[EXPORT]:
         print_export(aws_credentials)
-    elif arguments['write']:
+    elif arguments[WRITE]:
         write(aws_credentials)
-    elif arguments['shell']:
+    elif arguments[SHELL]:
         enter_subx(aws_credentials, account, role)

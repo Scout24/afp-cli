@@ -26,7 +26,7 @@
   Usage:
       afp [options] help
       afp [options] version
-      afp [options] list
+      afp [options] list [--output <output_format>]
       afp [options] (show | export | write | shell) <accountname> [<rolename>]
   [1]
 
@@ -36,7 +36,7 @@
   Usage:
       afp [options] help
       afp [options] version
-      afp [options] list
+      afp [options] list [--output <output_format>]
       afp [options] (show | export | write | shell) <accountname> [<rolename>]
   
   Options:
@@ -46,6 +46,7 @@
     -s, --server <servername>           The AFP server to use.
     -a, --api-url <api-url>             The URL of the AFP server (e.g. https://afp/afp-api/latest). Takes precedence over --server.
     -p, --password-provider <provider>  Password provider. Valid values are: 'prompt', 'keyring' and 'testing'.
+    -o, --output <output_format>        Output format for 'list'. Valid values are: 'human', 'json' and 'csv'
     <accountname>                       The AWS account id you want to login to.
     <rolename>                          The AWS role you want to use for login. Defaults to the first role.
   
@@ -64,7 +65,7 @@
   Usage:
       afp [options] help
       afp [options] version
-      afp [options] list
+      afp [options] list [--output <output_format>]
       afp [options] (show | export | write | shell) <accountname> [<rolename>]
   
   Options:
@@ -74,6 +75,7 @@
     -s, --server <servername>           The AFP server to use.
     -a, --api-url <api-url>             The URL of the AFP server (e.g. https://afp/afp-api/latest). Takes precedence over --server.
     -p, --password-provider <provider>  Password provider. Valid values are: 'prompt', 'keyring' and 'testing'.
+    -o, --output <output_format>        Output format for 'list'. Valid values are: 'human', 'json' and 'csv'
     <accountname>                       The AWS account id you want to login to.
     <rolename>                          The AWS role you want to use for login. Defaults to the first role.
   
@@ -92,7 +94,7 @@
   Usage:
       afp [options] help
       afp [options] version
-      afp [options] list
+      afp [options] list [--output <output_format>]
       afp [options] (show | export | write | shell) <accountname> [<rolename>]
   
   Options:
@@ -102,6 +104,7 @@
     -s, --server <servername>           The AFP server to use.
     -a, --api-url <api-url>             The URL of the AFP server (e.g. https://afp/afp-api/latest). Takes precedence over --server.
     -p, --password-provider <provider>  Password provider. Valid values are: 'prompt', 'keyring' and 'testing'.
+    -o, --output <output_format>        Output format for 'list'. Valid values are: 'human', 'json' and 'csv'
     <accountname>                       The AWS account id you want to login to.
     <rolename>                          The AWS role you want to use for login. Defaults to the first role.
   
@@ -132,6 +135,7 @@
   {u?'--api-url': 'http://localhost:5555', (re)
    u?'--debug': True, (re)
    u?'--help': False, (re)
+   u?'--output': None, (re)
    u?'--password-provider': 'testing', (re)
    u?'--server': None, (re)
    u?'--user': None, (re)
@@ -148,6 +152,7 @@
   'api-url' is 'http://localhost:5555'
   'username' is '.*' (re)
   'password-provider' is 'testing'
+  'output' is 'human'
   [1]
 
 # Test failing to access AFP with debug and username
@@ -157,6 +162,7 @@
   {u?'--api-url': 'http://localhost:5555', (re)
    u?'--debug': True, (re)
    u?'--help': False, (re)
+   u?'--output': None, (re)
    u?'--password-provider': 'testing', (re)
    u?'--server': None, (re)
    u?'--user': 'test_user', (re)
@@ -173,6 +179,7 @@
   'api-url' is 'http://localhost:5555'
   'username' is 'test_user'
   'password-provider' is 'testing'
+  'output' is 'human'
   [1]
 
 # Test failing to access AFP with debug and username with long options
@@ -182,6 +189,7 @@
   {u?'--api-url': 'http://localhost:5555', (re)
    u?'--debug': True, (re)
    u?'--help': False, (re)
+   u?'--output': None, (re)
    u?'--password-provider': 'testing', (re)
    u?'--server': None, (re)
    u?'--user': 'test_user', (re)
@@ -198,6 +206,7 @@
   'api-url' is 'http://localhost:5555'
   'username' is 'test_user'
   'password-provider' is 'testing'
+  'output' is 'human'
   [1]
 
 # BEGIN mocking AFP
@@ -212,7 +221,27 @@
 # Test get account and role
 
   $ afp -p testing -a http://localhost:5555  list
-  test_account         test_role
+  test_account                   test_role
+  test_account_with_long_name    test_role_with_long_name
+
+  $ afp -p testing -a http://localhost:5555  list -o human
+  test_account                   test_role
+  test_account_with_long_name    test_role_with_long_name
+
+  $ afp -p testing -a http://localhost:5555  list -o json
+  {
+      "test_account": [
+          "test_role"
+      ],
+      "test_account_with_long_name": [
+          "test_role_with_long_name"
+      ]
+  }
+
+  $ afp -p testing -a http://localhost:5555  list -o csv
+  test_account,test_role
+  test_account_with_long_name,test_role_with_long_name
+
 
 # Test credentials with subshell
 
