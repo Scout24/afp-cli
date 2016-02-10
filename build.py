@@ -45,6 +45,8 @@ def set_properties(project):
     project.depends_on("yamlreader>=3.0.1")
     project.depends_on("requests")
     project.depends_on("docopt")
+    project.depends_on("keyring")
+    project.depends_on("secretstorage")
     project.set_property('flake8_include_test_sources', True)
     project.set_property('flake8_break_build', True)
     project.set_property('copy_resources_target', '$dir_dist')

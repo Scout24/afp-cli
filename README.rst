@@ -57,13 +57,20 @@ The following configuration options are supported:
   become ``http://<server>//afp-api/latest``
 * ``user: <username>``
   Defaults to the currently logged in user-name
+* ``password-provider: <provider>``
+  Viable options are: ``prompt`` (default) to prompt for the password during
+  every interaction with the AFP server or ``keyring`` to use the Python
+  ``keyring`` module. For more info about using the ``keyring`` module, see
+  below.
 
 Example:
 
 .. code-block:: yaml
 
-    api_url: https://afp-server.my.domain/afp-api/latest
     user: myuser
+    api_url: https://afp-server.my.domain/afp-api/latest
+    password-provider: keyring
+
 
 Usage
 =====
@@ -207,26 +214,8 @@ Interface with the System Keyring
 Staring with version ``1.3.0`` experimental support for the `Python keyring
 module <https://pypi.python.org/pypi/keyring>`_ has been implemented. This has
 been tested with the Gnome Keyring and Max OS X Keychain but supposedly also
-works with Windows Credential Vault. Note: you need to additionally install the
-``keyring`` module, for example using:
-
-.. code-block:: console
-
-   $ pip install keyring
-
-You can configure to use the keychain by config-file or command-line switch.
-Viable options are: ``prompt`` to prompt for the password during every
-interaction with the AFP server. ``keyring`` to use the
-Python ``keyring`` module. And ``testing``, which will simply send
-the hardcoded string ``PASSWORD`` every time. As the name suggests, this is
-only useful for testing.
-
-Example config-file:
-
-.. code-block:: yaml
-
-    user: myuser
-    password-provider: keyring
+works with Windows Credential Vault. You can configure this feature using the
+config file as showen above or a command-line switch.
 
 Example command-line:
 
@@ -234,7 +223,7 @@ Example command-line:
 
    $ afp --password-provider keyring
    No password found in keychain, please enter it now to store it.
-   Password for vhaenel:
+   Password for user:
 
 As you can see, you will be prompted for your password the first time. Note
 that if you fail to enter the password correctly, the incorrect version will be
@@ -242,12 +231,13 @@ stored. Note further that if you are using the Gnome-Keychain you can use the
 tool ``seahorse`` to update and delete saved passwords, in this case for the
 service ``afp``.
 
+There is an intricate caveat when using the ``keyring`` module with
+Gnome-Keychain. But before discussing this, it is important to mention that
+the keyring module uses another module, namely ``secretstorage`` under the
+hood.
 
-There are two intricate caveats when using the ``keyring`` module with
-Gnome-Keychain which is why this feature is considered experimental.
-
-In order for the module to correctly use the Gnome Keychain the Python module
-`PyGObject aka gi
+In order for the ``keyring`` module to correctly use the Gnome Keychain the
+Python module `PyGObject aka gi
 <https://wiki.gnome.org/action/show/Projects/PyGObject?action=show&redirect=PyGObject>`_
 is required. As stated on the project website: "PyGObject is a Python extension
 module that gives clean and consistent access to the entire GNOME software
@@ -255,30 +245,17 @@ platform through the use of GObject Introspection." Now, unfortunately, even
 though this project is `available on PyPi
 <https://pypi.python.org/pypi/PyGObject>`_ it can not be installed from there
 using ``pip`` due to issues with the build system. It is however available as a
-system package for Ubuntu distributions as package ``python-gi``. Long story
-short; in order to use the ``keyring`` module from ``afp-cli`` you need to
-have the ``gi`` module available to your Python interpreter. You can achieve
-this, for example, by doing a global install of ``afp-cli`` using something
-like ``sudo pip install afp-cli`` or install it into a virtual environment that
-uses the system site packages because it has been created with the
-``--system-site-packages`` flag.
+system package for Ubuntu distributions as: ``python-gi``. Long story
+short; in order to use the ``keyring`` module from ``afp-cli`` you need to have
+the ``gi`` module available to your Python interpreter. You can achieve this,
+for example, by doing a global install of ``afp-cli`` using something like
+``sudo pip install afp-cli`` or install it into a virtual environment that uses
+the system site packages because it has been created with the
+``--system-site-packages`` flag. In case the ``gi`` module is not available and
+you try to use the ``keyring`` module anyway, ``afp-cli`` will exit with an
+appropriate error message.  Lastly, if in doubt, you can use the ``debug``
+switch to check at runtime which backend was selected.
 
-A second issue arises when the ``gi`` module is not installed. In this case,
-the ``keyring`` library simply selects an insecure ``PlaintextKeyring`` which
-simply stores the base64 encoded password in it's default location at:
-``~/.local/share/python_keyring/keyring_pass.cfg`` (!). Since we prefer a
-secure-by-default approach, the ``afp-cli`` will abort with an appropriate
-message in case this backend is detected.
-
-Lastly, you can use the ``debug`` switch to check at runtime which backend was
-selected:
-
-.. code:: console
-
-    $ afp-cli --debug --password-provider keychain
-    ...
-    Note: will use the backend: '<keyring.backends.Gnome.Keyring object at 0x7f48a13e9510>'
-    ...
 
 License
 =======
