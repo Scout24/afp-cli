@@ -1,3 +1,10 @@
+310
+---
+
+* The `list` subcommand in afpv2 learned json and csv output
+* Additionally human output is now padded depedning on the length of the
+  account names.
+
 303
 ---
 
