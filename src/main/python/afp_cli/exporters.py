@@ -46,8 +46,10 @@ def format_aws_credentials(credentials, prefix=''):
 
 def format_account_and_role_list(account_and_role_list, output_formt=HUMAN):
     if output_formt == HUMAN:
-        return os.linesep.join(["{0:<20} {1}".format(account, ",".join(sorted(roles)))
-                               for account, roles in sorted(account_and_role_list.items())])
+        padding = max([len(account) for account in account_and_role_list]) + 3
+        return os.linesep.join(
+            ["{0:<{2}} {1}".format(account, ",".join(sorted(roles)), padding)
+             for account, roles in sorted(account_and_role_list.items())])
     elif output_formt == JSON:
         return json.dumps(account_and_role_list,
                           sort_keys=True,

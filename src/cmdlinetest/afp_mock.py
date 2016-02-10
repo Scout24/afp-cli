@@ -86,7 +86,8 @@ def daemon_run(host="localhost", port="8080", pidfile=None, logfile=None):
 
 @route('/account')
 def account():
-    return """{"test_account": ["test_role"]}"""
+    return '{"test_account": ["test_role"],' \
+           '"test_account_with_long_name": ["test_role_with_long_name"]}'
 
 
 @route('/account/<account>/<role>')

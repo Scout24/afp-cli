@@ -90,7 +90,8 @@
 # Test get account and role
 
   $ afp --password-provider testing --api-url=http://localhost:5555
-  test_account         test_role
+  test_account                   test_role
+  test_account_with_long_name    test_role_with_long_name
 
 # Test credentials with subshell
 

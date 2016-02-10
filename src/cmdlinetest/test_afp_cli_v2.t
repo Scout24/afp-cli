@@ -221,20 +221,26 @@
 # Test get account and role
 
   $ afp -p testing -a http://localhost:5555  list
-  test_account         test_role
+  test_account                   test_role
+  test_account_with_long_name    test_role_with_long_name
 
   $ afp -p testing -a http://localhost:5555  list -o human
-  test_account         test_role
+  test_account                   test_role
+  test_account_with_long_name    test_role_with_long_name
 
   $ afp -p testing -a http://localhost:5555  list -o json
   {
       "test_account": [
           "test_role"
+      ],
+      "test_account_with_long_name": [
+          "test_role_with_long_name"
       ]
   }
 
   $ afp -p testing -a http://localhost:5555  list -o csv
   test_account,test_role
+  test_account_with_long_name,test_role_with_long_name
 
 
 # Test credentials with subshell
