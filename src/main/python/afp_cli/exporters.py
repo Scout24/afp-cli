@@ -57,7 +57,7 @@ def format_account_and_role_list(account_and_role_list, output_formt=HUMAN):
                           separators=(',', ': '))
     elif output_formt == CSV:
         return (os.linesep.join([",".join([account] + roles) for account, roles
-                                in account_and_role_list.items()]))
+                                in sorted(account_and_role_list.items())]))
     else:
         raise CMDLineExit("'{0}' is not a valid output format.\n".
                           format(output_formt) +
