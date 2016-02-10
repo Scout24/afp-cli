@@ -34,7 +34,7 @@ __afp_commands(){
         show:'Show credentials.'
         export:'Show credentials in an export suitable format.'
         write:'Write credentials to aws credentials file.'
-        subshell:'Open a subshell with exported credentials.'
+        shell:'Open a subshell with exported credentials.'
     )
     _describe -t assume_commands "assume commands" assume_commands
     _describe -t help_commands "help commands" help_commands
@@ -108,7 +108,7 @@ case $state in
     (help|version|list)
         _message 'No more arguments'
         ;;
-    (show|export|write|subshell)
+    (show|export|write|shell)
         __afp_accounts
         ;;
     esac
