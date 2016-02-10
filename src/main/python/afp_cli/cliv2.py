@@ -116,11 +116,11 @@ def unprotected_main():
                 federation_client.get_account_and_role_list()))
         except Exception as exc:
             error("Failed to get account list from AWS: %s" % exc)
-    elif arguments['show']:
+    elif arguments[SHOW]:
         info(format_aws_credentials(aws_credentials))
-    elif arguments['export']:
+    elif arguments[EXPORT]:
         print_export(aws_credentials)
-    elif arguments['write']:
+    elif arguments[WRITE]:
         write(aws_credentials)
-    elif arguments['shell']:
+    elif arguments[SHELL]:
         enter_subx(aws_credentials, account, role)
