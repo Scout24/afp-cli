@@ -6,7 +6,7 @@ Usage:
     afp [options] help
     afp [options] version
     afp [options] list
-    afp [options] (show | export | write | subshell) <accountname> [<rolename>]
+    afp [options] (show | export | write | shell) <accountname> [<rolename>]
 
 Options:
   -h, --help                          Show this.
@@ -25,7 +25,7 @@ Subcommands:
   show                                Show credentials.
   export                              Show credentials in an export suitable format.
   write                               Write credentials to aws credentials file.
-  subshell                            Open a subshell with exported credentials.
+  shell                               Open a subshell with exported credentials.
 """  # NOQA, docopt stuff is allowed to be longcat, and longcat is loooong
 
 from __future__ import absolute_import, division, print_function
@@ -49,11 +49,11 @@ from .exporters import (enter_subx,
 from .log import CMDLineExit, debug, error, info
 from .password_providers import get_password
 
-HELP, VERSION, LIST, SHOW, EXPORT, WRITE, SUBSHELL = \
-    'help', 'version', 'list', 'show', 'export', 'write', 'subshell'
+HELP, VERSION, LIST, SHOW, EXPORT, WRITE, SHELL = \
+    'help', 'version', 'list', 'show', 'export', 'write', 'shell'
 
-SUBCOMMANDS = [HELP, VERSION, LIST, SHOW, EXPORT, WRITE, SUBSHELL]
-ASSUME_SUBCOMMANDS = [SHOW, EXPORT, WRITE, SUBSHELL]
+SUBCOMMANDS = [HELP, VERSION, LIST, SHOW, EXPORT, WRITE, SHELL]
+ASSUME_SUBCOMMANDS = [SHOW, EXPORT, WRITE, SHELL]
 
 
 def main():
@@ -122,5 +122,5 @@ def unprotected_main():
         print_export(aws_credentials)
     elif arguments['write']:
         write(aws_credentials)
-    elif arguments['subshell']:
+    elif arguments['shell']:
         enter_subx(aws_credentials, account, role)

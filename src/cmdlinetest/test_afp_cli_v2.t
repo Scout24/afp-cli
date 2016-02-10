@@ -27,7 +27,7 @@
       afp [options] help
       afp [options] version
       afp [options] list
-      afp [options] (show | export | write | subshell) <accountname> [<rolename>]
+      afp [options] (show | export | write | shell) <accountname> [<rolename>]
   [1]
 
   $ afp -h
@@ -37,7 +37,7 @@
       afp [options] help
       afp [options] version
       afp [options] list
-      afp [options] (show | export | write | subshell) <accountname> [<rolename>]
+      afp [options] (show | export | write | shell) <accountname> [<rolename>]
   
   Options:
     -h, --help                          Show this.
@@ -56,7 +56,7 @@
     show                                Show credentials.
     export                              Show credentials in an export suitable format.
     write                               Write credentials to aws credentials file.
-    subshell                            Open a subshell with exported credentials.
+    shell                               Open a subshell with exported credentials.
 
   $ afp --help
   Command line client for the AFP V2 (AWS Federation Proxy)
@@ -65,7 +65,7 @@
       afp [options] help
       afp [options] version
       afp [options] list
-      afp [options] (show | export | write | subshell) <accountname> [<rolename>]
+      afp [options] (show | export | write | shell) <accountname> [<rolename>]
   
   Options:
     -h, --help                          Show this.
@@ -84,7 +84,7 @@
     show                                Show credentials.
     export                              Show credentials in an export suitable format.
     write                               Write credentials to aws credentials file.
-    subshell                            Open a subshell with exported credentials.
+    shell                               Open a subshell with exported credentials.
 
   $ afp help
   Command line client for the AFP V2 (AWS Federation Proxy)
@@ -93,7 +93,7 @@
       afp [options] help
       afp [options] version
       afp [options] list
-      afp [options] (show | export | write | subshell) <accountname> [<rolename>]
+      afp [options] (show | export | write | shell) <accountname> [<rolename>]
   
   Options:
     -h, --help                          Show this.
@@ -112,7 +112,7 @@
     show                                Show credentials.
     export                              Show credentials in an export suitable format.
     write                               Write credentials to aws credentials file.
-    subshell                            Open a subshell with exported credentials.
+    shell                               Open a subshell with exported credentials.
 
 # Test failing to access AFP
 
@@ -140,8 +140,8 @@
    u?'export': False, (re)
    u?'help': False, (re)
    u?'list': True, (re)
+   u?'shell': False, (re)
    u?'show': False, (re)
-   u?'subshell': False, (re)
    u?'version': False, (re)
    u?'write': False} (re)
   Subcommand is 'list'
@@ -165,8 +165,8 @@
    u?'export': False, (re)
    u?'help': False, (re)
    u?'list': True, (re)
+   u?'shell': False, (re)
    u?'show': False, (re)
-   u?'subshell': False, (re)
    u?'version': False, (re)
    u?'write': False} (re)
   Subcommand is 'list'
@@ -190,8 +190,8 @@
    u?'export': False, (re)
    u?'help': False, (re)
    u?'list': True, (re)
+   u?'shell': False, (re)
    u?'show': False, (re)
-   u?'subshell': False, (re)
    u?'version': False, (re)
    u?'write': False} (re)
   Subcommand is 'list'
@@ -216,7 +216,7 @@
 
 # Test credentials with subshell
 
-  $ afp -p testing -a http://localhost:5555 subshell test_account test_role < /dev/null
+  $ afp -p testing -a http://localhost:5555 shell test_account test_role < /dev/null
   Entering AFP subshell for account test_account, role test_role.
   Press CTRL+D to exit.
   Left AFP subshell.
