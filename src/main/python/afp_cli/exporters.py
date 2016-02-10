@@ -2,12 +2,18 @@
 
 from __future__ import print_function, absolute_import, division
 
+import json
 import os
 import subprocess
 import sys
 import tempfile
 
 from .log import CMDLineExit, info
+
+HUMAN = 'human'
+JSON = 'json'
+CSV = 'csv'
+OUTPUT_FORMATS = [HUMAN, JSON, CSV]
 
 RC_SCRIPT_TEMPLATE = """
 # Pretend to be an interactive, non-login shell
@@ -38,9 +44,23 @@ def format_aws_credentials(credentials, prefix=''):
                             for (key, value) in sorted(credentials.items())])
 
 
-def format_account_and_role_list(account_and_role_list):
-    return os.linesep.join(["{0:<20} {1}".format(account, ",".join(sorted(roles)))
-                            for account, roles in sorted(account_and_role_list.items())])
+def format_account_and_role_list(account_and_role_list, output_formt=HUMAN):
+    if output_formt == HUMAN:
+        return os.linesep.join(["{0:<20} {1}".format(account, ",".join(sorted(roles)))
+                               for account, roles in sorted(account_and_role_list.items())])
+    elif output_formt == JSON:
+        return json.dumps(account_and_role_list,
+                          sort_keys=True,
+                          indent=4,
+                          separators=(',', ': '))
+    elif output_formt == CSV:
+        return (os.linesep.join([",".join([account] + roles) for account, roles
+                                in account_and_role_list.items()]))
+    else:
+        raise CMDLineExit("'{0}' is not a valid output format.\n".
+                          format(output_formt) +
+                          "Valid options are: {0}".
+                          format(OUTPUT_FORMATS))
 
 
 def print_export(aws_credentials):
