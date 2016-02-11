@@ -40,11 +40,14 @@ script_dir = os.path.dirname(os.path.realpath(__file__))
 exit_code = 0
 try:
     subprocess.check_call(["pyb", "--version"])
-except FileNotFoundError as e:
-    try:
-        subprocess.check_call([sys.executable, "-m", "pip.__main__", "install", "pybuilder"])
-    except subprocess.CalledProcessError as e:
-        sys.exit(e.returncode)
+except OSError as e:
+    if e.errno == 2:
+        try:
+            subprocess.check_call([sys.executable, "-m", "pip.__main__", "install", "pybuilder"])
+        except subprocess.CalledProcessError as e:
+            sys.exit(e.returncode)
+    else:
+        raise
 except subprocess.CalledProcessError as e:
         sys.exit(e.returncode)
 try:
