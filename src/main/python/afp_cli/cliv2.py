@@ -111,7 +111,7 @@ def unprotected_main():
             get_first_role(federation_client, account)
         aws_credentials = get_aws_credentials(federation_client, account, role)
 
-    if arguments['list']:
+    if arguments[LIST]:
 
         output_format = (arguments['--output'] or
                          config.get("output") or
