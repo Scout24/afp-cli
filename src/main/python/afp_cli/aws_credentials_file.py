@@ -3,6 +3,7 @@ from six.moves import configparser
 from afp_cli.compat import OrderedDict
 import os
 import six
+from .log import info
 
 
 def write(aws_credentials, filename=None, profile_name='default'):
@@ -38,6 +39,7 @@ def write(aws_credentials, filename=None, profile_name='default'):
 
         with open(filename, 'w') as config_file:
             config.write(config_file)
+        info("Wrote credentials to file: '{0}'".format(filename))
 
     finally:
         if six.PY2:
