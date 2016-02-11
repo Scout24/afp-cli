@@ -28,6 +28,7 @@
       afp [options] version
       afp [options] list [--output <output_format>]
       afp [options] (show | export | write | shell) <accountname> [<rolename>]
+      afp [options] <accountname> [<rolename>]
   [1]
 
   $ afp -h
@@ -38,6 +39,7 @@
       afp [options] version
       afp [options] list [--output <output_format>]
       afp [options] (show | export | write | shell) <accountname> [<rolename>]
+      afp [options] <accountname> [<rolename>]
   
   Options:
     -h, --help                          Show this.
@@ -67,6 +69,7 @@
       afp [options] version
       afp [options] list [--output <output_format>]
       afp [options] (show | export | write | shell) <accountname> [<rolename>]
+      afp [options] <accountname> [<rolename>]
   
   Options:
     -h, --help                          Show this.
@@ -96,6 +99,7 @@
       afp [options] version
       afp [options] list [--output <output_format>]
       afp [options] (show | export | write | shell) <accountname> [<rolename>]
+      afp [options] <accountname> [<rolename>]
   
   Options:
     -h, --help                          Show this.
@@ -250,6 +254,12 @@
   Press CTRL+D to exit.
   Left AFP subshell.
 
+# Test credentials with simple call mode
+
+  $ afp -p testing -a http://localhost:5555 test_account test_role < /dev/null
+  Entering AFP subshell for account test_account, role test_role.
+  Press CTRL+D to exit.
+  Left AFP subshell.
 
 # Test credentials with show
 

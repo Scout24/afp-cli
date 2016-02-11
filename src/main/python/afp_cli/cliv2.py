@@ -7,6 +7,7 @@ Usage:
     afp [options] version
     afp [options] list [--output <output_format>]
     afp [options] (show | export | write | shell) <accountname> [<rolename>]
+    afp [options] <accountname> [<rolename>]
 
 Options:
   -h, --help                          Show this.
@@ -50,11 +51,11 @@ from .exporters import (enter_subx,
 from .log import CMDLineExit, debug, error, info
 from .password_providers import get_password
 
-HELP, VERSION, LIST, SHOW, EXPORT, WRITE, SHELL = \
-    'help', 'version', 'list', 'show', 'export', 'write', 'shell'
+HELP, VERSION, LIST, SHOW, EXPORT, WRITE, SHELL, SIMPLE = \
+    'help', 'version', 'list', 'show', 'export', 'write', 'shell', 'simple'
 
 SUBCOMMANDS = [HELP, VERSION, LIST, SHOW, EXPORT, WRITE, SHELL]
-ASSUME_SUBCOMMANDS = [SHOW, EXPORT, WRITE, SHELL]
+ASSUME_SUBCOMMANDS = [SHOW, EXPORT, WRITE, SHELL, SIMPLE]
 
 
 def main():
@@ -71,8 +72,9 @@ def unprotected_main():
         log.DEBUG = True
     debug(arguments)
 
-    # parse the subcommand, only one will be active
-    subcommand = [s for s in SUBCOMMANDS if arguments[s]][0]
+    # parse the subcommand, use SIMPLE mode if no subcommand
+    subcommand = [s for s in SUBCOMMANDS if arguments[s]]
+    subcommand = subcommand[0] if subcommand else SIMPLE
     debug("Subcommand is '{0}'".format(subcommand))
 
     if subcommand == VERSION:
@@ -129,4 +131,6 @@ def unprotected_main():
     elif arguments[WRITE]:
         write(aws_credentials)
     elif arguments[SHELL]:
+        enter_subx(aws_credentials, account, role)
+    elif subcommand == SIMPLE:
         enter_subx(aws_credentials, account, role)
