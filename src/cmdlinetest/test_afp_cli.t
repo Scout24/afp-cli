@@ -141,6 +141,7 @@
 
   $ export HOME=$CRAMTMP
   $ afp --password-provider testing --api-url=http://localhost:5555 --write test_account test_role
+  Wrote credentials to file: '/tmp/cramtests-.*/\.aws/credentials' (re)
   $ cat $HOME/.aws/credentials
   [default]
   aws_access_key_id = XXXXXXXXXXXX
