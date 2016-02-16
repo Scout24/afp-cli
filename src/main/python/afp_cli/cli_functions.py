@@ -55,16 +55,18 @@ def sanitize_host(server_name):
             afp_server_ip, exc))
 
 
-def get_api_url(arguments, config):
+def get_api_url(arguments=None, config=None):
     """
     Return a calculated/sanitized API URL from config and/or command
     line parameters.
     """
-    passed_api_url = arguments['--api-url'] or config.get('api_url')
+    arguments = arguments or {}
+    config = config or {}
+    passed_api_url = arguments.get('--api-url') or config.get('api_url')
     if passed_api_url is not None:
         # No checks whatsoever, just return the preferred API URL
         return passed_api_url
-    server_name = arguments['--server'] or config.get('server') or 'afp'
+    server_name = arguments.get('--server') or config.get('server') or 'afp'
     sanitized_server_name = sanitize_host(server_name)
     return 'https://{fqdn}/afp-api/latest'.format(fqdn=sanitized_server_name)
 
