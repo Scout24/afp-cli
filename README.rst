@@ -193,7 +193,7 @@ Removing them again:
 Write to AWS Credentials File
 -----------------------------
 
-The AWS tools reads credentials specified with ``aws configure`` from a local
+The AWS tools read credentials specified with ``aws configure`` from a local
 file named ``credentials`` in a folder named ``.aws`` in your home directory.
 The afp-cli tool can write your temporary credentials to this file.
 
@@ -211,11 +211,11 @@ from the AWS documentation.
 Interface with the System Keyring
 ---------------------------------
 
-Staring with version ``1.3.0`` experimental support for the `Python keyring
+Starting with version ``1.3.0``, experimental support for the `Python keyring
 module <https://pypi.python.org/pypi/keyring>`_ has been implemented. This has
 been tested with the Gnome Keyring and Max OS X Keychain but supposedly also
 works with Windows Credential Vault. You can configure this feature using the
-config file as showen above or a command-line switch.
+config file as shown above or with a command-line switch.
 
 Example command-line:
 
@@ -245,15 +245,16 @@ platform through the use of GObject Introspection." Now, unfortunately, even
 though this project is `available on PyPi
 <https://pypi.python.org/pypi/PyGObject>`_ it can not be installed from there
 using ``pip`` due to issues with the build system. It is however available as a
-system package for Ubuntu distributions as: ``python-gi``. Long story
-short; in order to use the ``keyring`` module from ``afp-cli`` you need to have
+system package for Ubuntu distributions as ``python-gi``.
+
+Long story short, in order to use the ``keyring`` module from ``afp-cli`` you need to have
 the ``gi`` module available to your Python interpreter. You can achieve this,
 for example, by doing a global install of ``afp-cli`` using something like
 ``sudo pip install afp-cli`` or install it into a virtual environment that uses
 the system site packages because it has been created with the
 ``--system-site-packages`` flag. In case the ``gi`` module is not available and
 you try to use the ``keyring`` module anyway, ``afp-cli`` will exit with an
-appropriate error message.  Lastly, if in doubt, you can use the ``debug``
+appropriate error message.  Lastly, if in doubt, you can use the ``--debug``
 switch to check at runtime which backend was selected.
 
 
