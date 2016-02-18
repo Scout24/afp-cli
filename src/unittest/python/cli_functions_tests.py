@@ -192,6 +192,17 @@ class GetApiUrlTest(TestCase):
         self.assertEqual(result, 'https://FQDN/afp-api/latest')
         self.mock_sanitize_host.assert_called_once_with('afp')
 
+    def test_easily_reusable(self):
+        """To be reusable in external tools, it should not require parameters
+
+        Especially the 'arguments' parameter is a docopt-specific
+        implementation detail and must not be mandatory.
+        """
+        result = get_api_url()
+
+        self.assertEqual(result, 'https://FQDN/afp-api/latest')
+        self.mock_sanitize_host.assert_called_once_with('afp')
+
 
 class SanitizeHostTest(TestCase):
     """
