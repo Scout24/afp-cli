@@ -17,6 +17,8 @@ Options:
   -a, --api-url <api-url>             The URL of the AFP server (e.g. https://afp/afp-api/latest). Takes precedence over --server.
   -p, --password-provider <provider>  Password provider. Valid values are: 'prompt', 'keyring' and 'testing'.
   -o, --output <output_format>        Output format for 'list'. Valid values are: 'human', 'json' and 'csv'
+
+Arguments:
   <accountname>                       The AWS account id you want to login to.
   <rolename>                          The AWS role you want to use for login. Defaults to the first role.
 
