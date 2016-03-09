@@ -290,7 +290,7 @@
 # Test write credentials to file
 
   $ afp -p testing -a http://localhost:5555 write test_account test_role
-  Wrote credentials to file: '/tmp/cramtests-.*/\.aws/credentials' (re)
+  Wrote credentials to file: '*/.aws/credentials' (glob)
   $ cat $HOME/.aws/credentials
   [default]
   aws_access_key_id = XXXXXXXXXXXX
@@ -301,7 +301,7 @@
 # Test that an unicode role name doesn't break the commandline
 
   $ afp -p testing -a http://localhost:5555 write test_account test_rolé
-  Wrote credentials to file: '/tmp/cramtests-.*/\.aws/credentials' (re)
+  Wrote credentials to file: '*/.aws/credentials' (glob)
 
 # Output version of self
 
