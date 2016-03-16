@@ -7,6 +7,7 @@ Usage:
     afp [options] version
     afp [options] list [--output <output_format>]
     afp [options] (show | export | write | shell) <accountname> [<rolename>]
+    afp [options] <accountname> [<rolename>]
 
 Options:
   -h, --help                          Show this.
@@ -16,6 +17,8 @@ Options:
   -a, --api-url <api-url>             The URL of the AFP server (e.g. https://afp/afp-api/latest). Takes precedence over --server.
   -p, --password-provider <provider>  Password provider. Valid values are: 'prompt', 'keyring' and 'testing'.
   -o, --output <output_format>        Output format for 'list'. Valid values are: 'human', 'json' and 'csv'
+
+Arguments:
   <accountname>                       The AWS account id you want to login to.
   <rolename>                          The AWS role you want to use for login. Defaults to the first role.
 
@@ -50,11 +53,11 @@ from .exporters import (enter_subx,
 from .log import CMDLineExit, debug, error, info
 from .password_providers import get_password
 
-HELP, VERSION, LIST, SHOW, EXPORT, WRITE, SHELL = \
-    'help', 'version', 'list', 'show', 'export', 'write', 'shell'
+HELP, VERSION, LIST, SHOW, EXPORT, WRITE, SHELL, SIMPLE = \
+    'help', 'version', 'list', 'show', 'export', 'write', 'shell', 'simple'
 
 SUBCOMMANDS = [HELP, VERSION, LIST, SHOW, EXPORT, WRITE, SHELL]
-ASSUME_SUBCOMMANDS = [SHOW, EXPORT, WRITE, SHELL]
+ASSUME_SUBCOMMANDS = [SHOW, EXPORT, WRITE, SHELL, SIMPLE]
 
 
 def main():
@@ -64,6 +67,11 @@ def main():
         error(e)
 
 
+def _get_first(list_, default=None):
+    """ Return the first item if list is non-empty and default otherwise. """
+    return list_[0] if list_ else default
+
+
 def unprotected_main():
     """Main function for script execution"""
     arguments = docopt(__doc__)
@@ -71,8 +79,8 @@ def unprotected_main():
         log.DEBUG = True
     debug(arguments)
 
-    # parse the subcommand, only one will be active
-    subcommand = [s for s in SUBCOMMANDS if arguments[s]][0]
+    # parse the subcommand, use SIMPLE mode if no subcommand
+    subcommand = _get_first([s for s in SUBCOMMANDS if arguments[s]], SIMPLE)
     debug("Subcommand is '{0}'".format(subcommand))
 
     if subcommand == VERSION:
@@ -111,7 +119,7 @@ def unprotected_main():
             get_first_role(federation_client, account)
         aws_credentials = get_aws_credentials(federation_client, account, role)
 
-    if arguments[LIST]:
+    if subcommand == LIST:
 
         output_format = (arguments['--output'] or
                          config.get("output") or
@@ -122,11 +130,13 @@ def unprotected_main():
                  federation_client.get_account_and_role_list(), output_format))
         except Exception as exc:
             error("Failed to get account list from AWS: %s" % exc)
-    elif arguments[SHOW]:
+    elif subcommand == SHOW:
         info(format_aws_credentials(aws_credentials))
-    elif arguments[EXPORT]:
+    elif subcommand == EXPORT:
         print_export(aws_credentials)
-    elif arguments[WRITE]:
+    elif subcommand == WRITE:
         write(aws_credentials)
-    elif arguments[SHELL]:
+    elif subcommand == SHELL:
+        enter_subx(aws_credentials, account, role)
+    elif subcommand == SIMPLE:
         enter_subx(aws_credentials, account, role)
