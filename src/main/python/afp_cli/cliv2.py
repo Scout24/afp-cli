@@ -119,7 +119,7 @@ def unprotected_main():
             get_first_role(federation_client, account)
         aws_credentials = get_aws_credentials(federation_client, account, role)
 
-    if arguments[LIST]:
+    if subcommand == LIST:
 
         output_format = (arguments['--output'] or
                          config.get("output") or
@@ -130,13 +130,13 @@ def unprotected_main():
                  federation_client.get_account_and_role_list(), output_format))
         except Exception as exc:
             error("Failed to get account list from AWS: %s" % exc)
-    elif arguments[SHOW]:
+    elif subcommand == SHOW:
         info(format_aws_credentials(aws_credentials))
-    elif arguments[EXPORT]:
+    elif subcommand == EXPORT:
         print_export(aws_credentials)
-    elif arguments[WRITE]:
+    elif subcommand == WRITE:
         write(aws_credentials)
-    elif arguments[SHELL]:
+    elif subcommand == SHELL:
         enter_subx(aws_credentials, account, role)
     elif subcommand == SIMPLE:
         enter_subx(aws_credentials, account, role)
