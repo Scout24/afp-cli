@@ -67,6 +67,11 @@ def main():
         error(e)
 
 
+def _get_first(list_, default=None):
+    """ Return the first item if list is non-empty and default otherwise. """
+    return list_[0] if list_ else default
+
+
 def unprotected_main():
     """Main function for script execution"""
     arguments = docopt(__doc__)
@@ -75,8 +80,7 @@ def unprotected_main():
     debug(arguments)
 
     # parse the subcommand, use SIMPLE mode if no subcommand
-    subcommand = [s for s in SUBCOMMANDS if arguments[s]]
-    subcommand = subcommand[0] if subcommand else SIMPLE
+    subcommand = _get_first([s for s in SUBCOMMANDS if arguments[s]], SIMPLE)
     debug("Subcommand is '{0}'".format(subcommand))
 
     if subcommand == VERSION:
