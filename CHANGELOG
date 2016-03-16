@@ -1,3 +1,9 @@
+332
+---
+
+* Removed official support Python 2.6, it is no longer tested on Travis but may
+  work anyway.
+
 310
 ---
 
