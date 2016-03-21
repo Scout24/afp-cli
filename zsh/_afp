@@ -65,9 +65,9 @@ __afp_accounts(){
     # okay this is one big hack and can surely be done better
     local -a response accounts roles current_account found
     # get all accounts and roles
-    response=$( afp list )
+    response=$( afp list --output csv)
     # get the accounts
-    accounts=($(echo $response | cut -f1 -d' '))
+    accounts=($(echo $response | cut -f1 -d','))
     # get the current account on the line, if any
     current_account=${line[2]}
     # see if the account can be found
@@ -90,8 +90,7 @@ __afp_accounts(){
         # roles is zsh array
         roles=($(echo $response |
                  grep $current_account |      # look for line with current account
-                 cut --complement -f1 -d' ' | # cut everything except the first field
-                 tr -d '[[:space:]]' |        # prune whitespace before and after
+                 cut --complement -f1 -d',' | # cut everything except the first field
                  sed 's/,/\ /'))              # replace space with comma
         _describe -t roles 'roles' roles
     fi
