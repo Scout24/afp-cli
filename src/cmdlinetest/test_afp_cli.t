@@ -153,10 +153,10 @@
 # Output version of self
 
   $ afp --version
-  afp-cli version \d+ (re)
+  afp-cli version * (glob)
 
   $ afp -v
-  afp-cli version \d+ (re)
+  afp-cli version * (glob)
 
 # END mocking AFP
 
