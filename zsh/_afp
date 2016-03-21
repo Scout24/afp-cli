@@ -50,6 +50,16 @@ __afp_provider(){
     _describe -t providers "providers" providers
 }
 
+__afp_output_format(){
+    local -a output_formats
+    output_formats=(
+        human
+        json
+        csv
+    )
+    _describe -t output_formats "output_formats" output_formats
+}
+
 
 __afp_accounts(){
     # okay this is one big hack and can surely be done better
@@ -94,6 +104,9 @@ opts=(
     '(-a  --api-url)'{-a,--api-url}'[The URL of the AFP server.]'
     '(-p --password-provider)'{-p,--password-provider}'[Password provider.]':provider:__afp_provider
 )
+list_opts=(
+    '(-o --output)'{-o,--output}'[Output format for "list".]':output_format:__afp_output_format
+)
 
 _arguments -C $opts \
            ': :->command' \
@@ -105,6 +118,9 @@ case $state in
     ;;
 (subcmd)
     case ${line[1]} in
+    (list)
+        _arguments -C $list_opts
+        ;;
     (help|version|list)
         _message 'No more arguments'
         ;;
