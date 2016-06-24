@@ -45,9 +45,9 @@ def set_properties(project):
     project.depends_on("docopt")
     project.depends_on("keyring")
     # secretstorage version 2.2.0 added a dependency on 'dbus-python', which
-    # turns out to be problematic on both Ubuntu and MacOSX, see
-    # https://github.com/mitya57/secretstorage/commit/5a73b0461bdfc39117836f2b07b6245f59add580
-    project.depends_on("secretstorage<2.2.0")
+    # turns out to be problematic. 2.2.1 will fix this, see
+    # https://github.com/mitya57/secretstorage/issues/4
+    project.depends_on("secretstorage!=2.2.0")
     project.set_property('flake8_include_test_sources', True)
     project.set_property('flake8_break_build', True)
     project.set_property('copy_resources_target', '$dir_dist')
