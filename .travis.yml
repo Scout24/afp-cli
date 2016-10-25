@@ -1,6 +1,8 @@
 language: python
 python:
-  - "pypy"
+# Travis currently uses pypy version 2.5.0, which fails with this message:
+#   RuntimeError: cryptography 1.0 is not compatible with PyPy < 2.6. Please upgrade PyPy to use this library.
+#  - "pypy"
   - "2.7"
   - "3.3"
   - "3.4"
