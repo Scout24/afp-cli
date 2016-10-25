@@ -12,7 +12,7 @@ before_install:
   - git fetch --unshallow
 install:
   - travis_retry pip install pybuilder coveralls
-  - travis_retry pyb install_dependencies
+  - travis_retry pyb -v install_dependencies
 
 env:
   PYTHONIOENCODING=UTF-8
