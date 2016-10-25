@@ -43,7 +43,8 @@ def sanitize_host(server_name):
         addrinfo_tuple = socket.getaddrinfo(
             server_name, 443, socket.AF_INET, socket.SOCK_STREAM)
     except Exception as exc:
-        raise CMDLineExit("Could not resolve hostname 'afp': %s" % exc)
+        raise CMDLineExit("Could not resolve hostname %r: %s" % (
+            server_name, exc))
     # Take the first result, round-robin responses are default per DNS
     addrinfo = addrinfo_tuple[0]
     afp_server_ip = addrinfo[4][0]

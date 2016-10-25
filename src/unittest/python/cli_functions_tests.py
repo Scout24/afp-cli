@@ -230,7 +230,7 @@ class SanitizeHostTest(TestCase):
         self.assertIsNone(return_value)
         self.assertEqual(
             cm.exception.args[0],
-            'Could not resolve hostname \'afp\': error_message')
+            'Could not resolve hostname \'erroneous_host\': error_message')
         self.mock_getaddrinfo.assert_called_once_with(
             'erroneous_host', 443, socket.AF_INET, socket.SOCK_STREAM)
         self.mock_gethostbyaddr.assert_not_called()
