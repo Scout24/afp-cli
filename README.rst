@@ -229,12 +229,18 @@ Example command-line:
    No password found in keychain, please enter it now to store it.
    Password for user:
 
-As you can see, you will be prompted for your password the first time. Note
+You will be prompted for your password the first time. Note
 that if you fail to enter the password correctly, the incorrect version will be
 stored. Note further that if you are using the Gnome-Keychain you can use the
 tool ``seahorse`` to update and delete saved passwords, in this case for the
 service ``afp``.
 
+Keyring on MacOS X
+~~~~~~~~~~~~~~~~~~
+On some MacOS systems, storing the password works fine, but fetching it fails with `Can't fetch password from system <https://github.com/ImmobilienScout24/afp-cli/issues/65>`_. This is due to a `change in the 'keyring' module <https://github.com/jaraco/keyring/issues/219>`_, introduced in version 9.0. As a workaround, downgrade to the previous version with ``pip install keyring==8.7``
+
+Keyring with Gnome-Keychain
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 There is an intricate caveat when using the ``keyring`` module with
 Gnome-Keychain. But before discussing this, it is important to mention that
 the keyring module uses another module, namely ``secretstorage`` under the
