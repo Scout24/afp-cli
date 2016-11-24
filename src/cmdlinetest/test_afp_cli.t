@@ -166,6 +166,7 @@
   aws_session_token = XXXXXXXXXXXX
   aws_security_token = XXXXXXXXXXXX
   * (glob)
+  $ rm "$CRAMTMP/.aws/credentials"
 
 # Output version of self
 
