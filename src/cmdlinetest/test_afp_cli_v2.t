@@ -231,8 +231,14 @@
 
 # BEGIN mocking AFP
 
+  $ rm -f bottle.log
   $ ./afp_mock.py start
   $ sleep 1
+# Log files in Python 2 contain bottle's greeting, in Python 3 the
+# greeting is absent. Until we have https://github.com/brodie/cram/issues/14
+# it is better to filter out the greeting via grep.
+  $ grep -Ev 'server starting up|Listening on http|Hit Ctrl-C' bottle.log | grep -E ..; true
+
   $ ls bottle.*
   bottle.log
   bottle.pid
