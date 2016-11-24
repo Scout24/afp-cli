@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 """ Simple AFP mock to allow testing the afp-cli. """
-
 import bottle
 from bottle import route
 from bottledaemon import daemon_run
@@ -26,9 +25,13 @@ def credentials(account, role):
                    "Expiration": "2032-01-01T00:00:00Z",
                    "Type": "AWS-HMAC"}""").strip()
 
-if len(sys.argv) > 1:
-    daemon_run(host='localhost', port=5555)
-else:
-    # manual testing mode on different port, so it won't stop
-    # "pyb install" from running tests
-    bottle.run(host='localhost', port=5544)
+try:
+    if len(sys.argv) > 1:
+        daemon_run(host='localhost', port=5555)
+    else:
+        # manual testing mode on different port, so it won't stop
+        # "pyb install" from running tests
+        bottle.run(host='localhost', port=5544)
+except Exception as exc:
+    with open('./bottle.log', 'a') as log:
+        log.write('AFP mock failed to start: ' + str(exc) +  '\n')
