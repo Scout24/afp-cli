@@ -5,7 +5,7 @@ Command line client for the AFP (AWS Federation Proxy)
 
 Usage:
     afp [--debug] [--user=<username>] [--password-provider=<provider>] [--api-url=<api-url>] [--server <servername>]
-                              [--show | --export | --write] [(<accountname> [<rolename>])]
+                              [--show | --export | --write [--profile=<profile_name>]] [(<accountname> [<rolename>])]
 
 Options:
   -h --help                       Show this.
@@ -17,6 +17,7 @@ Options:
   --show                          Show credentials instead of opening subshell.
   --export                        Show credentials in an export suitable format.
   --write                         Write credentials to aws credentials file.
+  --profile=<profile_name>        Which profile to use in the aws credentials file.
   --password-provider=<provider>  Password provider.
   <accountname>                   The AWS account id you want to login to.
   <rolename>                      The AWS role you want to use for login. Defaults to the first role.
@@ -89,7 +90,7 @@ def unprotected_main():
         elif arguments['--export']:
             print_export(aws_credentials)
         elif arguments['--write']:
-            write(aws_credentials)
+            write(aws_credentials, profile_name=arguments['--profile'])
         else:
             enter_subx(aws_credentials, account, role)
     else:

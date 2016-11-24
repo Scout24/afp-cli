@@ -6,7 +6,8 @@ Usage:
     afp [options] help
     afp [options] version
     afp [options] list [--output <output_format>]
-    afp [options] (show | export | write | shell) <accountname> [<rolename>]
+    afp [options] (show | export | shell) <accountname> [<rolename>]
+    afp [options] write [--profile <profile_name>] <accountname> [<rolename>]
     afp [options] <accountname> [<rolename>]
 
 Options:
@@ -17,6 +18,7 @@ Options:
   -a, --api-url <api-url>             The URL of the AFP server (e.g. https://afp/afp-api/latest). Takes precedence over --server.
   -p, --password-provider <provider>  Password provider. Valid values are: 'prompt', 'keyring' and 'testing'.
   -o, --output <output_format>        Output format for 'list'. Valid values are: 'human', 'json' and 'csv'
+  --profile <profile_name>            Which profile to use in the aws credentials file.
 
 Arguments:
   <accountname>                       The AWS account id you want to login to.

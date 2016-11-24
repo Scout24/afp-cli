@@ -6,7 +6,8 @@ import six
 from .log import info
 
 
-def write(aws_credentials, filename=None, profile_name='default'):
+def write(aws_credentials, filename=None, profile_name=None):
+    profile_name = profile_name or 'default'
 
     if six.PY2:
         # WTF

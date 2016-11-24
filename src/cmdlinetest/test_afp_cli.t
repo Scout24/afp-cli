@@ -19,7 +19,7 @@
   
   Usage:
       afp [--debug] [--user=<username>] [--password-provider=<provider>] [--api-url=<api-url>] [--server <servername>]
-                                [--show | --export | --write] [(<accountname> [<rolename>])]
+                                [--show | --export | --write [--profile=<profile_name>]] [(<accountname> [<rolename>])]
   
   Options:
     -h --help                       Show this.
@@ -31,6 +31,7 @@
     --show                          Show credentials instead of opening subshell.
     --export                        Show credentials in an export suitable format.
     --write                         Write credentials to aws credentials file.
+    --profile=<profile_name>        Which profile to use in the aws credentials file.
     --password-provider=<provider>  Password provider.
     <accountname>                   The AWS account id you want to login to.
     <rolename>                      The AWS role you want to use for login. Defaults to the first role.
@@ -54,6 +55,7 @@
    u?'--debug': True, (re)
    u?'--export': False, (re)
    u?'--password-provider': 'testing', (re)
+   u?'--profile': None, (re)
    u?'--server': None, (re)
    u?'--show': False, (re)
    u?'--user': None, (re)
@@ -70,6 +72,7 @@
    u?'--debug': True, (re)
    u?'--export': False, (re)
    u?'--password-provider': 'testing', (re)
+   u?'--profile': None, (re)
    u?'--server': None, (re)
    u?'--show': False, (re)
    u?'--user': 'test_user', (re)
@@ -144,6 +147,20 @@
   Wrote credentials to file: '*/.aws/credentials' (glob)
   $ cat $HOME/.aws/credentials
   [default]
+  aws_access_key_id = XXXXXXXXXXXX
+  aws_secret_access_key = XXXXXXXXXXXX
+  aws_session_token = XXXXXXXXXXXX
+  aws_security_token = XXXXXXXXXXXX
+  * (glob)
+
+# Test write credentials to file with --profile
+
+  $ export HOME=$CRAMTMP
+  $ rm "$CRAMTMP/.aws/credentials"
+  $ afp --password-provider testing --api-url=http://localhost:5555 --write --profile=foobar test_account test_role
+  Wrote credentials to file: '*/.aws/credentials' (glob)
+  $ cat $HOME/.aws/credentials
+  [foobar]
   aws_access_key_id = XXXXXXXXXXXX
   aws_secret_access_key = XXXXXXXXXXXX
   aws_session_token = XXXXXXXXXXXX
