@@ -139,6 +139,18 @@
   export AWS_SESSION_TOKEN='XXXXXXXXXXXX'
   export AWS_VALID_SECONDS='.*' (re)
 
+# Test credentials for user/account names that need url-encoding.
+
+  $ afp --password-provider testing --api-url=http://localhost:5544 --export '##test_account##' '??test_role??'
+  export AWS_ACCESS_KEY_ID='XXXXXXXXXXXX'
+  export AWS_ACCOUNT_NAME='##test_account##'
+  export AWS_ASSUMED_ROLE='??test_role??'
+  export AWS_EXPIRATION_DATE='2032-01-01T00:00:00Z'
+  export AWS_SECRET_ACCESS_KEY='XXXXXXXXXXXX'
+  export AWS_SECURITY_TOKEN='XXXXXXXXXXXX'
+  export AWS_SESSION_TOKEN='XXXXXXXXXXXX'
+  export AWS_VALID_SECONDS='.*' (re)
+
 # Test write credentials to file
 
   $ export HOME=$CRAMTMP

@@ -5,6 +5,7 @@ import json
 
 import requests
 from requests.auth import HTTPBasicAuth
+from six.moves.urllib.parse import quote
 from six import PY3
 
 
@@ -53,7 +54,7 @@ class AWSFederationClientCmd(object):
     def get_aws_credentials(self, account, role):
         """Return AWS credentials for a specified user and account"""
         aws_credentials = self.call_api(
-            "/account/{0}/{1}".format(account, role))
+            "/account/{0}/{1}".format(quote(account), quote(role)))
         aws_credentials = json.loads(aws_credentials)
         return {'AWS_ACCESS_KEY_ID': aws_credentials['AccessKeyId'],
                 'AWS_SECRET_ACCESS_KEY': aws_credentials['SecretAccessKey'],
