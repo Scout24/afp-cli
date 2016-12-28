@@ -18,7 +18,7 @@ def load_config(global_config_dir=CFGDIR):
     user_config = {}
     user_config_dir = os.path.expanduser("~/.afp-cli")
     if os.path.isdir(user_config_dir):
-        global_config = yamlreader.yaml_load(user_config_dir, {})
+        user_config = yamlreader.yaml_load(user_config_dir, {})
 
     yamlreader.data_merge(global_config, user_config)
     return global_config
