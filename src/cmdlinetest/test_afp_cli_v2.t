@@ -136,20 +136,20 @@
 
 # Test failing to access AFP
 
-  $ afp -p testing -a http://localhost:5555 list
+  $ afp -p testing -a http://localhost:5544 list
   Failed to get account list from AWS: .* (re)
   [1]
 
-  $ afp -p no_such_provider -a http://localhost:5555 list
+  $ afp -p no_such_provider -a http://localhost:5544 list
   'no_such_provider' is not a valid password provider.
   Valid options are: ['prompt', 'keyring', 'testing']
   [1]
 
 # Test failing to access AFP with debug
 
-  $ afp -d -p testing -a http://localhost:5555 list
+  $ afp -d -p testing -a http://localhost:5544 list
   Failed to get account list from AWS: .* (re)
-  {u?'--api-url': 'http://localhost:5555', (re)
+  {u?'--api-url': 'http://localhost:5544', (re)
    u?'--debug': True, (re)
    u?'--help': False, (re)
    u?'--output': None, (re)
@@ -167,7 +167,7 @@
    u?'version': False, (re)
    u?'write': False} (re)
   Subcommand is 'list'
-  'api-url' is 'http://localhost:5555'
+  'api-url' is 'http://localhost:5544'
   'username' is '.*' (re)
   'password-provider' is 'testing'
   'output' is 'human'
@@ -175,9 +175,9 @@
 
 # Test failing to access AFP with debug and username
 
-  $ afp --debug --password-provider testing --api-url=http://localhost:5555 --user=test_user list
+  $ afp --debug --password-provider testing --api-url=http://localhost:5544 --user=test_user list
   Failed to get account list from AWS: .* (re)
-  {u?'--api-url': 'http://localhost:5555', (re)
+  {u?'--api-url': 'http://localhost:5544', (re)
    u?'--debug': True, (re)
    u?'--help': False, (re)
    u?'--output': None, (re)
@@ -195,7 +195,7 @@
    u?'version': False, (re)
    u?'write': False} (re)
   Subcommand is 'list'
-  'api-url' is 'http://localhost:5555'
+  'api-url' is 'http://localhost:5544'
   'username' is 'test_user'
   'password-provider' is 'testing'
   'output' is 'human'
@@ -203,9 +203,9 @@
 
 # Test failing to access AFP with debug and username with long options
 
-  $ afp -d -p testing -a http://localhost:5555 -u test_user list
+  $ afp -d -p testing -a http://localhost:5544 -u test_user list
   Failed to get account list from AWS: .* (re)
-  {u?'--api-url': 'http://localhost:5555', (re)
+  {u?'--api-url': 'http://localhost:5544', (re)
    u?'--debug': True, (re)
    u?'--help': False, (re)
    u?'--output': None, (re)
@@ -223,7 +223,7 @@
    u?'version': False, (re)
    u?'write': False} (re)
   Subcommand is 'list'
-  'api-url' is 'http://localhost:5555'
+  'api-url' is 'http://localhost:5544'
   'username' is 'test_user'
   'password-provider' is 'testing'
   'output' is 'human'
@@ -231,30 +231,23 @@
 
 # BEGIN mocking AFP
 
-  $ rm -f bottle.log
-  $ ./afp_mock.py start
+# afp_mock fails to daemonize (for unknown reasons) when running on
+# Travis CI. So we hand-daemonize the program.
+  $ ./afp_mock.py >foo.log 2>bar.log </dev/null &
+  $ MOCKPID=$!
   $ sleep 1
-# Log files in Python 2 contain bottle's greeting, in Python 3 the
-# greeting is absent. Until we have https://github.com/brodie/cram/issues/14
-# it is better to filter out the greeting via grep.
-  $ grep -Ev 'server starting up|Listening on http|Hit Ctrl-C' bottle.log | grep -E ..; true
-
-  $ ls bottle.*
-  bottle.log
-  bottle.pid
-  bottle.pid.lock
 
 # Test get account and role
 
-  $ afp -p testing -a http://localhost:5555  list
+  $ afp -p testing -a http://localhost:5544  list
   test_account                   test_role
   test_account_with_long_name    test_role_with_long_name
 
-  $ afp -p testing -a http://localhost:5555  list -o human
+  $ afp -p testing -a http://localhost:5544  list -o human
   test_account                   test_role
   test_account_with_long_name    test_role_with_long_name
 
-  $ afp -p testing -a http://localhost:5555  list -o json
+  $ afp -p testing -a http://localhost:5544  list -o json
   {
       "test_account": [
           "test_role"
@@ -264,28 +257,28 @@
       ]
   }
 
-  $ afp -p testing -a http://localhost:5555  list -o csv
+  $ afp -p testing -a http://localhost:5544  list -o csv
   test_account,test_role
   test_account_with_long_name,test_role_with_long_name
 
 
 # Test credentials with subshell
 
-  $ afp -p testing -a http://localhost:5555 shell test_account test_role < /dev/null
+  $ afp -p testing -a http://localhost:5544 shell test_account test_role < /dev/null
   Entering AFP subshell for account test_account, role test_role.
   Press CTRL+D to exit.
   Left AFP subshell.
 
 # Test credentials with simple call mode
 
-  $ afp -p testing -a http://localhost:5555 test_account test_role < /dev/null
+  $ afp -p testing -a http://localhost:5544 test_account test_role < /dev/null
   Entering AFP subshell for account test_account, role test_role.
   Press CTRL+D to exit.
   Left AFP subshell.
 
 # Test credentials with show
 
-  $ afp -p testing -a http://localhost:5555 show test_account test_role
+  $ afp -p testing -a http://localhost:5544 show test_account test_role
   AWS_ACCESS_KEY_ID='XXXXXXXXXXXX'
   AWS_ACCOUNT_NAME='test_account'
   AWS_ASSUMED_ROLE='test_role'
@@ -297,7 +290,7 @@
 
 # Test credentials with show and only a single role
 
-  $ afp -p  testing -a http://localhost:5555 show test_account
+  $ afp -p  testing -a http://localhost:5544 show test_account
   AWS_ACCESS_KEY_ID='XXXXXXXXXXXX'
   AWS_ACCOUNT_NAME='test_account'
   AWS_ASSUMED_ROLE='test_role'
@@ -309,7 +302,7 @@
 
 # Test credentials with export
 
-  $ afp -p testing -a http://localhost:5555 export test_account test_role
+  $ afp -p testing -a http://localhost:5544 export test_account test_role
   export AWS_ACCESS_KEY_ID='XXXXXXXXXXXX'
   export AWS_ACCOUNT_NAME='test_account'
   export AWS_ASSUMED_ROLE='test_role'
@@ -321,7 +314,7 @@
 
 # Test write credentials to file
 
-  $ afp -p testing -a http://localhost:5555 write test_account test_role
+  $ afp -p testing -a http://localhost:5544 write test_account test_role
   Wrote credentials to file: '*/.aws/credentials' (glob)
   $ cat $HOME/.aws/credentials
   [default]
@@ -332,7 +325,7 @@
   
 # Test that an unicode role name doesn't break the commandline
 
-  $ afp -p testing -a http://localhost:5555 write test_account test_rolé
+  $ afp -p testing -a http://localhost:5544 write test_account test_rolé
   Wrote credentials to file: '*/.aws/credentials' (glob)
 
 # Output version of self
@@ -342,7 +335,4 @@
 
 # END mocking AFP
 
-  $ ./afp_mock.py stop
-  $ ls
-  afp_mock.py
-  bottle.log
+  $ kill $MOCKPID

@@ -38,20 +38,20 @@
 
 # Test failing to access AFP
 
-  $ afp --password-provider testing --api-url=http://localhost:5555
+  $ afp --password-provider testing --api-url=http://localhost:5544
   Failed to get account list from AWS: .* (re)
   [1]
 
-  $ afp --password-provider no_such_provider --api-url=http://localhost:5555
+  $ afp --password-provider no_such_provider --api-url=http://localhost:5544
   'no_such_provider' is not a valid password provider.
   Valid options are: ['prompt', 'keyring', 'testing']
   [1]
 
 # Test failing to access AFP with debug
 
-  $ afp --debug --password-provider testing --api-url=http://localhost:5555
+  $ afp --debug --password-provider testing --api-url=http://localhost:5544
   Failed to get account list from AWS: .* (re)
-  {u?'--api-url': 'http://localhost:5555', (re)
+  {u?'--api-url': 'http://localhost:5544', (re)
    u?'--debug': True, (re)
    u?'--export': False, (re)
    u?'--password-provider': 'testing', (re)
@@ -66,9 +66,9 @@
 
 # Test failing to access AFP with debug and username
 
-  $ afp --debug --password-provider testing --api-url=http://localhost:5555 --user=test_user
+  $ afp --debug --password-provider testing --api-url=http://localhost:5544 --user=test_user
   Failed to get account list from AWS: .* (re)
-  {u?'--api-url': 'http://localhost:5555', (re)
+  {u?'--api-url': 'http://localhost:5544', (re)
    u?'--debug': True, (re)
    u?'--export': False, (re)
    u?'--password-provider': 'testing', (re)
@@ -83,28 +83,21 @@
 
 # BEGIN mocking AFP
 
-  $ rm -f bottle.log
-  $ ./afp_mock.py start
+# afp_mock fails to daemonize (for unknown reasons) when running on
+# Travis CI. So we hand-daemonize the program.
+  $ ./afp_mock.py >foo.log 2>bar.log </dev/null &
+  $ MOCKPID=$!
   $ sleep 1
-# Log files in Python 2 contain bottle's greeting, in Python 3 the
-# greeting is absent. Until we have https://github.com/brodie/cram/issues/14
-# it is better to filter out the greeting via grep.
-  $ grep -Ev 'server starting up|Listening on http|Hit Ctrl-C' bottle.log | grep -E ..; true
-
-  $ ls bottle.*
-  bottle.log
-  bottle.pid
-  bottle.pid.lock
 
 # Test get account and role
 
-  $ afp --password-provider testing --api-url=http://localhost:5555
+  $ afp --password-provider testing --api-url=http://localhost:5544
   test_account                   test_role
   test_account_with_long_name    test_role_with_long_name
 
 # Test credentials with subshell
 
-  $ afp --password-provider testing --api-url=http://localhost:5555 test_account test_role < /dev/null
+  $ afp --password-provider testing --api-url=http://localhost:5544 test_account test_role < /dev/null
   Entering AFP subshell for account test_account, role test_role.
   Press CTRL+D to exit.
   Left AFP subshell.
@@ -112,7 +105,7 @@
 
 # Test credentials with show
 
-  $ afp --password-provider testing --api-url=http://localhost:5555 --show test_account test_role
+  $ afp --password-provider testing --api-url=http://localhost:5544 --show test_account test_role
   AWS_ACCESS_KEY_ID='XXXXXXXXXXXX'
   AWS_ACCOUNT_NAME='test_account'
   AWS_ASSUMED_ROLE='test_role'
@@ -124,7 +117,7 @@
 
 # Test credentials with show and only a single role
 
-  $ afp --password-provider testing --api-url=http://localhost:5555 --show test_account
+  $ afp --password-provider testing --api-url=http://localhost:5544 --show test_account
   AWS_ACCESS_KEY_ID='XXXXXXXXXXXX'
   AWS_ACCOUNT_NAME='test_account'
   AWS_ASSUMED_ROLE='test_role'
@@ -136,7 +129,7 @@
 
 # Test credentials with export
 
-  $ afp --password-provider testing --api-url=http://localhost:5555 --export test_account test_role
+  $ afp --password-provider testing --api-url=http://localhost:5544 --export test_account test_role
   export AWS_ACCESS_KEY_ID='XXXXXXXXXXXX'
   export AWS_ACCOUNT_NAME='test_account'
   export AWS_ASSUMED_ROLE='test_role'
@@ -149,7 +142,7 @@
 # Test write credentials to file
 
   $ export HOME=$CRAMTMP
-  $ afp --password-provider testing --api-url=http://localhost:5555 --write test_account test_role
+  $ afp --password-provider testing --api-url=http://localhost:5544 --write test_account test_role
   Wrote credentials to file: '*/.aws/credentials' (glob)
   $ cat $HOME/.aws/credentials
   [default]
@@ -163,7 +156,7 @@
 
   $ export HOME=$CRAMTMP
   $ rm "$CRAMTMP/.aws/credentials"
-  $ afp --password-provider testing --api-url=http://localhost:5555 --write --profile=foobar test_account test_role
+  $ afp --password-provider testing --api-url=http://localhost:5544 --write --profile=foobar test_account test_role
   Wrote credentials to file: '*/.aws/credentials' (glob)
   $ cat $HOME/.aws/credentials
   [foobar]
@@ -184,7 +177,4 @@
 
 # END mocking AFP
 
-  $ ./afp_mock.py stop
-  $ ls
-  afp_mock.py
-  bottle.log
+  $ kill $MOCKPID
