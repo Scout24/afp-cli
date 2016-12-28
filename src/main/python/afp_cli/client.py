@@ -5,7 +5,7 @@ import json
 
 import requests
 from requests.auth import HTTPBasicAuth
-from six import PY3, u
+from six import PY3
 
 
 class APICallError(Exception):
@@ -13,7 +13,6 @@ class APICallError(Exception):
         if PY3:
             return super(APICallError, self).__str__(*args, **kwargs)
         return self.message
-        return u(self.message).encode('unicode-escape')
 
 
 class AWSFederationClientCmd(object):
