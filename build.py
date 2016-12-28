@@ -67,7 +67,8 @@ def set_properties(project):
     project.set_property(
         'distutils_console_scripts', ['afpv2=afp_cli.cliv2:main'])
     project.set_property('install_dependencies_upgrade', True)
-    project.set_property('coverage_exceptions', ['afp_cli.config',
+    # These are tested by the cram tests.
+    project.set_property('coverage_exceptions', ['afp_cli.cliv2',
                                                  'afp_cli.cli'])
     project.get_property('filter_resources_glob').extend(
         ['**/afp_cli/__init__.py'])
