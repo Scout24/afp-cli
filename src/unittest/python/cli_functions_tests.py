@@ -149,7 +149,7 @@ class GetApiUrlTest(TestCase):
 
     def test_uses_servername_parameter_when_no_apiurl_defined(self):
         """
-        When servername is passed as a parameter, return it after
+        When servername is passed as a parameter, return it without
         running `sanitize_host` on it.
         """
         arguments = {
@@ -159,12 +159,12 @@ class GetApiUrlTest(TestCase):
             'api_url': None,
             'server': None}
         result = get_api_url(arguments, config)
-        self.assertEqual(result, 'https://FQDN/afp-api/latest')
-        self.mock_sanitize_host.assert_called_once_with('passed_stuff')
+        self.assertEqual(result, 'https://passed_stuff/afp-api/latest')
+        self.assertEqual(self.mock_sanitize_host.call_count, 0)
 
     def test_uses_configured_servername_when_no_apiurl_defined(self):
         """
-        When servername is configured in the config, returned it after
+        When servername is configured in the config, use it without
         running `sanitize_host` on it.
         """
         arguments = {
@@ -174,8 +174,8 @@ class GetApiUrlTest(TestCase):
             'api_url': None,
             'server': 'configured_stuff'}
         result = get_api_url(arguments, config)
-        self.assertEqual(result, 'https://FQDN/afp-api/latest')
-        self.mock_sanitize_host.assert_called_once_with('configured_stuff')
+        self.assertEqual(result, 'https://configured_stuff/afp-api/latest')
+        self.assertEqual(self.mock_sanitize_host.call_count, 0)
 
     def test_defaults_to_afp_url_when_nothing_defined(self):
         """

@@ -67,8 +67,11 @@ def get_api_url(arguments=None, config=None):
     if passed_api_url is not None:
         # No checks whatsoever, just return the preferred API URL
         return passed_api_url
-    server_name = arguments.get('--server') or config.get('server') or 'afp'
-    sanitized_server_name = sanitize_host(server_name)
+    server_name = arguments.get('--server') or config.get('server')
+    if server_name:
+        return 'https://{fqdn}/afp-api/latest'.format(fqdn=server_name)
+
+    sanitized_server_name = sanitize_host("afp")
     return 'https://{fqdn}/afp-api/latest'.format(fqdn=sanitized_server_name)
 
 
