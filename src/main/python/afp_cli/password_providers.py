@@ -41,9 +41,10 @@ def keyring_get_password(username):
                             keyring_impl.__class__.__name__))
     debug("Description of the backend is: '{0}'".format(description))
     if description in undesirable:
-        raise CMDLineExit(
-            "Aborting: the 'keyring' module has selected the "
-            "undesirable backed: '%s'." % description)
+        msg = ("Aborting: Did not find a usable backend to access your "
+               "keyring.\n\n"
+               "Maybe 'pip install keyrings.alt' will fix your problem.")
+        raise CMDLineExit(msg)
 
     debug("Note: will use the backend: '{0}'".format(keyring_impl))
     password = keyring.get_password('afp', username)
