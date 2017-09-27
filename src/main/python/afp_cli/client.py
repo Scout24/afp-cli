@@ -34,7 +34,7 @@ class AWSFederationClientCmd(object):
         self.user_config_dir = os.path.expanduser("~/.afp-cli")
         self.cookie_filepath = os.path.join(self.user_config_dir, 'cookies')
         if os.path.exists(self.cookie_filepath):
-            cookies = pickle.load(open(self.cookie_filepath))
+            cookies = pickle.load(open(self.cookie_filepath, 'rb'))
             self.session.cookies = cookies
 
     def call_api(self, url_suffix):
@@ -56,7 +56,7 @@ class AWSFederationClientCmd(object):
                     url_orig, api_result.json()['message']))
         if not os.path.exists(self.user_config_dir):
             os.mkdir(self.user_config_dir)
-        pickle.dump(self.session.cookies, open(self.cookie_filepath, 'w'))
+        pickle.dump(self.session.cookies, open(self.cookie_filepath, 'wb'))
         return api_result.text
 
     def get_account_and_role_list(self):
