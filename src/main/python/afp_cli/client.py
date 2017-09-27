@@ -2,12 +2,13 @@
 from __future__ import absolute_import, division, print_function
 
 import json
+import pickle
+import os
 
 import requests
 from requests.auth import HTTPBasicAuth
 from six.moves.urllib.parse import quote
 from six import PY3
-
 
 class APICallError(Exception):
     def __str__(self, *args, **kwargs):
@@ -26,14 +27,22 @@ class AWSFederationClientCmd(object):
         self.api_url = kwargs.get('api_url', None)
         self.ssl_verify = kwargs.get('ssl_verify', True)
 
+        self.session = requests.Session()
+        self.session.headers.update({'User-Agent': 'afp-cli/1.0.6'})
+
+        self.user_config_dir = os.path.expanduser("~/.afp-cli")
+        self.cookie_filepath = os.path.join(self.user_config_dir, 'cookies')
+        if os.path.exists(self.cookie_filepath):
+            cookies = pickle.load(open(self.cookie_filepath))
+            self.session.cookies = cookies
+
     def call_api(self, url_suffix):
         """Send a request to the aws federation proxy"""
         url_orig = '{0}{1}'.format(self.api_url, url_suffix)
         url = requests.utils.requote_uri(url_orig)
         # TODO: Automatic versioning instead of the static below
-        headers = {'User-Agent': 'afp-cli/1.0.6'}
-        api_result = requests.get(
-            url, headers=headers, verify=self.ssl_verify,
+        api_result = self.session.get(
+            url, verify=self.ssl_verify,
             auth=HTTPBasicAuth(self.username, self.password))
         if api_result.status_code != 200:
             if api_result.status_code == 401:
@@ -44,6 +53,9 @@ class AWSFederationClientCmd(object):
             else:
                 raise APICallError("API call to AWS (%s) failed: %s" % (
                     url_orig, api_result.json()['message']))
+        if not os.path.exists(self.user_config_dir):
+            os.mkdir(self.user_config_dir)
+        pickle.dump(self.session.cookies, open(self.cookie_filepath, 'w'))
         return api_result.text
 
     def get_account_and_role_list(self):
