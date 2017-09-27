@@ -10,6 +10,7 @@ from requests.auth import HTTPBasicAuth
 from six.moves.urllib.parse import quote
 from six import PY3
 
+
 class APICallError(Exception):
     def __str__(self, *args, **kwargs):
         if PY3:
