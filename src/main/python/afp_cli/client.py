@@ -52,8 +52,13 @@ class AWSFederationClientCmd(object):
                 raise APICallError("API call to AWS url (%s) failed: %s %s" % (
                     url_orig, api_result.status_code, api_result.reason))
             else:
-                raise APICallError("API call to AWS (%s) failed: %s" % (
-                    url_orig, api_result.json()['message']))
+                try:
+                    raise APICallError("API call to AWS (%s) failed: %s" % (
+                        url_orig, api_result.json()['message']))
+                except ValueError:
+                    raise APICallError("API call to AWS (%s) failed: %s" % (
+                        url_orig, api_result.text))
+
         if not os.path.exists(self.user_config_dir):
             os.mkdir(self.user_config_dir)
         pickle.dump(self.session.cookies, open(self.cookie_filepath, 'wb'))
